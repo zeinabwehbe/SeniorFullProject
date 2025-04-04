@@ -1,0 +1,440 @@
+import { HttpStatus } from '@nestjs/common';
+
+export class StatusEnum {
+  //  2XXX - Success Status Codes
+  static readonly SUCCESS = new StatusEnum('SUCCESS', 2_00_00_00, 'SUCCESS', HttpStatus.OK);
+
+  // 3XXX - Temporary Failure Status Codes
+  static readonly CONNECTION_FAILED_EXCEPTION = new StatusEnum(
+    'CONNECTION_FAILED_EXCEPTION',
+    3_00_00_00,
+    'CONNECTION_FAILED_EXCEPTION',
+    HttpStatus.AMBIGUOUS
+  );
+
+  // 4XXX - Bad Request Status Codes
+  // COMMON BAD REQUESTS EXCEPTIONS BEGIN
+  // This exception is also thrown when there is a validation error
+  static readonly BAD_REQUEST_EXCEPTION = new StatusEnum(
+    'BAD_REQUEST_EXCEPTION',
+    4_00_00_00,
+    'BAD_REQUEST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  static readonly NOT_FOUND_EXCEPTION = new StatusEnum(
+    'NOT_FOUND_EXCEPTION',
+    4_00_00_01,
+    'NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  static readonly FILE_TOO_LARGE_EXCEPTION = new StatusEnum(
+    'FILE_TOO_LARGE_EXCEPTION',
+    4_00_00_02,
+    'FILE_TOO_LARGE_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  static readonly ENDPOINT_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'ENDPOINT_NOT_FOUND_EXCEPTION',
+    4_00_00_03,
+    'ENDPOINT_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  static readonly METHOD_NOT_ALLOWED_EXCEPTION = new StatusEnum(
+    'METHOD_NOT_ALLOWED_EXCEPTION',
+    4_00_00_04,
+    'METHOD_NOT_ALLOWED_EXCEPTION',
+    HttpStatus.METHOD_NOT_ALLOWED
+  );
+
+  static readonly UNAUTHORIZED_REQUEST_EXCEPTION = new StatusEnum(
+    'UNAUTHORIZED_REQUEST_EXCEPTION',
+    4_00_00_05,
+    'UNAUTHORIZED_REQUEST_EXCEPTION',
+    HttpStatus.UNAUTHORIZED
+  );
+
+  static readonly INVALID_SORTING_COLUMN_EXCEPTION = new StatusEnum(
+    'INVALID_SORTING_COLUMN_EXCEPTION',
+    4_00_00_07,
+    'INVALID_SORTING_COLUMN_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  // COMMON BAD REQUESTS EXCEPTIONS END
+
+  // company errors BEGIN
+  static readonly COMPANY_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'COMPANY_NOT_FOUND_EXCEPTION',
+    4_00_01_00,
+    'COMPANY_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  // company errors END
+
+  // branch errors BEGIN
+  static readonly BRANCH_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'BRANCH_NOT_FOUND_EXCEPTION',
+    4_00_02_00,
+    'BRANCH_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  static readonly BRANCH_NAME_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'BRANCH_NAME_ALREADY_EXIST_EXCEPTION',
+    4_00_02_01,
+    'BRANCH_NAME_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  // branch errors END
+
+  // cost center errors BEGIN
+  static readonly COST_CENTER_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'COST_CENTER_NOT_FOUND_EXCEPTION',
+    4_00_03_00,
+    'COST_CENTER_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+
+  static readonly TVA_NUMBER_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'TVA_NUMBER_ALREADY_EXIST_EXCEPTION',
+    4_00_03_01,
+    'TVA_NUMBER_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  // cost center errors END
+
+  // user errors BEGIN
+  static readonly USER_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'USER_NOT_FOUND_EXCEPTION',
+    4_00_04_00,
+    'USER_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+
+  static readonly USER_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'USER_ALREADY_EXIST_EXCEPTION',
+    4_00_04_01,
+    'USER_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  // user errors END
+
+  // role errors START
+  static readonly ROLE_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'ROLE_NOT_FOUND_EXCEPTION',
+    4_00_05_00,
+    'ROLE_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+
+  static readonly ROLE_NAME_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'ROLE_NAME_ALREADY_EXIST_EXCEPTION',
+    4_00_05_01,
+    'ROLE_NAME_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly FAILED_TO_INSERT_PERMISSIONS = new StatusEnum(
+    'FAILED_TO_INSERT_PERMISSIONS',
+    4_00_05_02,
+    'FAILED_TO_INSERT_PERMISSIONS',
+    HttpStatus.BAD_REQUEST
+  );
+  // role errors END
+
+  // AUTH errors START
+  static readonly INVALID_CREDENTIALS_EXCEPTION = new StatusEnum(
+    'INVALID_CREDENTIALS_EXCEPTION',
+    4_00_06_00,
+    'INVALID_CREDENTIALS_EXCEPTION',
+    HttpStatus.UNAUTHORIZED
+  );
+  // AUTH errors END
+
+  // CUSTOMER errors START
+  static readonly CUSTOMER_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'CUSTOMER_NOT_FOUND_EXCEPTION',
+    4_00_07_00,
+    'CUSTOMER_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  static readonly CUSTOMER_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'CUSTOMER_ALREADY_EXIST_EXCEPTION',
+    4_00_07_01,
+    'CUSTOMER_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  // CUSTOMER errors END
+
+  // CUSTOMER_LOCATION errors START
+  static readonly CUSTOMER_LOCATION_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'CUSTOMER_LOCATION_ALREADY_EXIST_EXCEPTION',
+    4_00_08_00,
+    'CUSTOMER_LOCATION_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly CUSTOMER_LOCATION_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'CUSTOMER_LOCATION_NOT_FOUND_EXCEPTION',
+    4_00_08_01,
+    'CUSTOMER_LOCATION_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  // CUSTOMER_LOCATION errors END
+
+  //BRAND & CATEGORY & TYPE errors START
+  static readonly BRAND_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'BRAND_NOT_FOUND_EXCEPTION',
+    4_00_09_00,
+    'BRAND_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+
+  static readonly BRAND_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'BRAND_ALREADY_EXIST_EXCEPTION',
+    4_00_09_01,
+    'BRAND_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly CATEGORY_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'CATEGORY_NOT_FOUND_EXCEPTION',
+    4_00_09_02,
+    'CATEGORY_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+
+  static readonly CATEGORY_NAME_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'CATEGORY_NAME_ALREADY_EXIST_EXCEPTION',
+    4_00_09_03,
+    'CATEGORY_NAME_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly PRODUCT_TYPE_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'PRODUCT_TYPE_NOT_FOUND_EXCEPTION',
+    4_00_09_04,
+    'PRODUCT_TYPE_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+
+  static readonly PRODUCT_TYPE_NAME_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'PRODUCT_TYPE_NAME_ALREADY_EXIST_EXCEPTION',
+    4_00_09_05,
+    'PRODUCT_TYPE_NAME_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  //BRAND & CATEGORY & TYPE errors END
+
+  //PRODUCT errors END
+  static readonly PRODUCT_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'PRODUCT_NOT_FOUND_EXCEPTION',
+    4_00_10_00,
+    'PRODUCT_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+
+  static readonly PRODUCT_BARCODE_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'PRODUCT_BARCODE_ALREADY_EXIST_EXCEPTION',
+    4_00_10_01,
+    'PRODUCT_BARCODE_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  //PRODUCT errors START
+
+  //PAYMENT & DELIVERY METHODS errors START
+  static readonly DELIVERY_METHOD_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'DELIVERY_METHOD_NOT_FOUND_EXCEPTION',
+    4_00_11_00,
+    'DELIVERY_METHOD_NOT_FOUND_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly DELIVERY_METHOD_NAME_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'DELIVERY_METHOD_NAME_ALREADY_EXIST_EXCEPTION',
+    4_00_11_01,
+    'DELIVERY_METHOD_NAME_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly PAYMENT_METHOD_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'PAYMENT_METHOD_NOT_FOUND_EXCEPTION',
+    4_00_11_02,
+    'PAYMENT_METHOD_NOT_FOUND_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly PAYMENT_METHOD_NAME_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'PAYMENT_METHOD_NAME_ALREADY_EXIST_EXCEPTION',
+    4_00_11_03,
+    'PAYMENT_METHOD_NAME_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  //PAYMENT & DELIVERY METHODS errors END
+
+  //CURRENCY & RATES errors START
+  static readonly CURRENCY_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'CURRENCY_NOT_FOUND_EXCEPTION',
+    4_00_12_00,
+    'CURRENCY_NOT_FOUND_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly CURRENCY_NAME_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'CURRENCY_NAME_ALREADY_EXIST_EXCEPTION',
+    4_00_12_01,
+    'CURRENCY_NAME_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly RATE_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'RATE_NOT_FOUND_EXCEPTION',
+    4_00_12_02,
+    'RATE_NOT_FOUND_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly SAME_CURRENCY_EXCEPTION = new StatusEnum(
+    'SAME_CURRENCY_EXCEPTION',
+    4_00_12_03,
+    'SAME_CURRENCY_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly RATE_ALREADY_EXISTS_EXCEPTION = new StatusEnum(
+    'RATE_ALREADY_EXISTS_EXCEPTION',
+    4_00_12_04,
+    'RATE_ALREADY_EXISTS_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  //CURRENCY & RATES errors END
+
+  // ORDER STATUS & OR ORDER STATUS MAP errors START
+  static readonly ORDER_STATUS_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'ORDER_STATUS_NOT_FOUND_EXCEPTION',
+    4_00_13_00,
+    'ORDER_STATUS_NOT_FOUND_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly ORDER_STATUS_NAME_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'ORDER_STATUS_NAME_ALREADY_EXIST_EXCEPTION',
+    4_00_13_01,
+    'ORDER_STATUS_NAME_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly SAME_ORDER_STATUS_TRANSITION_EXCEPTION = new StatusEnum(
+    'SAME_ORDER_STATUS_TRANSITION_EXCEPTION',
+    4_00_13_02,
+    'SAME_ORDER_STATUS_TRANSITION_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly ORDER_STATUS_MAP_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'ORDER_STATUS_MAP_ALREADY_EXIST_EXCEPTION',
+    4_00_13_03,
+    'ORDER_STATUS_MAP_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+
+  static readonly ORDER_STATUS_MAP_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'ORDER_STATUS_MAP_NOT_FOUND_EXCEPTION',
+    4_00_13_04,
+    'ORDER_STATUS_MAP_NOT_FOUND_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  // ORDER STATUS & OR ORDER STATUS MAP errors END
+
+  // LEDGER ACCOUNT & LEDGER TYPE errors START
+  static readonly INVALID_LEDGER_TYPE_EXCEPTION = new StatusEnum(
+    'INVALID_LEDGER_TYPE_EXCEPTION',
+    4_00_14_00,
+    'INVALID_LEDGER_TYPE_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  // LEDGER ACCOUNT & LEDGER TYPE errors END
+
+  // DRIVER errors START
+  static readonly DRIVER_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'DRIVER_NOT_FOUND_EXCEPTION',
+    4_00_15_00,
+    'DRIVER_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  static readonly DRIVER_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'DRIVER_ALREADY_EXIST_EXCEPTION',
+    4_00_15_01,
+    'DRIVER_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  // DRIVER errors END
+
+  // DRAWER errors START
+  static readonly DRAWER_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'DRAWER_NOT_FOUND_EXCEPTION',
+    4_00_16_00,
+    'DRAWER_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  static readonly DRAWER_ALREADY_EXIST_EXCEPTION = new StatusEnum(
+    'DRAWER_ALREADY_EXIST_EXCEPTION',
+    4_00_16_01,
+    'DRAWER_ALREADY_EXIST_EXCEPTION',
+    HttpStatus.BAD_REQUEST
+  );
+  // DRAWER errors END
+
+  // TRANSACTION errors START
+  static readonly TRANSACTION_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'TRANSACTION_NOT_FOUND_EXCEPTION',
+    4_00_17_00,
+    'Transaction not found',
+    HttpStatus.NOT_FOUND
+  );
+  // TRANSACTION errors END
+
+  // VOUCHER errors START
+  static readonly VOUCHER_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'VOUCHER_NOT_FOUND_EXCEPTION',
+    4_00_18_00,
+    'VOUCHER_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  // VOUCHER errors END
+
+  // CUSTOMER_ADDRESS errors START
+  static readonly CUSTOMER_ADDRESS_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'CUSTOMER_ADDRESS_NOT_FOUND_EXCEPTION',
+    4_00_19_00,
+    'CUSTOMER_ADDRESS_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  // CUSTOMER_ADDRESS errors END
+
+  // ADDRESS errors START
+  static readonly ADDRESS_NOT_FOUND_EXCEPTION = new StatusEnum(
+    'ADDRESS_NOT_FOUND_EXCEPTION',
+    4_00_20_00,
+    'ADDRESS_NOT_FOUND_EXCEPTION',
+    HttpStatus.NOT_FOUND
+  );
+  // ADDRESS errors END
+  // 5XXX - Unhandled Error Status Codes
+  static readonly INTERNAL_SERVER_ERROR_EXCEPTION = new StatusEnum(
+    'INTERNAL_SERVER_ERROR_EXCEPTION',
+    5_00_00_00,
+    'INTERNAL_SERVER_ERROR_EXCEPTION',
+    HttpStatus.INTERNAL_SERVER_ERROR
+  );
+
+  private constructor(
+    public readonly key: string,
+    public readonly code: number,
+    public readonly message: string,
+    public readonly httpStatus: HttpStatus
+  ) {}
+
+  toString() {
+    return this.key;
+  }
+}
