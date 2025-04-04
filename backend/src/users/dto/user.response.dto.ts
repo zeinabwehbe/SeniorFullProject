@@ -1,0 +1,14 @@
+/**
+ * Data Transfer Object (DTO) for the `User` model.
+ *
+ * This class is used to define the structure and validation rules for
+ * transferring user data between the client and server. It ensures
+ * that the data adheres to the expected format and contains the necessary
+ * fields for representing a user's details.
+ */
+
+export class UserResponseDto {
+  id: number;
+  username: string;
+  role:string;
+}
