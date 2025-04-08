@@ -7,7 +7,7 @@
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface JwtUser {
-  userId: number;
+  id: number;
   phoneNumber: string;
   permissions: string[];
 }

@@ -9,6 +9,12 @@
 
 export class UserResponseDto {
   id: number;
-  username: string;
-  role:string;
+  name: string;
+  email: string;
+  bio?: string;
+  profilePic?: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+  status: string;
 }
