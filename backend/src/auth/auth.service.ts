@@ -4,7 +4,6 @@ import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { compare } from 'bcryptjs';
 
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -12,18 +11,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  
-  async validateUser(username: string, password: string): Promise<any> {
-    const user = await this.usersService.findByUsername(username);
-    if (user && await user.validatePassword(password)) {
-      const { password, ...result } = user;
-      return result;
-    }
-    return null;
-  }
-
-  async login(username: string, password: string) {
-    const user = await this.usersService.findByUsername(username);
+  async login(email: string, password: string) {
+    const user = await this.usersService.findUserByEmail(email);
     if (!user) {
       throw new UnauthorizedException({
         message: 'Invalid credentials: user not available',
@@ -32,8 +21,7 @@ export class AuthService {
       });
     }
 
-    //const isPasswordValid = await compare(password, user.password);
-    const isPasswordValid = user.password === password; // Changed to simple equality check
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException({
@@ -43,12 +31,12 @@ export class AuthService {
       });
     }
     
-    const payload = { username: user.username, sub: user.id, role: user.role };
+    const payload = { email: user.email, sub: user.id, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
       user: {
-        id: user.id,
-        username: user.username,
+        user_id: user.id,
+        email: user.email,
         role: user.role,
       },
     };

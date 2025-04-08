@@ -14,36 +14,34 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async findByUsername(username: string) {
-    return this.usersRepository.findByUsername(username);
-  }
 
-
-  async findById(id: number): Promise<User | undefined> {
-    return this.usersRepository.findById(id); // Update to use the repository
+  async findUserById(id: number): Promise<User> {
+    return this.usersRepository.findUserById(id); // Update to use the repository
   }
 
   async create(user: CreateUserDto): Promise<UserResponseDto> {
-    const {username} = user;
-console.error(username)
-    const existingUser = await this.findByUsername(username);
+    const { email } = user;
+    const existingUser = await this.findUserByEmail(email);
     if (existingUser) {
       throw new ConflictException('Username already exists');
     }
     return this.usersRepository.insertUser(user); // Update to use the repository
   }
 
-  async getAllUsers(): Promise<User[]> {
-    return this.usersRepository.find(); // Update to use the repository
+  async findAllUsers(): Promise<User[]> {
+    return this.usersRepository.findAllUsers(); // Update to use the repository
   }
 
- 
   async updateUser(id: number, user: UpdateUserDto): Promise<User | undefined> {
-    const existingUser = await this.findById(id);
+    const existingUser = await this.findUserById(id);
     if (!existingUser) {
       throw new NotFoundException('User not found');
     }
     return this.usersRepository.updateUser(existingUser, user); // Update to use the repository
+  }
+
+  async findUserByEmail(email: string): Promise<User | undefined> {
+    return this.usersRepository.findUserByEmail(email); // Update to use the repository
   }
  
 }
