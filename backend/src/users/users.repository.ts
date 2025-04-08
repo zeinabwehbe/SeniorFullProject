@@ -12,15 +12,11 @@ export class UsersRepository {
     private readonly userModel: typeof User,
   ) {}
 
-  async findByUsername(username: string): Promise<User | undefined> {
-    return this.userModel.findOne({ where: { username } });
+  async findUserByEmail(email: string): Promise<User> {
+    return await this.userModel.findOne({ where: { email } });
   }
 
-  async findById(id: number): Promise<User | undefined> {
-    return this.userModel.findOne({ where: { id } });
-  }
-
-  async find(): Promise<User[]> {
+  async findAllUsers(): Promise<User[]> {
     return this.userModel.findAll();
   }
 
@@ -28,36 +24,28 @@ export class UsersRepository {
     return this.userModel.create(createUserDto, { transaction });
   }
 
-  async getUserById(id: number, isCheckIfEnabled = false): Promise<User | null> {
-    const whereClause = {
-      id,
-      ...(isCheckIfEnabled && { isEnabled: true }),
-    };
+  async findUserById(id: number): Promise<User | null> {
+    return await this.userModel.findOne({ where: { id } });
 
-    return this.userModel.findOne({
-      where: whereClause,
-    });
   }
 
   async updateUser(user: User, editUserDto: UpdateUserDto): Promise<User> {
     return await user.update(editUserDto);
   }
 
-  async getUsersByPhoneOrEmail(phoneNumber?: string, email?: string, excludeUserId?: number): Promise<User[]> {
+  async findUsersByPhoneOrEmail(phoneNumber?: string, email?: string, excludeid?: number): Promise<User[]> {
     if (!phoneNumber && !email) {
       return [];
     }
-
     const query = {
       where: {
         [Op.or]: [phoneNumber && { phoneNumber }, email && { email }],
       },
     };
 
-    if (excludeUserId) {
-      query.where['id'] = { [Op.ne]: excludeUserId };
+    if (excludeid) {
+      query.where['id'] = { [Op.ne]: excludeid };
     }
-
     return await this.userModel.findAll(query);
   }
 }

@@ -1,16 +1,32 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator';
-import { UserRole } from '../entities/user.entity';
+import { IsString, IsNotEmpty, IsEmail, IsEnum, IsOptional } from 'class-validator';
+
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin'
+}
 
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  username: string;
+  name: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 
   @IsString()
   @IsNotEmpty()
   password: string;
 
-  @IsEnum(UserRole)
+  @IsString()
   @IsOptional()
-  role?: UserRole;
+  bio?: string;
+
+  @IsString()
+  @IsOptional()
+  profilePic?: string;
+
+  @IsEnum(UserRole)
+  @IsNotEmpty()
+  role: UserRole;
 }

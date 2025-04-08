@@ -7,31 +7,46 @@ import {
   HasMany,
   Model,
   Table,
+  CreatedAt,
+  BeforeCreate,
+  UpdatedAt,
 } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
 import { UserResponseDto } from '../dto/user.response.dto';
-import { BeforeInsert } from 'typeorm';
 
 export enum UserRole {
   USER = 'user',
   ADMIN = 'admin',
-  MODERATOR = 'moderator', // {{ edit_1 }} Adding new role
 }
+// other than this, it is a guest
 
-@Table({ tableName: 'users', timestamps: false })
+@Table({ 
+  tableName: 'Users', 
+  timestamps: false,  // Change to false since we're handling timestamps manually
+  createdAt: 'created_at',
+})
 export class User extends Model<User> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
     primaryKey: true,
+    field: 'id',
   })
   id: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    field: 'name',  // Change from 'username' to 'name' to match schema
   })
-  username: string;
+  name: string;  // Change property name to match schema
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    unique: true,
+  })
+  email: string;
 
   @Column({
     type: DataType.STRING,
@@ -39,27 +54,69 @@ export class User extends Model<User> {
   })
   password: string;
 
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  bio: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    field: 'profile_pic',
+  })
+  profilePic: string;
+
   @Column({ 
     type: DataType.ENUM(...Object.values(UserRole)),
-    defaultValue: UserRole.USER 
+    defaultValue: UserRole.USER,
+    allowNull: false,
   })
   role: UserRole;
 
-  @BeforeInsert()
-  async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
+  @CreatedAt
+  @Column({
+    field: 'created_at',
+  })
+  createdAt: string;
+
+  @UpdatedAt
+  @Column({
+    field: 'updated_at',
+  })
+  updatedAt: string;
+  
+  @Column({
+    type: DataType.STRING,
+    defaultValue: 'active',
+    field: 'status',
+  })
+  status: string;
+
+  @BeforeCreate
+  static async hashPassword(instance: User) {
+    if (instance.password) {
+      instance.password = await bcrypt.hash(instance.password, 10);
+    }
   }
 
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);
   }
 
-    // convert the model into a UserDto
-    toDto(): UserResponseDto {
-      return {
-        id: this.id,
-        username: this.username,
-        role: this.role      
-      };
-    }
+  // convert the model into a UserDto
+  // Update toDto to use 'name' instead of 'username'
+  toDto(): UserResponseDto {
+    return {
+      id: this.id,
+      name: this.name,  // Changed from username to name
+      email: this.email,
+      bio: this.bio,
+      profilePic: this.profilePic,
+      role: this.role,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      status: this.status
+    };
+  }
 }

@@ -167,8 +167,8 @@ export class DatabaseInitService implements OnModuleInit {
 //               return reject(err);
 //             }
 
-//             const adminUserId = this.lastID;
-//             console.log(`Admin user created with ID: ${adminUserId}`);
+//             const adminid = this.lastID;
+//             console.log(`Admin user created with ID: ${adminid}`);
 //             resolve();
 //           }
 //         );
