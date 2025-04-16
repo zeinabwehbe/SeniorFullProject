@@ -8,6 +8,8 @@ import { UsersModule } from 'src/users/users.module';
 import { User } from 'src/users/entities/user.entity';
 import { Review } from 'src/review/entities/review.entity';
 import { Category } from 'src/categories/entities/category.entity';
+import { Skill } from 'src/skills/entities/skill.entity';
+
 
 /**
  * The DatabaseModule is responsible for configuring and initializing the database.
@@ -26,7 +28,7 @@ import { Category } from 'src/categories/entities/category.entity';
           dialect: 'sqlite',
           storage: dbPath,
           models: [
-            User , Review , Category 
+            User , Review , Category , Skill
           ],
           synchronize: false,
           
