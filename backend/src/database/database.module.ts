@@ -6,6 +6,7 @@ import { DatabaseInitService } from './database-init.service';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
 import { User } from 'src/users/entities/user.entity';
+import { Review } from 'src/review/entities/review.entity';
 
 /**
  * The DatabaseModule is responsible for configuring and initializing the database.
@@ -24,9 +25,10 @@ import { User } from 'src/users/entities/user.entity';
           dialect: 'sqlite',
           storage: dbPath,
           models: [
-            User 
+            User , Review
           ],
           synchronize: false,
+          
           logging: false, // Enable logging for troubleshooting
           retryAttempts: 5, // Increase retry attempts
           retryDelay: 3000, // Set delay between retries (in ms)
