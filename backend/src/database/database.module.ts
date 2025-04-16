@@ -7,6 +7,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
 import { User } from 'src/users/entities/user.entity';
 import { Review } from 'src/review/entities/review.entity';
+import { Category } from 'src/categories/entities/category.entity';
 
 /**
  * The DatabaseModule is responsible for configuring and initializing the database.
@@ -25,7 +26,7 @@ import { Review } from 'src/review/entities/review.entity';
           dialect: 'sqlite',
           storage: dbPath,
           models: [
-            User , Review
+            User , Review , Category 
           ],
           synchronize: false,
           
