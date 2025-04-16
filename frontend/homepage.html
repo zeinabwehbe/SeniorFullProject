@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Swap - Exchange Skills, Elevate Your Life</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #ffffff;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 20px;
+        }
+        
+        .logo {
+            position: absolute;
+            left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2a75bb;
+            max-height: 90px;
+            width: auto;
+            object-fit: contain;
+        }
+        
+        .nav-links {
+            margin-left: 850px;
+            margin-right: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            padding: 10px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+            position: absolute;
+            right: 40px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #ffffff;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-primary:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .btn-secondary {
+            background-color: #ffffff;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f5f5f5;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: #ffffff;
+            color: #333;
+            padding: 80px 0;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Featured Skills */
+        .featured-skills {
+            padding: 60px 0;
+            background-color: #ffffff;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 32px;
+            color: #333;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .skill-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            height: 100%; /* Makes cards equal height in grid */
+            border: 1px solid #eee;
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .skill-img {
+            height: 160px;
+            background-color: #e9e9e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-size: 18px;
+            overflow: hidden; /* Ensures images don't overflow the container */
+        
+        }
+        .skill-img img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            padding: 10px;
+        }
+        
+        .skill-content {
+            padding: 20px;
+        }
+        
+        .skill-content h3 {
+            margin-bottom: 10px;
+            color: #dead9c;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 60px 0;
+            background-color: #ffffff;
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .step {
+            flex: 1;
+            max-width: 200px;
+        }
+        
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #ffffff;
+            color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+            border: 1px solid #eee;
+        }
+        
+        .step h3 {
+            margin-bottom: 10px;
+            color: #DEAD9C ;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 60px 0;
+            background-color: #ffffff;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border: 1px solid #eee;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 60px;
+            color: #e0f0ff;
+            line-height: 0.8;
+            z-index: 0;
+        }
+        
+        .testimonial-text {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .author-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #e0f0ff;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2a75bb;
+            font-weight: bold;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #ffffff;
+            color: #333;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #333;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #2a75bb;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+            color: #333;
+        }
+        
+        .social-icon:hover {
+            background-color: #eee;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .steps {
+                flex-direction: column;
+                align-items: center;
+                gap: 40px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+        }
+        
+        /* Add this to your existing CSS in the <style> section */
+        .rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .stars {
+            display: flex;
+            gap: 2px;
+        }
+        
+        .star {
+            color: #ffd700;
+            font-size: 18px;
+        }
+        
+        .rating-text {
+            margin-left: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<script>
+    // API URLs
+    const API_URL = 'http://localhost:3000'; // Replace with your actual API URL
+    const REVIEW_URL = `${API_URL}/reviews`;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const testimonialGrid = document.getElementById('testimonialGrid');
+        
+        try {
+            const response = await fetch(REVIEW_URL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // If the route is protected, include the token
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+        
+            const reviews = await response.json();
+        
+            if (!response.ok) {
+                throw new Error(reviews.message || 'Failed to fetch reviews');
+            }
+            
+            console.log('Review data:', reviews);
+            
+            // Display reviews from the database
+            if (reviews.length > 0) {
+                // Get three random reviews
+                const shuffled = [...reviews].sort(() => 0.5 - Math.random());
+                const selectedReviews = shuffled.slice(0, 3);
+                
+                // Clear existing content
+                testimonialGrid.innerHTML = '';
+                
+                // Display each review
+                selectedReviews.forEach(review => {
+                    const card = document.createElement('div');
+                    card.className = 'testimonial-card';
+                    
+                    // Use the comment as the testimonial text
+                    const testimonialText = review.comment || "Great experience with SkillSwap!";
+                    
+                    // Get user information
+                    let userName = "Anonymous User";
+                    let userTitle = "SkillSwap User";
+                    
+                    // Check if user data is available
+                    if (review.user && review.user.name) {
+                        userName = review.user.name;
+                        userTitle = review.user.bio || "SkillSwap User";
+                    } else if (review.userName) {
+                        // Fallback to userName from DTO if available
+                        userName = review.userName;
+                        userTitle = review.userTitle || userName;
+                    }
+                    
+                    const initials = getInitials(userName);
+                    
+                    // New layout with name at the bottom and rating stars
+                    card.innerHTML = `
+                        <p class="testimonial-text">${testimonialText}</p>
+                        <div class="rating">
+                            <div class="stars">
+                                ${Array(5).fill('').map((_, index) => `
+                                    <span class="star">${index < (review.rating || 0) ? '★' : '☆'}</span>
+                                `).join('')}
+                            </div>
+                            <span class="rating-text">${review.rating || 0} out of 5</span>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-img">${initials}</div>
+                            <div class="author-info">
+                                <h4>${userName}</h4>
+                                <p>${userTitle}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    testimonialGrid.appendChild(card);
+                });
+                
+                console.log('Selected reviews:', selectedReviews);
+            } else {
+                // If no reviews, show default testimonials with the same layout
+                testimonialGrid.innerHTML = `
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">I learned basic guitar skills in exchange for teaching Spanish. It's amazing how much progress we both made in just a few sessions!</p>
+                        <div class="testimonial-author">
+                            <div class="author-img">JD</div>
+                            <div class="author-info">
+                                <h4>James Davis</h4>
+                                <p>Spanish Teacher</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">As a photographer, I exchanged portrait sessions for cooking lessons. Now I can take beautiful photos AND make delicious pasta from scratch!</p>
+                        <div class="testimonial-author">
+                            <div class="author-img">SL</div>
+                            <div class="author-info">
+                                <h4>Sarah Lee</h4>
+                                <p>Photographer</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">I taught web design and learned yoga in return. SkillSwap made it easy to find someone with complementary skills to exchange with.</p>
+                        <div class="testimonial-author">
+                            <div class="author-img">MP</div>
+                            <div class="author-info">
+                                <h4>Mike Peterson</h4>
+                                <p>Web Designer</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+        } catch (error) {
+            console.error('Error fetching reviews:', error.message);
+            
+            // Show default testimonials on error
+            testimonialGrid.innerHTML = `
+                <div class="testimonial-card">
+                    <p class="testimonial-text">I learned basic guitar skills in exchange for teaching Spanish. It's amazing how much progress we both made in just a few sessions!</p>
+                    <div class="testimonial-author">
+                        <div class="author-img">JD</div>
+                        <div class="author-info">
+                            <h4>James Davis</h4>
+                            <p>Spanish Teacher</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">As a photographer, I exchanged portrait sessions for cooking lessons. Now I can take beautiful photos AND make delicious pasta from scratch!</p>
+                    <div class="testimonial-author">
+                        <div class="author-img">SL</div>
+                        <div class="author-info">
+                            <h4>Sarah Lee</h4>
+                            <p>Photographer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">I taught web design and learned yoga in return. SkillSwap made it easy to find someone with complementary skills to exchange with.</p>
+                    <div class="testimonial-author">
+                        <div class="author-img">MP</div>
+                        <div class="author-info">
+                            <h4>Mike Peterson</h4>
+                            <p>Web Designer</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    });
+
+    function getInitials(name) {
+        return name
+            .split(' ')
+            .map(word => word[0])
+            .join('')
+            .toUpperCase();
+    }
+</script>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <img src="C:\Users\HP Pavilion\Downloads\M1-proj-logo-trans.png" alt="SkillSwap Logo" class="logo" style="max-height: 70px; width: auto;">
+
+            <div class="nav-links">
+                
+                <a href="#">Marketplace</a>
+            </div>
+            <div class="auth-buttons">
+                <button class="btn btn-secondary">Login</button>
+                <button class="btn btn-primary">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Swap Skills, Elevate Your Life</h1>
+            <p>Learn, teach, and join the community with Skill Swap. Exchange your expertise with others and grow together.</p>
+            <button class="btn btn-primary">Get Started</button>
+        </div>
+    </section>
+    
+    <!-- Featured Skills -->
+    <section class="featured-skills">
+        <div class="container">
+            <h2 class="section-title">Featured Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-img"><img src="https://miro.medium.com/v2/resize:fit:657/1*MdInuEHHzcTQvjlzs8wpKA.png" alt="Web Development"></div>
+                    <div class="skill-content">
+                        <h3>Web Development</h3>
+                        <p>Learn to build beautiful and functional websites from scratch.</p>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-img">Photography</div>
+                    <div class="skill-content">
+                        <h3>Photography</h3>
+                        <p>Master camera techniques and create stunning visual stories.</p>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-img">Graphic Design</div>
+                    <div class="skill-content">
+                        <h3>Graphic Design</h3>
+                        <p>Create eye-catching visuals and impactful brand elements.</p>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-img">Language Learning</div>
+                    <div class="skill-content">
+                        <h3>Language Learning</h3>
+                        <p>Practice conversation and grammar with native speakers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-icon">1</div>
+                    <h3>Create a Profile</h3>
+                    <p>Sign up and list skills you can teach and want to learn.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">2</div>
+                    <h3>Find Matches</h3>
+                    <p>Browse users who teach what you want to learn.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">3</div>
+                    <h3>Connect</h3>
+                    <p>Arrange skill exchange sessions that work for both of you.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">4</div>
+                    <h3>Grow Together</h3>
+                    <p>Exchange skills and rate your experience afterwards.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Users Say</h2>
+            <div class="testimonial-grid" id="testimonialGrid">
+                <!-- Reviews will be loaded here dynamically -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SkillSwap</h3>
+                    <p>Exchange skills, expand your horizons, and connect with a community of lifelong learners.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">F</a>
+                        <a href="#" class="social-icon">T</a>
+                        <a href="#" class="social-icon">I</a>
+                        <a href="#" class="social-icon">L</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Skill Marketplace</a></li>
+                        <li><a href="#">Community</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li>Email: info@skillswap.com</li>
+                        <li>Phone: (123) 456-7890</li>
+                        <li><a href="#">Support Center</a></li>
+                        <li><a href="#">Feedback</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SkillSwap. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
