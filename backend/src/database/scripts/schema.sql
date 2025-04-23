@@ -1,22 +1,8 @@
-CREATE TABLE Users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    bio TEXT,
-    profile_pic TEXT,  
-    role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('user', 'admin')),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status TEXT DEFAULT 'active'
-);
-
 CREATE TABLE Category (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL UNIQUE,
   profile_pic TEXT
 );
-
 
 CREATE TABLE Skills (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,4 +32,68 @@ CREATE TABLE Review (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+
+CREATE TABLE Users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('user', 'admin')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status TEXT DEFAULT 'active',
+    profile_pic TEXT,  
+    phone TEXT,
+    address TEXT,
+    bio TEXT,
+    linkedin_url TEXT,
+    github_url TEXT,
+    portfolio_url TEXT
+);
+
+CREATE TABLE Education (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    institution TEXT NOT NULL,
+    degree TEXT,
+    field_of_study TEXT,
+    start_year INTEGER,
+    end_year INTEGER,
+    description TEXT,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Experience (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    job_title TEXT NOT NULL,
+    company TEXT NOT NULL,
+    start_date DATE,
+    end_date DATE,
+    description TEXT,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Project (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    link TEXT,
+    start_date DATE,
+    end_date DATE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Certification (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    authority TEXT,
+    license_number TEXT,
+    start_date DATE,
+    end_date DATE,
+    description TEXT,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );

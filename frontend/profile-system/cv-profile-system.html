@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Profile - CV Builder</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="cv-profile-system.css">
+    </head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Professional Profile</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="profile-header">
+            
+            <div class="profile-image">
+                <img src="/api/placeholder/150/150" alt="Profile Picture">
+            </div>
+            <div class="profile-info">
+                <h2 id="userName">Loading...</h2>
+                <p id="userEmail"><i class="fas fa-envelope"></i> Loading...</p>
+                <p id="userPhone"><i class="fas fa-phone"></i> Loading...</p>
+                <p id="userAddress"><i class="fas fa-map-marker-alt"></i> Loading...</p>
+                <div class="social-links">
+                    <a href="#" id="linkedinLink" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" id="githubLink" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="#" id="portfolioLink" target="_blank"><i class="fas fa-globe"></i></a>
+                </div>
+                <!-- Add Edit Profile Button -->
+                <div class="profile-actions">
+                    <button class="btn btn-primary" onclick="generatePDF()">
+                        <i class="fas fa-file-pdf"></i> Generate PDF
+                    </button>
+                    <button class="btn btn-secondary" onclick="sendEmail()">
+                        <i class="fas fa-envelope"></i> Email CV
+                    </button>
+                    <button class="btn btn-warning" id="edit-profile-btn">
+                        <i class="fas fa-user-edit"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="bioSection">
+            <div class="section-title">
+                <i class="fas fa-user"></i>
+                <h3>About Me</h3>
+            </div>
+            <div id="userBio">
+                <div class="empty-state">
+                    <i class="fas fa-user-edit"></i>
+                    <p>No bio information available</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="experienceSection">
+            <div class="section-title">
+                <i class="fas fa-briefcase"></i>
+                <h3>Work Experience</h3>
+            </div>
+            <div id="experienceContainer">
+                <div class="empty-state">
+                    <i class="fas fa-briefcase"></i>
+                    <p>No work experience added yet</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="educationSection">
+            <div class="section-title">
+                <i class="fas fa-graduation-cap"></i>
+                <h3>Education</h3>
+            </div>
+            <div id="educationContainer">
+                <div class="empty-state">
+                    <i class="fas fa-graduation-cap"></i>
+                    <p>No education details added yet</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="projectsSection">
+            <div class="section-title">
+                <i class="fas fa-project-diagram"></i>
+                <h3>Projects</h3>
+            </div>
+            <div id="projectsContainer">
+                <div class="empty-state">
+                    <i class="fas fa-project-diagram"></i>
+                    <p>No projects added yet</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="skillsSection">
+            <div class="section-title">
+                <i class="fas fa-tools"></i>
+                <h3>Skills</h3>
+            </div>
+            <div id="skillsContainer">
+                <div class="empty-state">
+                    <i class="fas fa-tools"></i>
+                    <p>No skills added yet</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="certificationsSection">
+            <div class="section-title">
+                <i class="fas fa-certificate"></i>
+                <h3>Certifications</h3>
+            </div>
+            <div id="certificationsContainer">
+                <div class="empty-state">
+                    <i class="fas fa-certificate"></i>
+                    <p>No certifications added yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CV Builder. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- PDF Modal -->
+    <div id="pdfModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePdfModal()">&times;</span>
+            <h2>CV Preview</h2>
+            <div class="profile-actions" style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="downloadPDF()">
+                    <i class="fas fa-download"></i> Download PDF
+                </button>
+                <button class="btn btn-secondary" onclick="sendEmail()">
+                    <i class="fas fa-envelope"></i> Email CV
+                </button>
+            </div>
+            <div id="pdfPreview"></div>
+        </div>
+    </div>
+    
+    <!-- Hidden PDF template for export -->
+    <div id="pdfTemplate" class="pdf-container">
+        <div class="pdf-header">
+            <h1 id="pdf-name">Full Name</h1>
+            <div class="pdf-contact">
+                <span id="pdf-email">email@example.com</span> | 
+                <span id="pdf-phone">Phone Number</span> | 
+                <span id="pdf-address">Address</span>
+            </div>
+            <div class="pdf-contact" id="pdf-links"></div>
+        </div>
+        
+        <div class="pdf-section" id="pdf-bio-section">
+            <h2>Professional Summary</h2>
+            <div id="pdf-bio"></div>
+        </div>
+        
+        <div class="pdf-section" id="pdf-experience-section">
+            <h2>Work Experience</h2>
+            <div id="pdf-experience"></div>
+        </div>
+        
+        <div class="pdf-section" id="pdf-education-section">
+            <h2>Education</h2>
+            <div id="pdf-education"></div>
+        </div>
+        
+        <div class="pdf-section" id="pdf-projects-section">
+            <h2>Projects</h2>
+            <div id="pdf-projects"></div>
+        </div>
+        
+        <div class="pdf-section" id="pdf-skills-section">
+            <h2>Skills</h2>
+            <div id="pdf-skills"></div>
+        </div>
+        
+        <div class="pdf-section" id="pdf-certifications-section">
+            <h2>Certifications</h2>
+            <div id="pdf-certifications"></div>
+        </div>
+    </div>
+    
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditProfileModal()">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="editProfileForm">
+                <label>Name: <input type="text" id="editName"></label><br><br>
+                <label>Email: <input type="email" id="editEmail"></label><br><br>
+                <label>Phone: <input type="text" id="editPhone"></label><br><br>
+                <label>Address: <input type="text" id="editAddress"></label><br><br>
+                <label>Bio: <textarea id="editBio"></textarea></label><br><br>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+    </div>
+    <script src="cv-profile-system.js"></script>
+
+</body>
+</html>
