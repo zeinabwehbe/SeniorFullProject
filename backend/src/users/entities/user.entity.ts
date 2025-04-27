@@ -37,9 +37,9 @@ export class User extends Model<User> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
-    field: 'name',  // Change from 'username' to 'name' to match schema
+    field: 'name',
   })
-  name: string;  // Change property name to match schema
+  name: string;
 
   @Column({
     type: DataType.STRING,
@@ -54,19 +54,6 @@ export class User extends Model<User> {
   })
   password: string;
 
-  @Column({
-    type: DataType.TEXT,
-    allowNull: true,
-  })
-  bio: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'profile_pic',
-  })
-  profilePic: string;
-
   @Column({ 
     type: DataType.ENUM(...Object.values(UserRole)),
     defaultValue: UserRole.USER,
@@ -77,6 +64,7 @@ export class User extends Model<User> {
   @CreatedAt
   @Column({
     field: 'created_at',
+    defaultValue: DataType.NOW,
   })
   createdAt: string;
 
@@ -93,6 +81,52 @@ export class User extends Model<User> {
   })
   status: string;
 
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    field: 'profile_pic',
+  })
+  profilePic: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  phone: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  address: string;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  bio: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    field: 'linkedin_url',
+  })
+  linkedinUrl: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    field: 'github_url',
+  })
+  githubUrl: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    field: 'portfolio_url',
+  })
+  portfolioUrl: string;
+
   @BeforeCreate
   static async hashPassword(instance: User) {
     if (instance.password) {
@@ -104,19 +138,22 @@ export class User extends Model<User> {
     return bcrypt.compare(password, this.password);
   }
 
-  // convert the model into a UserDto
-  // Update toDto to use 'name' instead of 'username'
   toDto(): UserResponseDto {
     return {
       id: this.id,
-      name: this.name,  // Changed from username to name
+      name: this.name,
       email: this.email,
       bio: this.bio,
       profilePic: this.profilePic,
       role: this.role,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
-      status: this.status
+      status: this.status,
+      phone: this.phone,
+      address: this.address,
+      linkedinUrl: this.linkedinUrl,
+      githubUrl: this.githubUrl,
+      portfolioUrl: this.portfolioUrl,
     };
   }
 }

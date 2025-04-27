@@ -60,19 +60,6 @@
             </div>
         </div>
         
-        <div class="section" id="experienceSection">
-            <div class="section-title">
-                <i class="fas fa-briefcase"></i>
-                <h3>Work Experience</h3>
-            </div>
-            <div id="experienceContainer">
-                <div class="empty-state">
-                    <i class="fas fa-briefcase"></i>
-                    <p>No work experience added yet</p>
-                </div>
-            </div>
-        </div>
-        
         <div class="section" id="educationSection">
             <div class="section-title">
                 <i class="fas fa-graduation-cap"></i>
@@ -85,6 +72,41 @@
                 </div>
             </div>
         </div>
+        
+        <div class="section" id="experienceSection">
+            <div class="section-title" style="display: flex; align-items: center;">
+                <i class="fas fa-briefcase"></i>
+                <h3 style="margin-right: auto;">Work Experience</h3>
+                <button class="btn btn-success" id="addExperienceBtn">
+                    <i class="fas fa-plus"></i> Add Experience
+                </button>
+            </div>
+            <div id="experienceContainer">
+        
+                <div class="empty-state">
+                    <i class="fas fa-briefcase"></i>
+                    <p>No work experience added yet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Experience Modal (for Add/Edit) -->
+        <div id="experienceModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeExperienceModal()">&times;</span>
+                <h2 id="experienceModalTitle">Edit Experience</h2>
+                <form id="experienceForm">
+                    <input type="hidden" id="experienceId">
+                    <label>Job Title: <input type="text" id="experienceJobTitle" required></label><br><br>
+                    <label>Company: <input type="text" id="experienceCompany" required></label><br><br>
+                    <label>Start Date: <input type="month" id="experienceStartDate" required></label><br><br>
+                    <label>End Date: <input type="month" id="experienceEndDate"></label><br><br>
+                    <label>Description: <textarea id="experienceDescription"></textarea></label><br><br>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+        
         
         <div class="section" id="projectsSection">
             <div class="section-title">
@@ -99,18 +121,6 @@
             </div>
         </div>
         
-        <div class="section" id="skillsSection">
-            <div class="section-title">
-                <i class="fas fa-tools"></i>
-                <h3>Skills</h3>
-            </div>
-            <div id="skillsContainer">
-                <div class="empty-state">
-                    <i class="fas fa-tools"></i>
-                    <p>No skills added yet</p>
-                </div>
-            </div>
-        </div>
         
         <div class="section" id="certificationsSection">
             <div class="section-title">
@@ -121,6 +131,18 @@
                 <div class="empty-state">
                     <i class="fas fa-certificate"></i>
                     <p>No certifications added yet</p>
+                </div>
+            </div>
+            <div class="section" id="skillsSection">
+                <div class="section-title">
+                    <i class="fas fa-tools"></i>
+                    <h3>Skills</h3>
+                </div>
+                <div id="skillsContainer">
+                    <div class="empty-state">
+                        <i class="fas fa-tools"></i>
+                        <p>No skills added yet</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -166,30 +188,31 @@
             <div id="pdf-bio"></div>
         </div>
         
-        <div class="pdf-section" id="pdf-experience-section">
-            <h2>Work Experience</h2>
-            <div id="pdf-experience"></div>
-        </div>
-        
         <div class="pdf-section" id="pdf-education-section">
             <h2>Education</h2>
             <div id="pdf-education"></div>
         </div>
         
+        <div class="pdf-section" id="pdf-experience-section">
+            <h2>Work Experience</h2>
+            <div id="pdf-experience"></div>
+        </div>
+
         <div class="pdf-section" id="pdf-projects-section">
             <h2>Projects</h2>
             <div id="pdf-projects"></div>
         </div>
-        
+    
+        <div class="pdf-section" id="pdf-certifications-section">
+            <h2>Certifications</h2>
+            <div id="pdf-certifications"></div>
+            
         <div class="pdf-section" id="pdf-skills-section">
             <h2>Skills</h2>
             <div id="pdf-skills"></div>
         </div>
         
-        <div class="pdf-section" id="pdf-certifications-section">
-            <h2>Certifications</h2>
-            <div id="pdf-certifications"></div>
-        </div>
+
     </div>
     
     <div id="editProfileModal" class="modal">

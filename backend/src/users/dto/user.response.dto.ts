@@ -17,4 +17,9 @@ export class UserResponseDto {
   createdAt: string;
   updatedAt: string;
   status: string;
+  phone?: string;
+  address?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  portfolioUrl?: string;
 }
