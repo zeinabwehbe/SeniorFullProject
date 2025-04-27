@@ -20,7 +20,9 @@
         <div class="profile-header">
             
             <div class="profile-image">
-                <img src="/api/placeholder/150/150" alt="Profile Picture">
+                <img id="profilePic" alt="Profile Picture" onerror="this.onerror=null;this.src='default-profile.png';">
+                <input type="file" id="profilePicInput" accept="image/*" style="margin-top:10px;">
+                <button class="btn btn-info" id="uploadPicBtn" style="margin-top:5px;">Upload Picture</button>
             </div>
             <div class="profile-info">
                 <h2 id="userName">Loading...</h2>
@@ -230,6 +232,88 @@
         </div>
     </div>
     <script src="cv-profile-system.js"></script>
+    <script>
+        // Get JWT token and user info from localStorage (set by auth-system.html)
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+        function getUser() {
+            const user = localStorage.getItem('user');
+            return user ? JSON.parse(user) : null;
+        }
 
+        // Redirect to login if not authenticated
+        const user = getUser();
+        if (!user) {
+            window.location.href = "../auth-system.html";
+        }
+
+        // Use the actual user ID from localStorage
+        const userId = user ? user.user_id : null;
+
+        // Check for token before making requests
+        const token = getToken();
+        console.log(token);
+        if (!token) {
+            alert('Session expired. Please log in again.');
+            window.location.href = "../auth-system.html";
+        }
+
+        // Set profile picture src dynamically
+        if (userId) {
+            const profilePic = document.getElementById('profilePic');
+            profilePic.src = `http://localhost:3000/users/${user.user_id}/profile-picture`;
+            profilePic.onerror = function() {
+                this.onerror = null;
+                this.src = 'default-profile.png';
+            };
+        }
+
+        // Optionally, set user info in the profile
+        if (user) {
+            document.getElementById('userName').textContent = user.name || "No Name";
+            document.getElementById('userEmail').innerHTML = `<i class="fas fa-envelope"></i> ${user.email || "No Email"}`;
+            // Add more fields as needed
+        }
+
+    document.getElementById('uploadPicBtn').addEventListener('click', async function() {
+        const input = document.getElementById('profilePicInput');
+        if (!input.files.length) {
+            alert('Please select an image to upload.');
+            return;
+        }
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // Ensure token is present
+        if (!token) {
+            alert('Session expired. Please log in again.');
+            window.location.href = "../auth-system.html";
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/users/${user.user_id}/profile-picture`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (response.status === 401) {
+                alert('Unauthorized. Please log in again.');
+                return;
+            }
+            if (!response.ok) throw new Error('Upload failed');
+            document.getElementById('profilePic').src = `http://localhost:3000/users/${user.user_id}/profile-picture`;
+            alert('Profile picture updated!');
+        } catch (err) {
+            console.log(err)
+            alert('Failed to upload image.');
+        }
+    });
+
+    </script>
 </body>
 </html>
