@@ -33,7 +33,7 @@ const educationData = [
         start_year: 2011,
         end_year: 2015,
         description: "Graduated with honors. Active member of the ACM chapter and Hackathon club."
-    }
+    },
 ];
 
 const experienceData = [
@@ -48,6 +48,15 @@ const experienceData = [
     },
     {
         id: 2,
+        user_id: 1,
+        job_title: "Full Stack Developer",
+        company: "Digital Solutions LLC",
+        start_date: "2017-06-01",
+        end_date: "2020-02-28",
+        description: "Developed and maintained web applications for clients in finance and healthcare sectors. Implemented responsive designs and RESTful APIs."
+    },
+    {
+        id: 3,
         user_id: 1,
         job_title: "Full Stack Developer",
         company: "Digital Solutions LLC",
@@ -213,6 +222,14 @@ function populateExperience() {
                 <div class="card-subtitle">${exp.company}</div>
                 <div class="card-date">${startDate} - ${endDate}</div>
                 <div class="card-description">${exp.description || ''}</div>
+                <div class="card-actions">
+                    <button class="btn btn-warning" onclick="editExperience(${exp.id})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteExperience(${exp.id})">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
             `;
             
             experienceContainer.appendChild(experienceCard);
@@ -263,34 +280,6 @@ function populateProjects() {
         `;
     }
 }
-
-function populateSkills() {
-    const skillsContainer = document.getElementById('skillsContainer');
-    
-    if (skillsData.length > 0) {
-        skillsContainer.innerHTML = '<div class="skills-container"></div>';
-        const skillsWrapper = skillsContainer.querySelector('.skills-container');
-        
-        skillsData.forEach(skill => {
-            if (skill.approval_status === 'approved') {
-                const skillTag = document.createElement('div');
-                skillTag.className = 'skill-tag';
-                skillTag.textContent = skill.skill_name;
-                skillTag.title = skill.description || '';
-                
-                skillsWrapper.appendChild(skillTag);
-            }
-        });
-    } else {
-        skillsContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-tools"></i>
-                <p>No skills added yet</p>
-            </div>
-        `;
-    }
-}
-
 function populateCertifications() {
     const certificationsContainer = document.getElementById('certificationsContainer');
     
@@ -328,6 +317,34 @@ function populateCertifications() {
         `;
     }
 }
+function populateSkills() {
+    const skillsContainer = document.getElementById('skillsContainer');
+    
+    if (skillsData.length > 0) {
+        skillsContainer.innerHTML = '<div class="skills-container"></div>';
+        const skillsWrapper = skillsContainer.querySelector('.skills-container');
+        
+        skillsData.forEach(skill => {
+            if (skill.approval_status === 'approved') {
+                const skillTag = document.createElement('div');
+                skillTag.className = 'skill-tag';
+                skillTag.textContent = skill.skill_name;
+                skillTag.title = skill.description || '';
+                
+                skillsWrapper.appendChild(skillTag);
+            }
+        });
+    } else {
+        skillsContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-tools"></i>
+                <p>No skills added yet</p>
+            </div>
+        `;
+    }
+}
+
+
 //models to edit
 // Modal logic and editing logic
 document.getElementById('edit-profile-btn').onclick = function() {
@@ -635,11 +652,12 @@ async function initPage() {
         
         // Load all user data
         populateUserInfo();
-        populateEducation();
         populateExperience();
+        populateEducation();
         populateProjects();
-        populateSkills();
         populateCertifications();
+        populateSkills();
+
         
     } catch (error) {
         console.error('Error initializing page:', error);
