@@ -14,8 +14,8 @@ export class UserResponseDto {
   bio?: string;
   profilePic?: string;
   role: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   status: string;
   phone?: string;
   address?: string;

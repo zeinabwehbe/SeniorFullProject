@@ -20,9 +20,9 @@ export enum UserRole {
 }
 // other than this, it is a guest
 
-@Table({ 
-  tableName: 'Users', 
-  timestamps: false,  // Change to false since we're handling timestamps manually
+@Table({
+  tableName: 'Users',
+  timestamps: false, // Change to false since we're handling timestamps manually
   createdAt: 'created_at',
 })
 export class User extends Model<User> {
@@ -54,7 +54,7 @@ export class User extends Model<User> {
   })
   password: string;
 
-  @Column({ 
+  @Column({
     type: DataType.ENUM(...Object.values(UserRole)),
     defaultValue: UserRole.USER,
     allowNull: false,
@@ -66,14 +66,14 @@ export class User extends Model<User> {
     field: 'created_at',
     defaultValue: DataType.NOW,
   })
-  createdAt: string;
+  createdAt: Date;
 
   @UpdatedAt
   @Column({
     field: 'updated_at',
   })
-  updatedAt: string;
-  
+  updatedAt: Date;
+
   @Column({
     type: DataType.STRING,
     defaultValue: 'active',

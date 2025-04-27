@@ -1,4 +1,11 @@
-import { Column, DataType, ForeignKey, Model, Table, BelongsTo } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { Category } from 'src/categories/entities/category.entity';
 
 @Table({ tableName: 'Skills' })
