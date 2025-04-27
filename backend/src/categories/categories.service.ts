@@ -22,7 +22,10 @@ export class CategoriesService {
     return this.categoryModel.findByPk(id);
   }
 
-  async update(id: number, updateCategoryDto: Partial<CreateCategoryDto>): Promise<Category> {
+  async update(
+    id: number,
+    updateCategoryDto: Partial<CreateCategoryDto>,
+  ): Promise<Category> {
     const category = await this.findOne(id);
     return category.update(updateCategoryDto);
   }
@@ -31,4 +34,4 @@ export class CategoriesService {
     const category = await this.findOne(id);
     await category.destroy();
   }
-} 
+}

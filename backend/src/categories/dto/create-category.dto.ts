@@ -12,4 +12,4 @@ export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
   icon: string;
-} 
+}

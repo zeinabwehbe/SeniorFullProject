@@ -23,7 +23,8 @@ export class DatabaseInitService implements OnModuleInit {
    */
   constructor(private readonly configService: ConfigService) {
     // Retrieve the database file name from environment variables or use a default name
-    const sqliteDBFileName = this.configService.get<string>('SQLITE_DB_FILE') || 'database.sqlite';
+    const sqliteDBFileName =
+      this.configService.get<string>('SQLITE_DB_FILE') || 'database.sqlite';
     this.dbPath = path.resolve(__dirname, `../../${sqliteDBFileName}`);
   }
 
@@ -48,20 +49,25 @@ export class DatabaseInitService implements OnModuleInit {
    * @param filePath - Path to the SQL file.
    * @returns A promise that resolves when the SQL file has been executed.
    */
-  private executeSqlFile(db: sqlite3.Database, filePath: string): Promise<void> {
+  private executeSqlFile(
+    db: sqlite3.Database,
+    filePath: string,
+  ): Promise<void> {
     const sql = this.readSqlFile(filePath);
     return new Promise((resolve, reject) => {
-        db.exec(sql, (err) => {
-            if (err) {
-                this.logger.error(`Error executing SQL file ${filePath}: ${err.message}`);
-                reject(err);
-            } else {
-                this.logger.log(`Successfully executed SQL file: ${filePath}`);
-                resolve();
-            }
-        });
+      db.exec(sql, (err) => {
+        if (err) {
+          this.logger.error(
+            `Error executing SQL file ${filePath}: ${err.message}`,
+          );
+          reject(err);
+        } else {
+          this.logger.log(`Successfully executed SQL file: ${filePath}`);
+          resolve();
+        }
+      });
     });
-}
+  }
 
   /**
    * Ensures that the directory for the database file exists.
@@ -88,7 +94,7 @@ export class DatabaseInitService implements OnModuleInit {
 
       // Paths to SQL scripts for schema, triggers, data, and dummy data
       const schemaSqlPath = path.resolve(__dirname, './scripts/schema.sql');
-      
+
       //const triggersSqlPath = path.resolve(__dirname, './scripts/triggers.sql');
       const dataSqlPath = path.resolve(__dirname, './scripts/data.sql');
       const dummySqlPath = path.resolve(__dirname, './scripts/dummy.sql');
@@ -138,43 +144,43 @@ export class DatabaseInitService implements OnModuleInit {
     }
   }
 
-//   /**
-//    * create an admin user on the start of the application for the first time
-//    * todo: temporary
-//    * @param db
-//    * @returns
-//    */
-//   private async createSuperAdminUser(db: sqlite3.Database): Promise<void> {
-//     const adminName = 'Super Admin';
-//     const adminEmail = 'super_admin@example.com';
-//     const adminPassword = '12345678'; // Consider using an environment variable
-//     const adminPhoneNumber = '+1234567890'; // Optional, you can remove if not needed
-//     const hashedPassword = await bcrypt.hash(adminPassword, 10);
+  //   /**
+  //    * create an admin user on the start of the application for the first time
+  //    * todo: temporary
+  //    * @param db
+  //    * @returns
+  //    */
+  //   private async createSuperAdminUser(db: sqlite3.Database): Promise<void> {
+  //     const adminName = 'Super Admin';
+  //     const adminEmail = 'super_admin@example.com';
+  //     const adminPassword = '12345678'; // Consider using an environment variable
+  //     const adminPhoneNumber = '+1234567890'; // Optional, you can remove if not needed
+  //     const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
-//     return new Promise((resolve, reject) => {
-//       db.serialize(() => {
-//         // Insert admin user
-//         const insertAdminSql = `
-//           INSERT OR IGNORE INTO users (name, email, phone_number, password, is_enabled, inserted_by_id, updated_by_id)
-//           VALUES (?, ?, ?, ?, ?, ?, ?)
-//         `;
-//         db.run(
-//           insertAdminSql,
-//           [adminName, adminEmail, adminPhoneNumber, hashedPassword, true, 1, 1],
-//           function (err) {
-//             if (err) {
-//               console.error('Error creating admin user:', err);
-//               return reject(err);
-//             }
+  //     return new Promise((resolve, reject) => {
+  //       db.serialize(() => {
+  //         // Insert admin user
+  //         const insertAdminSql = `
+  //           INSERT OR IGNORE INTO users (name, email, phone_number, password, is_enabled, inserted_by_id, updated_by_id)
+  //           VALUES (?, ?, ?, ?, ?, ?, ?)
+  //         `;
+  //         db.run(
+  //           insertAdminSql,
+  //           [adminName, adminEmail, adminPhoneNumber, hashedPassword, true, 1, 1],
+  //           function (err) {
+  //             if (err) {
+  //               console.error('Error creating admin user:', err);
+  //               return reject(err);
+  //             }
 
-//             const adminid = this.lastID;
-//             console.log(`Admin user created with ID: ${adminid}`);
-//             resolve();
-//           }
-//         );
-//       });
-//     });
-//   }
+  //             const adminid = this.lastID;
+  //             console.log(`Admin user created with ID: ${adminid}`);
+  //             resolve();
+  //           }
+  //         );
+  //       });
+  //     });
+  //   }
 
   /**
    * Lifecycle hook that runs when the module is initialized.

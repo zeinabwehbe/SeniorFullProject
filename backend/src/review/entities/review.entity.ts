@@ -33,7 +33,7 @@ export class Review extends Model<Review> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
-    field: 'user_id',  
+    field: 'user_id',
   })
   userId: number;
 
@@ -71,7 +71,9 @@ export class Review extends Model<Review> {
       comment: this.comment,
       createdAt: this.createdAt,
       userName: this.user ? this.user.name : `User ${this.userId}`,
-      userTitle: this.user ? this.user.bio || 'SkillSwap User' : 'SkillSwap User',
+      userTitle: this.user
+        ? this.user.bio || 'SkillSwap User'
+        : 'SkillSwap User',
     };
   }
 }
