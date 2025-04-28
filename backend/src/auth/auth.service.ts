@@ -30,15 +30,10 @@ export class AuthService {
         statusCode: 401,
       });
     }
-    
+
     const payload = { email: user.email, sub: user.id, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
-      user: {
-        user_id: user.id,
-        email: user.email,
-        role: user.role,
-      },
     };
   }
 }
