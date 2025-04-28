@@ -8,7 +8,10 @@
     :root {
       --primary-color: #6b999d;
       --secondary-color: #dead9c;
+      --primary-color: #6b999d;
+      --secondary-color: #dead9c;
       --light-color: #f8f9fa;
+      --dark-color: #273a3c;
       --dark-color: #273a3c;
       --danger-color: #e63946;
       --success-color: #38b000;
@@ -28,9 +31,14 @@
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
+      background: url('./assets/images/background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
 
     .navbar {
+      padding: 0.75rem 2rem;
       padding: 0.75rem 2rem;
       display: flex;
       justify-content: space-between;
@@ -40,7 +48,12 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       backdrop-filter: blur(80px); /* Glass effect */
       border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
+      background-color: rgba(255, 255, 255, 0.605); /* Semi-transparent white */
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      backdrop-filter: blur(80px); /* Glass effect */
+      border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
     }
+
 
 
     .nav-links {
@@ -91,15 +104,24 @@
       justify-content: center;
       min-height: calc(100vh - 73px);
 
+
     }
 
     .auth-card {
+      background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
       background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       width: 100%;
       max-width: 450px;
+      max-width: 450px;
       padding: 2rem;
+      backdrop-filter: blur(3px); /* Glass effect */
+      border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
+      margin-left: 7rem; /* Add left margin */
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      align-self: flex-start; /* Align to the start of the flex container */
       backdrop-filter: blur(3px); /* Glass effect */
       border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
       margin-left: 7rem; /* Add left margin */
@@ -290,6 +312,7 @@
 <body>
   <nav class="navbar">
     <img src="assets\images\M1-proj-logo-trans.png" alt="SkillSwap Logo" class="logo" style="max-height: 70px; width: auto;">
+    <img src="assets\images\M1-proj-logo-trans.png" alt="SkillSwap Logo" class="logo" style="max-height: 70px; width: auto;">
     <div class="nav-links" id="navLinks">
       <a href="#" class="nav-link active" id="homeLink">Home</a>
       <a href="#" class="nav-link" id="profileLink">Profile</a>
@@ -444,6 +467,7 @@
 
     // API URLs
     const API_URL = 'http://localhost:3000';
+    const API_URL = 'http://localhost:3000';
     const LOGIN_URL = `${API_URL}/auth/login`;
     const SIGNUP_URL = `${API_URL}/users/register`;
     const FORGOT_PASSWORD_URL = `${API_URL}/auth/forgot-password`;
@@ -491,6 +515,7 @@
     // Navigation
     homeLink.addEventListener('click', (e) => {
       e.preventDefault();
+      window.location.href = "./homepage.html";
       window.location.href = "./homepage.html";
     });
 
@@ -620,6 +645,7 @@
     // Helper Functions
     function isAuthenticated() {
       return !!localStorage.getItem('token');
+      return !!localStorage.getItem('token');
     }
 
     function updateAuthUI(isLoggedIn) {
@@ -676,6 +702,7 @@
     function init() {
       const isLoggedIn = isAuthenticated();
       updateAuthUI(isLoggedIn);
+      showPage(isLoggedIn ? 'home' : 'login');
       showPage(isLoggedIn ? 'home' : 'login');
     }
 

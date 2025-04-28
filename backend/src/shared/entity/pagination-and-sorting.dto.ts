@@ -1,5 +1,12 @@
 import { Transform, Type } from 'class-transformer';
-import { IsOptional, IsString, IsInt, Min, IsIn, IsBoolean } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsInt,
+  Min,
+  IsIn,
+  IsBoolean,
+} from 'class-validator';
 
 /**
  * Data Transfer Object (DTO) for pagination and sorting.
@@ -11,7 +18,9 @@ import { IsOptional, IsString, IsInt, Min, IsIn, IsBoolean } from 'class-validat
 export class PaginationAndSortingDto {
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : undefined))
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.trim() : undefined,
+  )
   sort?: string;
 
   @IsOptional()
