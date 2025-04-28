@@ -12,7 +12,9 @@ import configuration from './configuration';
 import { getEnvPath } from './env.helper';
 import { UsersModule } from './users/users.module';
 import { ReviewModule } from './review/review.module';
-
+import { CategoryModule } from './categories/category.module';
+import { SkillsModule } from './skills/skills.module';
+import { UserSkillModule } from './User_Skill/user-skill.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
@@ -54,7 +56,9 @@ const envFilePath: string = getEnvPath(`.`);
     AuthModule,
     UsersModule,
     ReviewModule,
-   
+    CategoryModule,
+    SkillsModule,
+    UserSkillModule,
   ],
   providers: [
     // Logger is used to log messages, errors, and other information throughout the application.

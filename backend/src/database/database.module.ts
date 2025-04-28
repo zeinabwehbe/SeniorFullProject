@@ -8,7 +8,8 @@ import { UsersModule } from 'src/users/users.module';
 import { User } from 'src/users/entities/user.entity';
 import { Review } from 'src/review/entities/review.entity';
 import { Category } from 'src/categories/entities/category.entity';
-
+import { Skill } from 'src/skills/entities/skill.entity';
+import { UserSkill } from 'src/User_Skill/entitiy/user-skill.entity';
 /**
  * The DatabaseModule is responsible for configuring and initializing the database.
  * It sets up the connection to the database using Sequelize and provides necessary services.
@@ -26,7 +27,7 @@ import { Category } from 'src/categories/entities/category.entity';
           dialect: 'sqlite',
           storage: dbPath,
           models: [
-            User , Review , Category 
+            User, Review, Category, Skill, UserSkill
           ],
           synchronize: false,
           
