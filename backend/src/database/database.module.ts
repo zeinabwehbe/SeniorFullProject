@@ -8,6 +8,7 @@ import { UsersModule } from 'src/users/users.module';
 import { User } from 'src/users/entities/user.entity';
 import { Review } from 'src/review/entities/review.entity';
 import { Category } from 'src/categories/entities/category.entity';
+import { UserSkill } from 'src/User_Skill/entitiy/user-skill.entity';
 import { Skill } from 'src/skills/entities/skill.entity';
 
 /**
@@ -27,7 +28,9 @@ import { Skill } from 'src/skills/entities/skill.entity';
         return {
           dialect: 'sqlite',
           storage: dbPath,
-          models: [User, Review, Category, Skill],
+          models: [
+            User, Review, Category, Skill, UserSkill
+          ],
           synchronize: false,
 
           logging: false, // Enable logging for troubleshooting

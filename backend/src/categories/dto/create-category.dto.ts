@@ -1,15 +1,22 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
 
+/**
+ * Data Transfer Object for creating a new category
+ */
 export class CreateCategoryDto {
+  /**
+   * The name of the category
+   * @example "Programming"
+   */
   @IsString()
   @IsNotEmpty()
   name: string;
 
+  /**
+   * The profile picture URL for the category
+   * @example "https://example.com/images/programming.jpg"
+   */
   @IsString()
   @IsNotEmpty()
-  description: string;
-
-  @IsString()
-  @IsNotEmpty()
-  icon: string;
+  profile_pic: string;
 }
