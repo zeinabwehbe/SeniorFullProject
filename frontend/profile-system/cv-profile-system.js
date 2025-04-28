@@ -541,7 +541,7 @@ function generatePDF() {
     preparePdfData();
     
     const pdfTemplate = document.getElementById('pdfTemplate');
-    pdfTemplate.style.display = 'block';
+    pdfTemplate.style.display = 'block'; // Show template for rendering
     
     // Show the PDF in the preview modal
     const modal = document.getElementById('pdfModal');
@@ -554,11 +554,16 @@ function generatePDF() {
     }).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
         pdfPreview.innerHTML = `<img src="${imgData}" style="width: 100%;">`;
-        modal.style.display = 'block';
+        modal.style.display = 'block'; // Display the modal
         
         // Hide the template again
         pdfTemplate.style.display = 'none';
     });
+}
+
+// Function to close the PDF modal
+function closePdfModal() {
+    document.getElementById('pdfModal').style.display = 'none';
 }
 
 function downloadPDF() {

@@ -441,13 +441,10 @@
     const userInfo = document.getElementById('userInfo');
 
     // API URLs
-    const API_URL = 'http://localhost:3000'; // Replace with your actual API URL
+    const API_URL = 'http://localhost:3000';
     const LOGIN_URL = `${API_URL}/auth/login`;
     const SIGNUP_URL = `${API_URL}/users/register`;
     const FORGOT_PASSWORD_URL = `${API_URL}/auth/forgot-password`;
-    // Get user from localStorage for profile endpoint
-    const user = JSON.parse(localStorage.getItem('user'));
-    const USER_PROFILE_URL = user ? `${API_URL}/users/${user.user_id}` : null;
 
     // Hamburger menu toggle
     hamburger.addEventListener('click', () => {
@@ -492,7 +489,7 @@
     // Navigation
     homeLink.addEventListener('click', (e) => {
       e.preventDefault();
-      showPage('home');
+      window.location.href = "./homepage.html";
     });
 
     profileLink.addEventListener('click', (e) => {
@@ -563,14 +560,9 @@
           throw new Error(data.message || 'Login failed');
         }
 
-        // Store token and user info in localStorage
-        localStorage.setItem('token', data.access_token); // <-- changed here
+        localStorage.setItem('token', data.access_token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
-        // Check if token is stored
-        console.log('Stored token:', localStorage.getItem('token'));
-
-        // Redirect to profile system page with token available in localStorage
         window.location.href = "./profile-system/cv-profile-system.html";
       } catch (error) {
         showAlert(loginAlert, error.message);
@@ -593,7 +585,6 @@
           throw new Error(data.message || 'Signup failed');
         }
 
-        // Show success message and switch to login
         loginSwitch.click();
         showAlert(loginAlert, 'Account created successfully! Please login.', 'success');
       } catch (error) {
@@ -617,7 +608,6 @@
           throw new Error(data.message || 'Password reset request failed');
         }
 
-        // Show success message
         forgotAlert.classList.add('hidden');
         forgotSuccess.textContent = 'Password reset link sent to your email!';
         forgotSuccess.classList.remove('hidden');
@@ -627,15 +617,14 @@
     }
 
     async function fetchUserProfile() {
-      if (!isAuthenticated()) {
-        return;
-      }
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) return;
 
       try {
-        const response = await fetch(USER_PROFILE_URL, {
+        const response = await fetch(`${API_URL}/users/${user.user_id}`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${getToken()}`,
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
           },
         });
@@ -646,7 +635,6 @@
           throw new Error(data.message || 'Failed to fetch profile');
         }
 
-        // Display user info
         userInfo.innerHTML = `
           <p><strong>Name:</strong> ${data.name}</p>
           <p><strong>Email:</strong> ${data.email}</p>
@@ -665,12 +653,8 @@
     }
 
     // Helper Functions
-    function getToken() {
-      return localStorage.getItem('token');
-    }
-
     function isAuthenticated() {
-      return !!getToken();
+      return !!localStorage.getItem('token');
     }
 
     function updateAuthUI(isLoggedIn) {
@@ -686,17 +670,14 @@
     }
 
     function showPage(page) {
-      // Hide all content
       authContainer.classList.add('hidden');
       homeContent.classList.add('hidden');
       profileContent.classList.add('hidden');
 
-      // Remove active class from all links
       homeLink.classList.remove('active');
       profileLink.classList.remove('active');
       loginLink.classList.remove('active');
 
-      // Show selected page
       switch (page) {
         case 'home':
           homeContent.classList.remove('hidden');
@@ -728,19 +709,11 @@
 
     // Initialize app
     function init() {
-      // Check if user is authenticated
       const isLoggedIn = isAuthenticated();
       updateAuthUI(isLoggedIn);
-
-      // Show appropriate page
-      if (isLoggedIn) {
-        showPage('home');
-      } else {
-        showPage('login');
-      }
+      showPage(isLoggedIn ? 'home' : 'login');
     }
 
-    // Call init function when DOM is loaded
     document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
