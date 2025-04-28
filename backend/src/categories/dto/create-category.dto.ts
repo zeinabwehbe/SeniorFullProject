@@ -19,6 +19,4 @@ export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
   profile_pic: string;
-
- 
 }
