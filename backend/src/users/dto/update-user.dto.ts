@@ -16,17 +16,47 @@ export class UpdateUserDto {
   @IsOptional()
   @IsNotEmpty()
   password?: string;
-  
+
   @IsString()
   @IsOptional()
   bio?: string;
 
   @IsString()
   @IsOptional()
-  profile_pic?: string;
-  
+  profilePic?: string;
+
   @IsEnum(UserRole)
   @IsOptional()
   @IsNotEmpty()
   role?: UserRole;
+
+  @IsOptional()
+  createdAt?: Date;
+
+  @IsOptional()
+  updatedAt?: Date;
+
+  @IsString()
+  @IsOptional()
+  status?: string;
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @IsString()
+  @IsOptional()
+  address?: string;
+
+  @IsString()
+  @IsOptional()
+  linkedinUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  githubUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  portfolioUrl?: string;
 }

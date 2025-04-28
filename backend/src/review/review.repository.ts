@@ -15,14 +15,19 @@ export class ReviewRepository {
 
   async findAllReview(): Promise<Review[]> {
     return this.reviewModel.findAll({
-      include: [{
-        model: User,
-        attributes: ['id', 'name', 'bio', 'profilePic']
-      }],
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name', 'bio', 'profilePic'],
+        },
+      ],
     });
   }
 
-  async createReview(createReviewDto: CreateReviewDto, transaction?: Transaction): Promise<Review> {
+  async createReview(
+    createReviewDto: CreateReviewDto,
+    transaction?: Transaction,
+  ): Promise<Review> {
     return this.reviewModel.create(createReviewDto, { transaction });
   }
 
@@ -37,7 +42,7 @@ export class ReviewRepository {
     }
     return null;
   }
-  
+
   async deleteReview(id: number): Promise<void> {
     const review = await this.findReviewById(id);
     await review.destroy();

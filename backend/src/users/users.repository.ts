@@ -20,20 +20,26 @@ export class UsersRepository {
     return this.userModel.findAll();
   }
 
-  async insertUser(createUserDto: CreateUserDto, transaction?: Transaction): Promise<User> {
+  async insertUser(
+    createUserDto: CreateUserDto,
+    transaction?: Transaction,
+  ): Promise<User> {
     return this.userModel.create(createUserDto, { transaction });
   }
 
   async findUserById(id: number): Promise<User | null> {
     return await this.userModel.findOne({ where: { id } });
-
   }
 
   async updateUser(user: User, editUserDto: UpdateUserDto): Promise<User> {
     return await user.update(editUserDto);
   }
 
-  async findUsersByPhoneOrEmail(phoneNumber?: string, email?: string, excludeid?: number): Promise<User[]> {
+  async findUsersByPhoneOrEmail(
+    phoneNumber?: string,
+    email?: string,
+    excludeid?: number,
+  ): Promise<User[]> {
     if (!phoneNumber && !email) {
       return [];
     }
