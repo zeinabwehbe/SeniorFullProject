@@ -20,9 +20,9 @@
         <div class="profile-header">
             
             <div class="profile-image">
-                <img id="profilePic" alt="Profile Picture" onerror="this.onerror=null;this.src='default-profile.png';">
-                <input type="file" id="profilePicInput" accept="image/*" style="margin-top:10px;">
-                <button class="btn btn-info" id="uploadPicBtn" style="margin-top:5px;">Upload Picture</button>
+                <img id="profilePic" alt="Profile Picture" onerror="this.onerror=null;this.src='default-profile.png';" title="Profile Picture">
+                <input type="file" id="profilePicInput" accept="image/*" style="margin-top:10px;" title="Upload your profile picture">
+                <button class="btn btn-info" id="uploadPicBtn" style="margin-top:5px;" title="Upload Picture">Upload Picture</button>
             </div>
             <div class="profile-info">
                 <h2 id="userName">Loading...</h2>
@@ -30,19 +30,19 @@
                 <p id="userPhone"><i class="fas fa-phone"></i> Loading...</p>
                 <p id="userAddress"><i class="fas fa-map-marker-alt"></i> Loading...</p>
                 <div class="social-links">
-                    <a href="#" id="linkedinLink" target="_blank"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" id="githubLink" target="_blank"><i class="fab fa-github"></i></a>
-                    <a href="#" id="portfolioLink" target="_blank"><i class="fas fa-globe"></i></a>
+                    <a href="#" id="linkedinLink" target="_blank" title="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" id="githubLink" target="_blank" title="GitHub Profile"><i class="fab fa-github"></i></a>
+                    <a href="#" id="portfolioLink" target="_blank" title="Portfolio Website"><i class="fas fa-globe"></i></a>
                 </div>
                 <!-- Add Edit Profile Button -->
                 <div class="profile-actions">
-                    <button class="btn btn-primary" onclick="generatePDF()">
+                    <button class="btn btn-primary" id="generatePdfBtn" title="Generate PDF">
                         <i class="fas fa-file-pdf"></i> Generate PDF
                     </button>
-                    <button class="btn btn-secondary" onclick="sendEmail()">
+                    <button class="btn btn-secondary" id="emailCvBtn" title="Email CV">
                         <i class="fas fa-envelope"></i> Email CV
                     </button>
-                    <button class="btn btn-warning" id="edit-profile-btn">
+                    <button class="btn btn-warning" id="edit-profile-btn" title="Edit Profile">
                         <i class="fas fa-user-edit"></i> Edit Profile
                     </button>
                 </div>
@@ -313,6 +313,44 @@
             alert('Failed to upload image.');
         }
     });
+
+    // Ensure correct event listeners are set up
+    document.getElementById('generatePdfBtn').addEventListener('click', function() {
+        generatePDF();
+    });
+    
+    document.getElementById('emailCvBtn').addEventListener('click', function() {
+        sendEmail();
+    });
+    
+    document.getElementById('edit-profile-btn').addEventListener('click', function() {
+        const modal = document.getElementById('editProfileModal');
+        modal.style.display = 'block';
+        
+        // Pre-fill form with current user data
+        const user = getUser();
+        if (user) {
+            document.getElementById('editName').value = user.name || '';
+            document.getElementById('editEmail').value = user.email || '';
+            document.getElementById('editBio').value = user.bio || '';
+            document.getElementById('editPhone').value = user.phone || '';
+            document.getElementById('editAddress').value = user.address || '';
+        }
+    });
+    
+    // Function to close edit profile modal
+    function closeEditProfileModal() {
+        const modal = document.getElementById('editProfileModal');
+        modal.style.display = 'none';
+    }
+    
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('editProfileModal');
+        if (event.target == modal) {
+            closeEditProfileModal();
+        }
+    }
 
     </script>
 </body>
