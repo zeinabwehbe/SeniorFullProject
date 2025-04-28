@@ -1,4 +1,11 @@
-import { Column, DataType, ForeignKey, Model, Table, BelongsTo, CreatedAt, UpdatedAt } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+  BelongsTo, CreatedAt, UpdatedAt,
+} from 'sequelize-typescript';
 import { Category } from 'src/categories/entities/category.entity';
 
 export enum ApprovalStatus {

@@ -2,7 +2,7 @@ import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export enum UserRole {
   USER = 'user',
-  ADMIN = 'admin'
+  ADMIN = 'admin',
 }
 export class CreateReviewDto {
   @IsInt()

@@ -21,4 +21,4 @@ export class CreateCategoryDto {
   profile_pic: string;
 
  
-} 
+}

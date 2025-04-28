@@ -8,8 +8,9 @@ import { UsersModule } from 'src/users/users.module';
 import { User } from 'src/users/entities/user.entity';
 import { Review } from 'src/review/entities/review.entity';
 import { Category } from 'src/categories/entities/category.entity';
-import { Skill } from 'src/skills/entities/skill.entity';
 import { UserSkill } from 'src/User_Skill/entitiy/user-skill.entity';
+import { Skill } from 'src/skills/entities/skill.entity';
+
 /**
  * The DatabaseModule is responsible for configuring and initializing the database.
  * It sets up the connection to the database using Sequelize and provides necessary services.
@@ -17,12 +18,13 @@ import { UserSkill } from 'src/User_Skill/entitiy/user-skill.entity';
 @Module({
   imports: [
     // Import the ConfigModule to enable environment variable configuration
-    ConfigModule.forRoot(), 
+    ConfigModule.forRoot(),
     // Configure SequelizeModule asynchronously
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const dbPath = configService.get<string>('SQLITE_DB_FILE') || '.db/database.sqlite3';
+        const dbPath =
+          configService.get<string>('SQLITE_DB_FILE') || '.db/database.sqlite3';
         return {
           dialect: 'sqlite',
           storage: dbPath,
@@ -30,7 +32,7 @@ import { UserSkill } from 'src/User_Skill/entitiy/user-skill.entity';
             User, Review, Category, Skill, UserSkill
           ],
           synchronize: false,
-          
+
           logging: false, // Enable logging for troubleshooting
           retryAttempts: 5, // Increase retry attempts
           retryDelay: 3000, // Set delay between retries (in ms)
