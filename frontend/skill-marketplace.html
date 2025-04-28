@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Swap - Marketplace</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+.footer-custom-bg {
+    background-color: #6b999d;
+  }
+
+.copyright-custom-color {
+    color: #cce4ff;
+}
+</style>
+<body class="bg-gray-100">
+    <header class="bg-white shadow">
+        <div class="container mx-auto px-4 py-6">
+            <nav class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-purple-600">SkillSwap</h1>
+                    <div class="hidden md:flex ml-10 space-x-8">
+                        <a href="#" class="text-gray-500 hover:text-gray-900">Home</a>
+                        <a href="#" class="text-purple-600 font-medium">Marketplace</a>
+                        <a href="#" class="text-gray-500 hover:text-gray-900">About</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-900">Login</button>
+                    <button class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Sign Up</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-8 px-4">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">Skill Exchange Marketplace</h1>
+        
+        <!-- Search and Filter Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
+                <!-- Search Bar -->
+                <div class="relative flex-grow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute left-3 top-3" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                    </svg>
+                    <input 
+                        type="text" 
+                        id="search-input"
+                        placeholder="Search for skills or users..." 
+                        class="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    >
+                </div>
+                
+                <!-- Reset Filters Button -->
+                <button 
+                    id="reset-filters"
+                    class="border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-50"
+                >
+                    Reset Filters
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Category Filter -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Category</label>
+                    <select 
+                        id="category-filter"
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    >
+                        <option value="">All Categories</option>
+                        <option value="Design">Design</option>
+                        <option value="Cooking">Cooking</option>
+                        <option value="Coding">Coding</option>
+                        <option value="Language">Language</option>
+                        <option value="Music">Music</option>
+                        <option value="Photography">Photography</option>
+                    </select>
+                </div>
+                
+                <!-- Proficiency Filter -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Proficiency Level</label>
+                    <select 
+                        id="proficiency-filter"
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    >
+                        <option value="">All Levels</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+                
+                <!-- Availability Filter -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Availability</label>
+                    <select 
+                        id="availability-filter"
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    >
+                        <option value="">Any Availability</option>
+                        <option value="Online">Online</option>
+                        <option value="In-person">In-person</option>
+                        <option value="Both">Both</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Stats -->
+        <div id="results-stats" class="mb-4">
+            <p class="text-gray-600">
+                Showing <span id="results-from">1</span>-<span id="results-to">6</span> of <span id="results-total">8</span> results
+            </p>
+        </div>
+        
+        <!-- Skill Listings -->
+        <div id="skill-listings" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Skill cards will be inserted here dynamically -->
+        </div>
+        
+        <!-- No Results Message (initially hidden) -->
+        <div id="no-results" class="text-center py-12 hidden">
+            <h3 class="text-lg font-medium text-gray-800">No skills match your search criteria</h3>
+            <p class="text-gray-500 mt-2">Try adjusting your filters or search term</p>
+            <button class="mt-4 bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
+                Reset All Filters
+            </button>
+        </div>
+        
+        <!-- Pagination -->
+        <div id="pagination" class="flex justify-center mt-8">
+            <div class="flex gap-1">
+                <button id="prev-page" class="border border-gray-300 px-3 py-1 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Previous
+                </button>
+                
+                <div id="page-numbers" class="flex gap-1">
+                    <!-- Page number buttons will be inserted here dynamically -->
+                </div>
+                
+                <button id="next-page" class="border border-gray-300 px-3 py-1 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-custom-bg text-white py-10 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">SkillSwap</h3>
+                    <p class="text-gray-400 ">Learn, teach, and join the community with Skill Swap.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-purple-400 copyright-custom-color">Home</a></li>
+                        <li><a href="#" class="hover:text-purple-400 copyright-custom-color">Marketplace</a></li>
+                        <li><a href="#" class="hover:text-purple-400 copyright-custom-color">About</a></li>
+                        <li><a href="#" class="hover:text-purple-400 copyright-custom-color">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <p class="text-gray-400 copyright-custom-color">Email: info@skillswap.com</p>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+                <p class="text-white">&copy; 2025 SkillSwap. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Templates for dynamic content -->
+    <template id="skill-card-template">
+        <div class="skill-card bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col">
+            <div class="p-4 border-b">
+                <div class="flex items-center gap-4 mb-2">
+                    <div id="user-photo-container"></div>
+                    <div>
+                        <h3 class="user-name font-semibold"></h3>
+                        <p class="user-bio text-sm text-gray-500"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 flex-grow">
+                <div class="mb-4">
+                    <h3 class="font-medium text-sm text-gray-500">Can Teach:</h3>
+                    <p class="skill-teach font-semibold"></p>
+                </div>
+                <div class="mb-4">
+                    <h3 class="font-medium text-sm text-gray-500">Wants to Learn:</h3>
+                    <p class="skill-learn"></p>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-4">
+                    <span class="skill-category px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800"></span>
+                    <span class="skill-proficiency px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"></span>
+                    <span class="skill-availability px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"></span>
+                </div>
+            </div>
+            <div class="p-4 border-t">
+                <button class="connect-button w-full bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
+                    Connect
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <template id="page-button-template">
+        <button class="page-number border border-gray-300 w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-50"></button>
+    </template>
+
+    <script src="marketplace.js"></script>
+</body>
+</html>
