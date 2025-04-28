@@ -18,7 +18,6 @@ import { UserSkillModule } from './User_Skill/user-skill.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
-
 const envFilePath: string = getEnvPath(`.`);
 
 /**
