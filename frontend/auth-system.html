@@ -312,7 +312,6 @@
 <body>
   <nav class="navbar">
     <img src="assets\images\M1-proj-logo-trans.png" alt="SkillSwap Logo" class="logo" style="max-height: 70px; width: auto;">
-    <img src="assets\images\M1-proj-logo-trans.png" alt="SkillSwap Logo" class="logo" style="max-height: 70px; width: auto;">
     <div class="nav-links" id="navLinks">
       <a href="#" class="nav-link active" id="homeLink">Home</a>
       <a href="#" class="nav-link" id="profileLink">Profile</a>
@@ -467,7 +466,6 @@
 
     // API URLs
     const API_URL = 'http://localhost:3000';
-    const API_URL = 'http://localhost:3000';
     const LOGIN_URL = `${API_URL}/auth/login`;
     const SIGNUP_URL = `${API_URL}/users/register`;
     const FORGOT_PASSWORD_URL = `${API_URL}/auth/forgot-password`;
@@ -515,7 +513,6 @@
     // Navigation
     homeLink.addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.href = "./homepage.html";
       window.location.href = "./homepage.html";
     });
 
@@ -570,6 +567,34 @@
       forgotPassword(email);
     });
 
+    // ... existing code ...
+
+// Authentication Functions
+async function signup(name, email, password) {
+    try {
+        const response = await fetch(SIGNUP_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Signup failed');
+        }
+
+        // Optionally, you can log the user in automatically after signup
+        localStorage.setItem('token', data.access_token);
+        window.location.href = "./profile-system/cv-profile-system.html";
+    } catch (error) {
+        showAlert(signupAlert, error.message);
+    }
+}
+
+// ... existing code ...
     // Authentication Functions
     async function login(email, password) {
         try {
@@ -587,15 +612,8 @@
                 throw new Error(data.message || 'Login failed');
             }
     
+            // Save only the token in local storage
             localStorage.setItem('token', data.access_token);
-    
-            // Decode the JWT to extract user information
-            const decodedToken = jwt_decode(data.access_token);
-            const userInfo = {
-                email: decodedToken.email,
-                role: decodedToken.role
-            };
-            localStorage.setItem('user', JSON.stringify(userInfo));
     
             window.location.href = "./profile-system/cv-profile-system.html";
         } catch (error) {
@@ -607,6 +625,7 @@
         const token = localStorage.getItem('token');
         if (!token) return;
     
+        // Decode the JWT to extract user information
         const decodedToken = jwt_decode(token);
         const userId = decodedToken.sub; // Extract userId from the token
     
@@ -637,7 +656,6 @@
 
     function logout() {
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
       updateAuthUI(false);
       showPage('login');
     }
@@ -700,10 +718,12 @@
 
     // Initialize app
     function init() {
-      const isLoggedIn = isAuthenticated();
-      updateAuthUI(isLoggedIn);
-      showPage(isLoggedIn ? 'home' : 'login');
-      showPage(isLoggedIn ? 'home' : 'login');
+        const isLoggedIn = isAuthenticated();
+        updateAuthUI(isLoggedIn);
+        showPage(isLoggedIn ? 'profile' : 'login'); // Redirect to profile page if logged in
+        if (isLoggedIn) {
+            window.location.href = "./profile-system/cv-profile-system.html"; // Redirect to cv-profile-system.html
+        }
     }
 
     document.addEventListener('DOMContentLoaded', init);
