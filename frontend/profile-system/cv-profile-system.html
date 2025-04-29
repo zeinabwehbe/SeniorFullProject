@@ -13,8 +13,11 @@
 </head>
 <body>
     <header>
-        <div class="container">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
             <h1>Professional Profile</h1>
+            <button class="btn btn-danger" onclick="logout()" title="Logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
     </header>
     
@@ -91,9 +94,9 @@
         <!-- Section 2 / 6 : EDUCATION -->
         <!-- Education Section -->
         <div class="section" id="educationSection">
-            <div class="section-title">
+            <div class="section-title" style="display: flex; align-items: center;">
                 <i class="fas fa-graduation-cap"></i>
-                <h3>Education</h3>
+                <h3 style="margin-right: auto;">Education</h3>
                 <button class="btn btn-success" onclick="openCreateEducationModal()">Add Education</button>
             </div>
             <div id="educationContainer">
