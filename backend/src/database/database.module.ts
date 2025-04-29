@@ -10,6 +10,7 @@ import { Review } from 'src/review/entities/review.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { UserSkill } from 'src/User_Skill/entitiy/user-skill.entity';
 import { Skill } from 'src/skills/entities/skill.entity';
+import { Education } from 'src/education/entities/education.entity';
 
 /**
  * The DatabaseModule is responsible for configuring and initializing the database.
@@ -29,7 +30,7 @@ import { Skill } from 'src/skills/entities/skill.entity';
           dialect: 'sqlite',
           storage: dbPath,
           models: [
-            User, Review, Category, Skill, UserSkill
+            User, Review, Category, Skill, UserSkill, Education
           ],
           synchronize: false,
 
