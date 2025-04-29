@@ -13,6 +13,12 @@ function getToken() {
     return localStorage.getItem('token');
 }
 
+// Function to logout user
+function logout() {
+    localStorage.removeItem('token');
+    window.location.href = "../auth-system.html";
+}
+
 // Decode JWT to get user information
 function getUserFromToken(token) {
     if (!token) return null;
@@ -24,8 +30,7 @@ function getUserFromToken(token) {
         if (decoded.exp && decoded.exp < currentTime) {
             console.error('Token has expired');
             alert('Session expired. Please log in again.');
-            localStorage.removeItem('token');
-            window.location.href = "../auth-system.html";
+            logout();
             return null;
         }
 
@@ -33,8 +38,7 @@ function getUserFromToken(token) {
     } catch (error) {
         console.error('Failed to decode token:', error);
         alert('Invalid session detected. Redirecting to login page.');
-        localStorage.removeItem('token');
-        window.location.href = "../auth-system.html";
+        logout();
         return null;
     }
 }
@@ -288,6 +292,11 @@ function getUserFromToken(token) {
 async function fetchEducation(userId) {
     try {
         const token = getToken();
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        console.log('Fetching education data for user:', userId);
         const response = await fetch(`http://localhost:3000/users/${userId}/education`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -295,12 +304,17 @@ async function fetchEducation(userId) {
         });
         
         if (!response.ok) {
-            throw new Error('Failed to fetch education data');
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Server response:', response.status, errorData);
+            throw new Error(`Failed to fetch education data: ${response.status} ${response.statusText}`);
         }
         
-        return await response.json();
+        const data = await response.json();
+        console.log('Education data fetched successfully:', data);
+        return data;
     } catch (error) {
-        console.error('Error fetching education data:', error);
+        console.error('Error in fetchEducation:', error.message);
+        console.error('Full error:', error);
         return [];
     }
 }
@@ -317,17 +331,19 @@ function populateEducation() {
             const educationCard = document.createElement('div');
             educationCard.className = 'card';
             educationCard.innerHTML = `
-                <div class="card-title">${edu.institution}</div>
-                <div class="card-subtitle">${edu.degree} in ${edu.fieldOfStudy}</div>
-                <div class="card-date">${years}</div>
-                <div class="card-description">${edu.description || ''}</div>
-                <div class="card-actions">
-                    <button class="btn btn-warning" onclick="openEditEducationModal(${edu.id})">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-danger" onclick="deleteEducation(${edu.id})">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
+                <div style="position: relative;">
+                    <div class="card-actions" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
+                        <button class="btn btn-warning" onclick="openEditEducationModal(${edu.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteEducation(${edu.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                    <div class="card-title">${edu.institution}</div>
+                    <div class="card-subtitle">${edu.degree} in ${edu.fieldOfStudy}</div>
+                    <div class="card-date">${years}</div>
+                    <div class="card-description">${edu.description || ''}</div>
                 </div>
             `;
             
@@ -425,11 +441,13 @@ function saveNewEducation() {
         if (!response.ok) throw new Error('Failed to add education');
         return response.json();
     })
-    .then(data => {
-        educationData.push(data);
+    .then(async data => {
+        // Fetch fresh education data instead of manually updating
+        educationData = data;
         populateEducation();
         closeCreateEducationModal();
         alert('Education added successfully!');
+        window.location.reload(); // Refresh the page after user clicks OK on alert
     })
     .catch(error => {
         console.error('Error adding education:', error);
@@ -458,6 +476,7 @@ function closeEditEducationModal() {
     document.getElementById('editEducationModal').style.display = 'none';
 }
 
+
 // Function to save edited education entry
 function saveEditedEducation() {
     const token = getToken();
@@ -482,7 +501,7 @@ function saveEditedEducation() {
         description: document.getElementById('editEducationDescription').value
     };
 
-    fetch(`http://localhost:3000/users/${userId}/education/${educationId}`, {
+    const data = fetch(`http://localhost:3000/users/${userId}/education/${educationId}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -494,14 +513,14 @@ function saveEditedEducation() {
         if (!response.ok) throw new Error('Failed to update education');
         return response.json();
     })
-    .then(data => {
-        const index = educationData.findIndex(edu => edu.id === educationId);
-        if (index !== -1) {
-            educationData[index] = data;
-            populateEducation();
-            closeEditEducationModal();
-            alert('Education updated successfully!');
-        }
+    .then(async data => {
+        // Fetch fresh education data instead of manually updating
+        educationData = data;
+        populateEducation();
+        closeEditEducationModal();
+        alert('Education updated successfully!');
+        window.location.reload(); // Refresh the page after user clicks OK on alert
+
     })
     .catch(error => {
         console.error('Error updating education:', error);
