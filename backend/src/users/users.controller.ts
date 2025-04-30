@@ -46,9 +46,10 @@ export class UsersController {
     return users.map((user) => user.toDto());
   }
 
+  
   @Get(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.USER)
+  //@UseGuards(JwtAuthGuard, RolesGuard)
+  //@//Roles(UserRole.USER)
   async findOne(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<UserResponseDto> {
@@ -76,9 +77,14 @@ export class UsersController {
     if (!user || !user.profilePic) {
       return res.status(404).send('Profile picture not found');
     }
-    // Send the file
+  
+    if (user.profilePic.startsWith('http://') || user.profilePic.startsWith('https://')) {
+      return res.redirect(user.profilePic);
+    }
+  
     return res.sendFile(join(process.cwd(), user.profilePic));
   }
+  
   @Post(':id/profile-picture')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
