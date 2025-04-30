@@ -1,177 +1,321 @@
-// Mock data - will be replaced with API calls
-const userData = {
-    id: 1,
-    name: "zaynab",
-    email: "john.doe@example.com",
-    profile_pic: "Full Stack Developer",
-    status: "active",
-    phone: "+1 (555) 123-4567",
-    address: "123 Tech Street, San Francisco, CA",
-    bio: "Passionate software developer with over 8 years of experience building web applications. Specialized in JavaScript frameworks and API development. Always looking for challenging projects that push the boundaries of what's possible on the web.",
-    linkedin_url: "https://linkedin.com/in/johndoe",
-    github_url: "https://github.com/johndoe",
-    portfolio_url: "https://johndoe.dev"
-};
 
-const educationData = [
-    {
-        id: 1,
-        user_id: 1,
-        institution: "Stanford University",
-        degree: "Master of Science",
-        field_of_study: "Computer Science",
-        start_year: 2015,
-        end_year: 2017,
-        description: "Specialized in Human-Computer Interaction and Machine Learning. Thesis on improving web accessibility through AI."
-    },
-    {
-        id: 2,
-        user_id: 1,
-        institution: "University of California, Berkeley",
-        degree: "Bachelor of Science",
-        field_of_study: "Computer Science",
-        start_year: 2011,
-        end_year: 2015,
-        description: "Graduated with honors. Active member of the ACM chapter and Hackathon club."
-    },
-];
+// Mock data for testing - will be replaced with API data in production
+// let userData = {};
+// let educationData = [];
+// let experienceData = [];
+// let projectData = [];
+// let certificationData = [];
+// let skillsData = [];
 
-const experienceData = [
-    {
-        id: 1,
-        user_id: 1,
-        job_title: "Senior Full Stack Developer",
-        company: "Tech Innovations Inc.",
-        start_date: "2020-03-01",
-        end_date: null,
-        description: "Lead development of the company's flagship product, a SaaS platform for project management. Implemented microservices architecture and mentored junior developers."
-    },
-    {
-        id: 2,
-        user_id: 1,
-        job_title: "Full Stack Developer",
-        company: "Digital Solutions LLC",
-        start_date: "2017-06-01",
-        end_date: "2020-02-28",
-        description: "Developed and maintained web applications for clients in finance and healthcare sectors. Implemented responsive designs and RESTful APIs."
-    },
-    {
-        id: 3,
-        user_id: 1,
-        job_title: "Full Stack Developer",
-        company: "Digital Solutions LLC",
-        start_date: "2017-06-01",
-        end_date: "2020-02-28",
-        description: "Developed and maintained web applications for clients in finance and healthcare sectors. Implemented responsive designs and RESTful APIs."
-    }
-];
+// Authentication functions
+// Get JWT token from localStorage
+function getToken() {
+    return localStorage.getItem('token');
+}
 
-const projectData = [
-    {
-        id: 1,
-        user_id: 1,
-        title: "E-commerce Platform",
-        description: "Built a full-featured e-commerce platform with React, Node.js, and MongoDB. Implemented payment processing, inventory management, and analytics dashboard.",
-        link: "https://github.com/johndoe/ecommerce-platform",
-        start_date: "2022-01-01",
-        end_date: "2022-06-30"
-    },
-    {
-        id: 2,
-        user_id: 1,
-        title: "Task Management App",
-        description: "Developed a mobile-first task management application with real-time collaboration features using Flutter and Firebase.",
-        link: "https://github.com/johndoe/task-manager",
-        start_date: "2021-07-01",
-        end_date: "2021-11-15"
-    }
-];
+// Function to logout user
+function logout() {
+    localStorage.removeItem('token');
+    window.location.href = "../auth-system.html";
+}
 
-const skillsData = [
-    { id: 1, categoryId: 1, skill_name: "JavaScript", description: "Expert level", approval_status: "approved" },
-    { id: 2, categoryId: 1, skill_name: "React", description: "Advanced", approval_status: "approved" },
-    { id: 3, categoryId: 1, skill_name: "Node.js", description: "Advanced", approval_status: "approved" },
-    { id: 4, categoryId: 2, skill_name: "MongoDB", description: "Intermediate", approval_status: "approved" },
-    { id: 5, categoryId: 2, skill_name: "PostgreSQL", description: "Advanced", approval_status: "approved" },
-    { id: 6, categoryId: 3, skill_name: "Docker", description: "Intermediate", approval_status: "approved" },
-    { id: 7, categoryId: 3, skill_name: "AWS", description: "Intermediate", approval_status: "approved" },
-    { id: 8, categoryId: 4, skill_name: "UI/UX Design", description: "Intermediate", approval_status: "approved" }
-];
+// Decode JWT to get user information
+function getUserFromToken(token) {
+    if (!token) return null;
+    try {
+        const decoded = jwt_decode(token);
+        
+        // Check if the token is expired
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (decoded.exp && decoded.exp < currentTime) {
+            console.error('Token has expired');
+            alert('Session expired. Please log in again.');
+            logout();
+            return null;
+        }
 
-const certificationData = [
-    {
-        id: 1,
-        user_id: 1,
-        name: "AWS Certified Solutions Architect",
-        authority: "Amazon Web Services",
-        license_number: "AWS-SAA-12345",
-        start_date: "2021-05-01",
-        end_date: "2024-05-01",
-        description: "Professional level certification for designing distributed applications on AWS."
-    },
-    {
-        id: 2,
-        user_id: 1,
-        name: "Certified Scrum Master",
-        authority: "Scrum Alliance",
-        license_number: "CSM-98765",
-        start_date: "2020-03-15",
-        end_date: "2022-03-15",
-        description: "Certification in Agile project management methodologies."
+        return decoded;
+    } catch (error) {
+        console.error('Failed to decode token:', error);
+        alert('Invalid session detected. Redirecting to login page.');
+        logout();
+        return null;
     }
-];
+}
 
-// DOM manipulation functions to populate the UI
-function populateUserInfo() {
-    document.getElementById('userName').textContent = userData.name || 'Name Not Available';
-   // document.getElementById('userProfile').textContent = ;
-    document.getElementById('userEmail').innerHTML = userData.email ? 
-        `<i class="fas fa-envelope"></i> ${userData.email}` : 
-        `<i class="fas fa-envelope"></i> Email Not Available`;
-    document.getElementById('userPhone').innerHTML = userData.phone ? 
-        `<i class="fas fa-phone"></i> ${userData.phone}` : 
-        `<i class="fas fa-phone"></i> Phone Not Available`;
-    document.getElementById('userAddress').innerHTML = userData.address ? 
-        `<i class="fas fa-map-marker-alt"></i> ${userData.address}` : 
-        `<i class="fas fa-map-marker-alt"></i> Address Not Available`;
-    
-    // Social links
-    const linkedinLink = document.getElementById('linkedinLink');
-    const githubLink = document.getElementById('githubLink');
-    const portfolioLink = document.getElementById('portfolioLink');
-    
-    if (userData.linkedin_url) {
-        linkedinLink.href = userData.linkedin_url;
-        linkedinLink.style.display = 'flex';
-    } else {
-        linkedinLink.style.display = 'none';
+// <!-- Section 1 / 6 : PROFILE -->
+    async function fetchUserData(userId) {
+        try {
+            const token = getToken();
+            console.log('you are in users data:', userId)
+            const response = await fetch(`http://localhost:3000/users/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            return null;
+        }
     }
-    
-    if (userData.github_url) {
-        githubLink.href = userData.github_url;
-        githubLink.style.display = 'flex';
-    } else {
-        githubLink.style.display = 'none';
+    // DOM manipulation functions to populate the UI
+    function populateUserInfo() {
+        // Set profile picture
+        const profilePic = document.getElementById('profilePic');
+        profilePic.src = `http://localhost:3000/users/${userData.id}/profile-picture`;
+        profilePic.onerror = function() {
+            this.onerror = null;
+            this.src = 'default-profile.png';
+        };
+
+        document.getElementById('userName').textContent = userData.name || 'Name Not Available';
+        document.getElementById('userEmail').innerHTML = userData.email ? 
+            `<i class="fas fa-envelope"></i> ${userData.email}` : 
+            `<i class="fas fa-envelope"></i> Email Not Available`;
+        document.getElementById('userPhone').innerHTML = userData.phone ? 
+            `<i class="fas fa-phone"></i> ${userData.phone}` : 
+            `<i class="fas fa-phone"></i> Phone Not Available`;
+        document.getElementById('userAddress').innerHTML = userData.address ? 
+            `<i class="fas fa-map-marker-alt"></i> ${userData.address}` : 
+            `<i class="fas fa-map-marker-alt"></i> Address Not Available`;
+        
+        // Social links
+        const linkedinLink = document.getElementById('linkedinLink');
+        const githubLink = document.getElementById('githubLink');
+        const portfolioLink = document.getElementById('portfolioLink');
+        
+        if (userData.linkedin_url) {
+            linkedinLink.href = userData.linkedin_url;
+            linkedinLink.style.display = 'inline-block';
+        } else {
+            linkedinLink.style.display = 'none';
+        }
+        
+        if (userData.github_url) {
+            githubLink.href = userData.github_url;
+            githubLink.style.display = 'inline-block';
+        } else {
+            githubLink.style.display = 'none';
+        }
+        
+        if (userData.portfolio_url) {
+            portfolioLink.href = userData.portfolio_url;
+            portfolioLink.style.display = 'inline-block';
+        } else {
+            portfolioLink.style.display = 'none';
+        }
+        
+        // Bio
+        const bioContainer = document.getElementById('userBio');
+        if (userData.bio) {
+            bioContainer.innerHTML = `<p>${userData.bio}</p>`;
+        } else {
+            bioContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-edit"></i>
+                    <p>No bio information available</p>
+                </div>
+            `;
+        }
     }
-    
-    if (userData.portfolio_url) {
-        portfolioLink.href = userData.portfolio_url;
-        portfolioLink.style.display = 'flex';
-    } else {
-        portfolioLink.style.display = 'none';
+
+    // Initialize user data
+    function initializeUserData() {
+        const token = getToken();
+        if (!token) {
+            alert('Session expired. Please log in again.');
+            window.location.href = "../auth-system.html";
+            return null;
+        }
+        
+        const user = getUserFromToken(token);
+        if (!user) return null;
+        
+        // Set profile data
+        const userId = user.sub;
+        
+        // Set profile picture
+        const profilePic = document.getElementById('profilePic');
+        profilePic.src = `http://localhost:3000/users/${userId}/profile-picture`;
+        profilePic.onerror = function() {
+            this.onerror = null;
+            this.src = 'default-profile.png';
+        };
+        
+        // Set user info
+        document.getElementById('userName').textContent = user.name || "No Name";
+        document.getElementById('userEmail').innerHTML = `<i class="fas fa-envelope"></i> ${user.email || "No Email"}`;
+        document.getElementById('userPhone').innerHTML = `<i class="fas fa-phone"></i> ${user.phone || "No Phone"}`;
+        document.getElementById('userAddress').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${user.address || "No Address"}`;
+        
+        // Set social links
+        if (user.linkedinUrl) {
+            document.getElementById('linkedinLink').href = user.linkedinUrl;
+        }
+        if (user.githubUrl) {
+            document.getElementById('githubLink').href = user.githubUrl;
+        }
+        if (user.portfolioUrl) {
+            document.getElementById('portfolioLink').href = user.portfolioUrl;
+        }
+        
+        // Set bio if available
+        if (user.bio) {
+            document.getElementById('userBio').innerHTML = `<p>${user.bio}</p>`;
+        }
+        
+        return user;
     }
-    
-    // Bio
-    const bioContainer = document.getElementById('userBio');
-    if (userData.bio) {
-        bioContainer.innerHTML = `<p>${userData.bio}</p>`;
-    } else {
-        bioContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-user-edit"></i>
-                <p>No bio information available</p>
-            </div>
-        `;
+
+    document.getElementById('uploadPicBtn').addEventListener('click', async function() {
+        const input = document.getElementById('profilePicInput');
+        if (!input.files.length) {
+            alert('Please select an image to upload.');
+            return;
+        }
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const token = getToken();
+        if (!token) {
+            alert('Session expired. Please log in again.');
+            window.location.href = "../auth-system.html";
+            return;
+        }
+
+        const user = getUserFromToken(token);
+        if (!user) return;
+
+        try {
+            const response = await fetch(`http://localhost:3000/users/${user.sub}/profile-picture`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (response.status === 401) {
+                alert('Unauthorized. Please log in again.');
+                return;
+            }
+            if (!response.ok) throw new Error('Upload failed');
+            document.getElementById('profilePic').src = `http://localhost:3000/users/${user.sub}/profile-picture`;
+            alert('Profile picture updated!');
+        } catch (err) {
+            console.log(err);
+            alert('Failed to upload image.');
+        }
+    });
+
+    // Function to open the Edit Profile Modal
+    function openEditProfileModal() {
+        const modal = document.getElementById('editProfileModal');
+        
+        // Pre-fill form with current user data
+        document.getElementById('editName').value = userData.name || '';
+        document.getElementById('editEmail').value = userData.email || '';
+        document.getElementById('editPhone').value = userData.phone || '';
+        document.getElementById('editAddress').value = userData.address || '';
+        document.getElementById('editBio').value = userData.bio || '';
+        document.getElementById('editLinkedinUrl').value = userData.linkedin_url || '';
+        document.getElementById('editGithubUrl').value = userData.github_url || '';
+        document.getElementById('editPortfolioUrl').value = userData.portfolio_url || '';
+        
+        modal.style.display = 'block';
+    }
+
+    // Function to close the Edit Profile Modal
+    function closeEditProfileModal() {
+        document.getElementById('editProfileModal').style.display = 'none';
+    }
+
+    function saveProfileChanges(event) {
+        event.preventDefault();
+        
+        const token = getToken();
+        if (!token) {
+            alert('Session expired. Please log in again.');
+            window.location.href = "../auth-system.html";
+            return;
+        }
+        
+        const user = getUserFromToken(token);
+        if (!user) return;
+        
+        const userId = user.sub;
+        
+        const formData = {
+            name: document.getElementById('editName').value,
+            email: document.getElementById('editEmail').value,
+            phone: document.getElementById('editPhone').value,
+            address: document.getElementById('editAddress').value,
+            bio: document.getElementById('editBio').value,
+            linkedin_url: document.getElementById('editLinkedinUrl').value,
+            github_url: document.getElementById('editGithubUrl').value,
+            portfolio_url: document.getElementById('editPortfolioUrl').value
+        };
+        
+        fetch(`http://localhost:3000/users/${userId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to update profile');
+            return response.json();
+        })
+        .then(data => {
+            // Update local data and refresh UI
+            userData = data;
+            populateUserInfo();
+            closeEditProfileModal();
+            alert('Profile updated successfully!');
+        })
+        .catch(error => {
+            console.error('Error updating profile:', error);
+            alert('Failed to update profile. Please try again.');
+        });
+    }
+
+
+// API functions
+async function fetchEducation(userId) {
+    try {
+        const token = getToken();
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        console.log('Fetching education data for user:', userId);
+        const response = await fetch(`http://localhost:3000/users/${userId}/education`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Server response:', response.status, errorData);
+            throw new Error(`Failed to fetch education data: ${response.status} ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Education data fetched successfully:', data);
+        return data;
+    } catch (error) {
+        console.error('Error in fetchEducation:', error.message);
+        console.error('Full error:', error);
+        return [];
     }
 }
 
@@ -182,15 +326,25 @@ function populateEducation() {
         educationContainer.innerHTML = '';
         
         educationData.forEach(edu => {
-            const years = `${edu.start_year} - ${edu.end_year || 'Present'}`;
+            const years = `${edu.startYear} - ${edu.endYear || 'Present'}`;
             
             const educationCard = document.createElement('div');
             educationCard.className = 'card';
             educationCard.innerHTML = `
-                <div class="card-title">${edu.institution}</div>
-                <div class="card-subtitle">${edu.degree} in ${edu.field_of_study}</div>
-                <div class="card-date">${years}</div>
-                <div class="card-description">${edu.description || ''}</div>
+                <div style="position: relative;">
+                    <div class="card-actions" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
+                        <button class="btn btn-warning" onclick="openEditEducationModal(${edu.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteEducation(${edu.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                    <div class="card-title">${edu.institution}</div>
+                    <div class="card-subtitle">${edu.degree} in ${edu.fieldOfStudy}</div>
+                    <div class="card-date">${years}</div>
+                    <div class="card-description">${edu.description || ''}</div>
+                </div>
             `;
             
             educationContainer.appendChild(educationCard);
@@ -204,6 +358,258 @@ function populateEducation() {
         `;
     }
 }
+
+// Add this new function for deleting education records
+function deleteEducation(educationId) {
+    if (!confirm('Are you sure you want to delete this education record?')) {
+        return;
+    }
+
+    const token = getToken();
+    if (!token) {
+        alert('Session expired. Please log in again.');
+        window.location.href = "../auth-system.html";
+        return;
+    }
+
+    const user = getUserFromToken(token);
+    if (!user) return;
+
+    const userId = user.sub;
+
+    fetch(`http://localhost:3000/users/${userId}/education/${educationId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to delete education');
+        // Remove the education from local data
+        educationData = educationData.filter(edu => edu.id !== educationId);
+        populateEducation();
+        alert('Education record deleted successfully!');
+    })
+    .catch(error => {
+        console.error('Error deleting education:', error);
+        alert('Failed to delete education record. Please try again.');
+    });
+}
+
+// Function to open the Create Education Modal
+function openCreateEducationModal() {
+    document.getElementById('createEducationModal').style.display = 'block';
+}
+
+// Function to close the Create Education Modal
+function closeCreateEducationModal() {
+    document.getElementById('createEducationModal').style.display = 'none';
+}
+
+// Function to save new education entry
+function saveNewEducation() {
+    const token = getToken();
+    if (!token) {
+        alert('Session expired. Please log in again.');
+        window.location.href = "../auth-system.html";
+        return;
+    }
+
+    const user = getUserFromToken(token);
+    if (!user) return;
+
+    const userId = user.sub;
+
+    const formData = {
+        degree: document.getElementById('degree').value,
+        fieldOfStudy: document.getElementById('fieldOfStudy').value,
+        institution: document.getElementById('institution').value,
+        startYear: document.getElementById('startYear').value,
+        endYear: document.getElementById('endYear').value,
+        description: document.getElementById('educationDescription').value
+    };
+
+    fetch(`http://localhost:3000/users/${userId}/education`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to add education');
+        return response.json();
+    })
+    .then(async data => {
+        // Fetch fresh education data instead of manually updating
+        educationData = data;
+        populateEducation();
+        closeCreateEducationModal();
+        alert('Education added successfully!');
+        window.location.reload(); // Refresh the page after user clicks OK on alert
+    })
+    .catch(error => {
+        console.error('Error adding education:', error);
+        alert('Failed to add education. Please try again.');
+    });
+}
+
+// Function to open the Edit Education Modal
+function openEditEducationModal(educationId) {
+    const education = educationData.find(edu => edu.id === educationId);
+    if (!education) return;
+
+    document.getElementById('educationId').value = education.id;
+    document.getElementById('editDegree').value = education.degree;
+    document.getElementById('editFieldOfStudy').value = education.fieldOfStudy;
+    document.getElementById('editInstitution').value = education.institution;
+    document.getElementById('editStartYear').value = education.startYear;
+    document.getElementById('editEndYear').value = education.endYear;
+    document.getElementById('editEducationDescription').value = education.description;
+
+    document.getElementById('editEducationModal').style.display = 'block';
+}
+
+// Function to close the Edit Education Modal
+function closeEditEducationModal() {
+    document.getElementById('editEducationModal').style.display = 'none';
+}
+
+
+// Function to save edited education entry
+function saveEditedEducation() {
+    const token = getToken();
+    if (!token) {
+        alert('Session expired. Please log in again.');
+        window.location.href = "../auth-system.html";
+        return;
+    }
+
+    const user = getUserFromToken(token);
+    if (!user) return;
+
+    const userId = user.sub;
+    const educationId = document.getElementById('educationId').value;
+
+    const formData = {
+        degree: document.getElementById('editDegree').value,
+        fieldOfStudy: document.getElementById('editFieldOfStudy').value,
+        institution: document.getElementById('editInstitution').value,
+        startYear: document.getElementById('editStartYear').value,
+        endYear: document.getElementById('editEndYear').value,
+        description: document.getElementById('editEducationDescription').value
+    };
+
+    const data = fetch(`http://localhost:3000/users/${userId}/education/${educationId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to update education');
+        return response.json();
+    })
+    .then(async data => {
+        // Fetch fresh education data instead of manually updating
+        educationData = data;
+        populateEducation();
+        closeEditEducationModal();
+        alert('Education updated successfully!');
+        window.location.reload(); // Refresh the page after user clicks OK on alert
+
+    })
+    .catch(error => {
+        console.error('Error updating education:', error);
+        alert('Failed to update education. Please try again.');
+    });
+}
+
+async function fetchExperience(userId) {
+    try {
+        const token = getToken();
+        const response = await fetch(`http://localhost:3000/users/${userId}/experience`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch experience data');
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching experience data:', error);
+        return [];
+    }
+}
+
+async function fetchProjects(userId) {
+    try {
+        const token = getToken();
+        const response = await fetch(`http://localhost:3000/users/${userId}/projects`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch project data');
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching project data:', error);
+        return [];
+    }
+}
+
+async function fetchSkills(userId) {
+    try {
+        const token = getToken();
+        const response = await fetch(`http://localhost:3000/users/${userId}/skills`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch skills data');
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching skills data:', error);
+        return [];
+    }
+}
+
+async function fetchCertifications(userId) {
+    try {
+        const token = getToken();
+        const response = await fetch(`http://localhost:3000/users/${userId}/certifications`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch certification data');
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching certification data:', error);
+        return [];
+    }
+}
+
+
+
 
 function populateExperience() {
     const experienceContainer = document.getElementById('experienceContainer');
@@ -266,7 +672,7 @@ function populateProjects() {
                 <div class="card-title">${project.title}</div>
                 ${date ? `<div class="card-date">${date}</div>` : ''}
                 <div class="card-description">${project.description || ''}</div>
-                ${project.link ? `<a href="${project.link}" target="_blank" style="color: var(--primary); display: block; margin-top: 10px;"><i class="fas fa-link"></i> Project Link</a>` : ''}
+                ${project.link ? `<a href="${project.link}" target="_blank" class="link-btn"><i class="fas fa-link"></i> Project Link</a>` : ''}
             `;
             
             projectsContainer.appendChild(projectCard);
@@ -280,6 +686,43 @@ function populateProjects() {
         `;
     }
 }
+
+function populateSkills() {
+    const skillsContainer = document.getElementById('skillsContainer');
+    
+    if (skillsData.length > 0) {
+        const approvedSkills = skillsData.filter(skill => skill.approval_status === 'approved');
+        
+        if (approvedSkills.length > 0) {
+            skillsContainer.innerHTML = '<div class="skills-container"></div>';
+            const skillsWrapper = skillsContainer.querySelector('.skills-container');
+            
+            approvedSkills.forEach(skill => {
+                const skillTag = document.createElement('div');
+                skillTag.className = 'skill-tag';
+                skillTag.textContent = skill.skill_name;
+                skillTag.title = skill.description || '';
+                
+                skillsWrapper.appendChild(skillTag);
+            });
+        } else {
+            skillsContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-tools"></i>
+                    <p>No approved skills yet</p>
+                </div>
+            `;
+        }
+    } else {
+        skillsContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-tools"></i>
+                <p>No skills added yet</p>
+            </div>
+        `;
+    }
+}
+
 function populateCertifications() {
     const certificationsContainer = document.getElementById('certificationsContainer');
     
@@ -302,7 +745,7 @@ function populateCertifications() {
                 <div class="card-title">${cert.name}</div>
                 <div class="card-subtitle">${cert.authority || ''}</div>
                 ${validity ? `<div class="card-date">${validity}</div>` : ''}
-                ${cert.license_number ? `<div style="margin-bottom: 10px;"><strong>License:</strong> ${cert.license_number}</div>` : ''}
+                ${cert.license_number ? `<div class="cert-license"><strong>License:</strong> ${cert.license_number}</div>` : ''}
                 <div class="card-description">${cert.description || ''}</div>
             `;
             
@@ -317,366 +760,44 @@ function populateCertifications() {
         `;
     }
 }
-function populateSkills() {
-    const skillsContainer = document.getElementById('skillsContainer');
-    
-    if (skillsData.length > 0) {
-        skillsContainer.innerHTML = '<div class="skills-container"></div>';
-        const skillsWrapper = skillsContainer.querySelector('.skills-container');
-        
-        skillsData.forEach(skill => {
-            if (skill.approval_status === 'approved') {
-                const skillTag = document.createElement('div');
-                skillTag.className = 'skill-tag';
-                skillTag.textContent = skill.skill_name;
-                skillTag.title = skill.description || '';
-                
-                skillsWrapper.appendChild(skillTag);
-            }
-        });
-    } else {
-        skillsContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-tools"></i>
-                <p>No skills added yet</p>
-            </div>
-        `;
-    }
-}
-
-
-//models to edit
-// Modal logic and editing logic
-document.getElementById('edit-profile-btn').onclick = function() {
-    // Populate modal with current data
-    document.getElementById('editName').value = document.getElementById('userName').textContent;
-   // document.getElementById('editProfilePic').value = ;
-    document.getElementById('editEmail').value = document.getElementById('userEmail').textContent.replace(/^[^@]+@[^@]+\.[^@]+$/, '');
-    document.getElementById('editPhone').value = document.getElementById('userPhone').textContent.replace('Loading...', '');
-    document.getElementById('editAddress').value = document.getElementById('userAddress').textContent.replace('Loading...', '');
-    document.getElementById('editBio').value = document.getElementById('userBio').innerText;
-    document.getElementById('editProfileModal').style.display = 'block';
-};
-function closeEditProfileModal() {
-    document.getElementById('editProfileModal').style.display = 'none';
-}
-document.getElementById('editProfileForm').onsubmit = function(e) {
-    e.preventDefault();
-    document.getElementById('userName').textContent = document.getElementById('editName').value;
-   // document.getElementById('userProfilePic').textContent =;
-    document.getElementById('userEmail').innerHTML = `<i class="fas fa-envelope"></i> ${document.getElementById('editEmail').value}`;
-    document.getElementById('userPhone').innerHTML = `<i class="fas fa-phone"></i> ${document.getElementById('editPhone').value}`;
-    document.getElementById('userAddress').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${document.getElementById('editAddress').value}`;
-    document.getElementById('userBio').innerHTML = `<p>${document.getElementById('editBio').value}</p>`;
-    closeEditProfileModal();
-};
-// Close modal when clicking outside
-window.onclick = function(event) {
-    var modal = document.getElementById('editProfileModal');
-    if (event.target == modal) {
-        closeEditProfileModal();
-    }
-}
-
-// PDF Generation functions
-function formatDate(dateString) {
-    if (!dateString) return 'Present';
-    return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-}
-
-function preparePdfData() {
-    // Populate PDF template with data
-    document.getElementById('pdf-name').textContent = userData.name || 'Name Not Available';
-    document.getElementById('pdf-email').textContent = userData.email || 'Email Not Available';
-    document.getElementById('pdf-phone').textContent = userData.phone || 'Phone Not Available';
-    document.getElementById('pdf-address').textContent = userData.address || 'Address Not Available';
-    
-    // Links
-    let linksHTML = [];
-    if (userData.linkedin_url) linksHTML.push(`LinkedIn: ${userData.linkedin_url}`);
-    if (userData.github_url) linksHTML.push(`GitHub: ${userData.github_url}`);
-    if (userData.portfolio_url) linksHTML.push(`Portfolio: ${userData.portfolio_url}`);
-    document.getElementById('pdf-links').textContent = linksHTML.join(' | ');
-    
-    // Bio
-    const bioSection = document.getElementById('pdf-bio-section');
-    const bioContent = document.getElementById('pdf-bio');
-    if (userData.bio) {
-        bioContent.textContent = userData.bio;
-        bioSection.style.display = 'block';
-    } else {
-        bioSection.style.display = 'none';
-    }
-    
-    // Experience
-    const expSection = document.getElementById('pdf-experience-section');
-    const expContent = document.getElementById('pdf-experience');
-    if (experienceData.length > 0) {
-        expContent.innerHTML = '';
-        experienceData.forEach(exp => {
-            const expItem = document.createElement('div');
-            expItem.className = 'pdf-item';
-            expItem.innerHTML = `
-                <div class="pdf-item-header">
-                    <span>${exp.job_title}, ${exp.company}</span>
-                    <span>${formatDate(exp.start_date)} - ${formatDate(exp.end_date)}</span>
-                </div>
-                <div class="pdf-item-content">${exp.description || ''}</div>
-            `;
-            expContent.appendChild(expItem);
-        });
-        expSection.style.display = 'block';
-    } else {
-        expSection.style.display = 'none';
-    }
-    
-    // Education
-    const eduSection = document.getElementById('pdf-education-section');
-    const eduContent = document.getElementById('pdf-education');
-    if (educationData.length > 0) {
-        eduContent.innerHTML = '';
-        educationData.forEach(edu => {
-            const eduItem = document.createElement('div');
-            eduItem.className = 'pdf-item';
-            eduItem.innerHTML = `
-                <div class="pdf-item-header">
-                    <span>${edu.degree} in ${edu.field_of_study}, ${edu.institution}</span>
-                    <span>${edu.start_year} - ${edu.end_year || 'Present'}</span>
-                </div>
-                <div class="pdf-item-content">${edu.description || ''}</div>
-            `;
-            eduContent.appendChild(eduItem);
-        });
-        eduSection.style.display = 'block';
-    } else {
-        eduSection.style.display = 'none';
-    }
-    
-    // Projects
-    const projSection = document.getElementById('pdf-projects-section');
-    const projContent = document.getElementById('pdf-projects');
-    if (projectData.length > 0) {
-        projContent.innerHTML = '';
-        projectData.forEach(proj => {
-            let dateStr = '';
-            if (proj.start_date) {
-                dateStr = `${formatDate(proj.start_date)} - ${formatDate(proj.end_date)}`;
-            }
-            
-            const projItem = document.createElement('div');
-            projItem.className = 'pdf-item';
-            projItem.innerHTML = `
-                <div class="pdf-item-header">
-                    <span>${proj.title}</span>
-                    ${dateStr ? `<span>${dateStr}</span>` : ''}
-                </div>
-                <div class="pdf-item-content">
-                    ${proj.description || ''}
-                    ${proj.link ? `<br>Link: ${proj.link}` : ''}
-                </div>
-            `;
-            projContent.appendChild(projItem);
-        });
-        projSection.style.display = 'block';
-    } else {
-        projSection.style.display = 'none';
-    }
-    
-    // Skills
-    const skillsSection = document.getElementById('pdf-skills-section');
-    const skillsContent = document.getElementById('pdf-skills');
-    if (skillsData.length > 0) {
-        const approvedSkills = skillsData.filter(skill => skill.approval_status === 'approved');
-        if (approvedSkills.length > 0) {
-            skillsContent.innerHTML = '';
-            const skillsList = document.createElement('div');
-            skillsList.className = 'pdf-skills';
-            
-            approvedSkills.forEach(skill => {
-                skillsList.innerHTML += `<span>${skill.skill_name}${skill.description ? ` (${skill.description})` : ''}</span>`;
-            });
-            
-            skillsContent.appendChild(skillsList);
-            skillsSection.style.display = 'block';
-        } else {
-            skillsSection.style.display = 'none';
-        }
-    } else {
-        skillsSection.style.display = 'none';
-    }
-    
-    // Certifications
-    const certSection = document.getElementById('pdf-certifications-section');
-    const certContent = document.getElementById('pdf-certifications');
-    if (certificationData.length > 0) {
-        certContent.innerHTML = '';
-        certificationData.forEach(cert => {
-            let validityStr = '';
-            if (cert.start_date) {
-                validityStr = `${formatDate(cert.start_date)} - ${formatDate(cert.end_date)}`;
-            }
-            
-            const certItem = document.createElement('div');
-            certItem.className = 'pdf-item';
-            certItem.innerHTML = `
-                <div class="pdf-item-header">
-                    <span>${cert.name}, ${cert.authority}</span>
-                    ${validityStr ? `<span>${validityStr}</span>` : ''}
-                </div>
-                <div class="pdf-item-content">
-                    ${cert.license_number ? `License: ${cert.license_number}<br>` : ''}
-                    ${cert.description || ''}
-                </div>
-            `;
-            certContent.appendChild(certItem);
-        });
-        certSection.style.display = 'block';
-    } else {
-        certSection.style.display = 'none';
-    }
-}
-
-// Generate PDF using jsPDF and html2canvas
-function generatePDF() {
-    preparePdfData();
-    
-    const pdfTemplate = document.getElementById('pdfTemplate');
-    pdfTemplate.style.display = 'block'; // Show template for rendering
-    
-    // Show the PDF in the preview modal
-    const modal = document.getElementById('pdfModal');
-    const pdfPreview = document.getElementById('pdfPreview');
-    
-    html2canvas(pdfTemplate, {
-        scale: 2,
-        useCORS: true,
-        logging: false
-    }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        pdfPreview.innerHTML = `<img src="${imgData}" style="width: 100%;">`;
-        modal.style.display = 'block'; // Display the modal
-        
-        // Hide the template again
-        pdfTemplate.style.display = 'none';
-    });
-}
-
-// Function to close the PDF modal
-function closePdfModal() {
-    document.getElementById('pdfModal').style.display = 'none';
-}
-
-function downloadPDF() {
-    preparePdfData();
-    
-    const pdfTemplate = document.getElementById('pdfTemplate');
-    pdfTemplate.style.display = 'block';
-    
-    html2canvas(pdfTemplate, {
-        scale: 2,
-        useCORS: true,
-        logging: false
-    }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jspdf.jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4'
-        });
-        
-        const imgProps= pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${userData.name.replace(/\s+/g, '_')}_CV.pdf`);
-        
-        // Hide the template again
-        pdfTemplate.style.display = 'none';
-    });
-}
-
-function closePdfModal() {
-    document.getElementById('pdfModal').style.display = 'none';
-}
-
-function sendEmail() {
-    // In a real application, this would send the CV to an email address
-    // For now, we'll just show an alert
-    alert('This feature would send the CV to an email address. Implementation requires backend support.');
-    
-    // In a real implementation, you would:
-    // 1. Generate the PDF on the server or client
-    // 2. Send it via API to the email service
-    // 3. Confirm delivery to the user
-}
-
-// API functions (mock for now)
-async function fetchUserData(userId) {
-    // In a real application, this would be an API call
-    // return await fetch(`/api/users/${userId}`).then(res => res.json());
-    return userData;
-}
-
-async function fetchEducation(userId) {
-    // In a real application, this would be an API call
-    // return await fetch(`/api/users/${userId}/education`).then(res => res.json());
-    return educationData;
-}
-
-async function fetchExperience(userId) {
-    // In a real application, this would be an API call
-    // return await fetch(`/api/users/${userId}/experience`).then(res => res.json());
-    return experienceData;
-}
-
-async function fetchProjects(userId) {
-    // In a real application, this would be an API call
-    // return await fetch(`/api/users/${userId}/projects`).then(res => res.json());
-    return projectData;
-}
-
-async function fetchSkills(userId) {
-    // In a real application, this would be an API call
-    // return await fetch(`/api/users/${userId}/skills`).then(res => res.json());
-    return skillsData;
-}
-
-async function fetchCertifications(userId) {
-    // In a real application, this would be an API call
-    // return await fetch(`/api/users/${userId}/certifications`).then(res => res.json());
-    return certificationData;
-}
 
 // Initialize the page
 async function initPage() {
+    const token = getToken();
+    if (!token) {
+        alert('Session expired. Please log in again.');
+        window.location.href = "../auth-system.html";
+        return;
+    }
+    
+    const user = getUserFromToken(token);
+    console.log(user)
+    if (!user) return;
+    
+    const userId = user.sub;
+    
     try {
-        // In a real application, these would be API calls with the correct user ID
-        // const userId = getCurrentUserId(); // This would come from authentication
-        const userId = 1; // Mock user ID for now
+        // Fetch all user data
+        userData = await fetchUserData(userId) || {};
+        educationData = await fetchEducation(userId) || [];
+        // experienceData = await fetchExperience(userId) || [];
+        // projectData = await fetchProjects(userId) || [];
+        // certificationData = await fetchCertifications(userId) || [];
+        // skillsData = await fetchSkills(userId) || [];
         
-        // Load all user data
+        // Populate the UI with fetched data
         populateUserInfo();
-        populateExperience();
         populateEducation();
-        populateProjects();
-        populateCertifications();
-        populateSkills();
-
-        
+        // populateExperience();
+        // populateProjects();
+        // populateSkills();
+        // populateCertifications();
+    
     } catch (error) {
-        console.error('Error initializing page:', error);
-        alert('There was an error loading your profile. Please try again later.');
+        console.log('Error initializing page:', error);
+        alert('Failed to load data. Please try again.');
     }
 }
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    const modal = document.getElementById('pdfModal');
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-
-// Initialize the page when the DOM is loaded
+// Call initPage when the document is ready
 document.addEventListener('DOMContentLoaded', initPage);

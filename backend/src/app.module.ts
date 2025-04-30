@@ -17,6 +17,7 @@ import { SkillsModule } from './skills/skills.module';
 import { UserSkillModule } from './User_Skill/user-skill.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { EducationModule } from './education/education.module';
 
 const envFilePath: string = getEnvPath(`.`);
 
@@ -58,6 +59,7 @@ const envFilePath: string = getEnvPath(`.`);
     CategoryModule,
     SkillsModule,
     UserSkillModule,
+    EducationModule
   ],
   providers: [
     // Logger is used to log messages, errors, and other information throughout the application.
