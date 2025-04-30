@@ -48,7 +48,6 @@ export class UsersController {
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.USER)
   async findAll(): Promise<UserResponseDto[]> {
     const users = await this.usersService.findAllUsers();
     return users.map((user) => user.toDto());
@@ -56,7 +55,6 @@ export class UsersController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.USER)
   async findOne(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<UserResponseDto> {
@@ -66,7 +64,6 @@ export class UsersController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.USER)
   async updateRole(
     @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,
@@ -112,7 +109,6 @@ export class UsersController {
 
   @Get(':userId/education')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.USER)
   async getUserEducation(
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<EducationResponseDto[]> {
@@ -122,7 +118,6 @@ export class UsersController {
 
   @Post(':userId/education')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.USER)
   async addEducation(
     @Param('userId', ParseIntPipe) userId: number,
     @Body() createEducationDto: CreateEducationDto,
@@ -134,7 +129,6 @@ export class UsersController {
 
   @Patch(':userId/education/:educationId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.USER)
   async updateEducation(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('educationId', ParseIntPipe) educationId: number,
@@ -146,7 +140,6 @@ export class UsersController {
 
   @Delete(':userId/education/:educationId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.USER)
   async deleteEducation(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('educationId', ParseIntPipe) educationId: number,
