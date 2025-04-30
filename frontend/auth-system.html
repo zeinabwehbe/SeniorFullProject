@@ -8,7 +8,10 @@
     :root {
       --primary-color: #6b999d;
       --secondary-color: #dead9c;
+      --primary-color: #6b999d;
+      --secondary-color: #dead9c;
       --light-color: #f8f9fa;
+      --dark-color: #273a3c;
       --dark-color: #273a3c;
       --danger-color: #e63946;
       --success-color: #38b000;
@@ -28,9 +31,14 @@
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
+      background: url('./assets/images/background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
 
     .navbar {
+      padding: 0.75rem 2rem;
       padding: 0.75rem 2rem;
       display: flex;
       justify-content: space-between;
@@ -40,7 +48,12 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       backdrop-filter: blur(80px); /* Glass effect */
       border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
+      background-color: rgba(255, 255, 255, 0.605); /* Semi-transparent white */
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      backdrop-filter: blur(80px); /* Glass effect */
+      border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
     }
+
 
 
     .nav-links {
@@ -91,15 +104,24 @@
       justify-content: center;
       min-height: calc(100vh - 73px);
 
+
     }
 
     .auth-card {
+      background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
       background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       width: 100%;
       max-width: 450px;
+      max-width: 450px;
       padding: 2rem;
+      backdrop-filter: blur(3px); /* Glass effect */
+      border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
+      margin-left: 7rem; /* Add left margin */
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      align-self: flex-start; /* Align to the start of the flex container */
       backdrop-filter: blur(3px); /* Glass effect */
       border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: subtle border */
       margin-left: 7rem; /* Add left margin */
@@ -407,7 +429,9 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
   <script>
+    
     // DOM Elements
     const navLinks = document.getElementById('navLinks');
     const hamburger = document.getElementById('hamburger');
@@ -543,117 +567,102 @@
       forgotPassword(email);
     });
 
+    // ... existing code ...
+
+// Authentication Functions
+async function signup(name, email, password) {
+    try {
+        const response = await fetch(SIGNUP_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Signup failed');
+        }
+
+        // Optionally, you can log the user in automatically after signup
+        localStorage.setItem('token', data.access_token);
+        window.location.href = "./profile-system/cv-profile-system.html";
+    } catch (error) {
+        showAlert(signupAlert, error.message);
+    }
+}
+
+// ... existing code ...
     // Authentication Functions
     async function login(email, password) {
-      try {
-        const response = await fetch(LOGIN_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Login failed');
+        try {
+            const response = await fetch(LOGIN_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.message || 'Login failed');
+            }
+    
+            // Save only the token in local storage
+            localStorage.setItem('token', data.access_token);
+    
+            window.location.href = "./profile-system/cv-profile-system.html";
+        } catch (error) {
+            showAlert(loginAlert, error.message);
         }
-
-        localStorage.setItem('token', data.access_token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-
-        window.location.href = "./profile-system/cv-profile-system.html";
-      } catch (error) {
-        showAlert(loginAlert, error.message);
-      }
     }
-
-    async function signup(name, email, password) {
-      try {
-        const response = await fetch(SIGNUP_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name, email, password }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Signup failed');
-        }
-
-        loginSwitch.click();
-        showAlert(loginAlert, 'Account created successfully! Please login.', 'success');
-      } catch (error) {
-        showAlert(signupAlert, error.message);
-      }
-    }
-
-    async function forgotPassword(email) {
-      try {
-        const response = await fetch(FORGOT_PASSWORD_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Password reset request failed');
-        }
-
-        forgotAlert.classList.add('hidden');
-        forgotSuccess.textContent = 'Password reset link sent to your email!';
-        forgotSuccess.classList.remove('hidden');
-      } catch (error) {
-        showAlert(forgotAlert, error.message);
-      }
-    }
-
+    
     async function fetchUserProfile() {
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (!user) return;
-
-      try {
-        const response = await fetch(`${API_URL}/users/${user.user_id}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to fetch profile');
+        const token = localStorage.getItem('token');
+        if (!token) return;
+    
+        // Decode the JWT to extract user information
+        const decodedToken = jwt_decode(token);
+        const userId = decodedToken.sub; // Extract userId from the token
+    
+        try {
+            const response = await fetch(`${API_URL}/users/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to fetch profile');
+            }
+    
+            userInfo.innerHTML = `
+              <p><strong>Name:</strong> ${data.name}</p>
+              <p><strong>Email:</strong> ${data.email}</p>
+              <p><strong>Role:</strong> ${data.role}</p>
+            `;
+        } catch (error) {
+            userInfo.innerHTML = `<p class="alert alert-danger">Error: ${error.message}</p>`;
         }
-
-        userInfo.innerHTML = `
-          <p><strong>Name:</strong> ${data.name}</p>
-          <p><strong>Email:</strong> ${data.email}</p>
-          <p><strong>Role:</strong> ${data.role}</p>
-        `;
-      } catch (error) {
-        userInfo.innerHTML = `<p class="alert alert-danger">Error: ${error.message}</p>`;
-      }
     }
 
     function logout() {
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
       updateAuthUI(false);
       showPage('login');
     }
 
     // Helper Functions
     function isAuthenticated() {
+      return !!localStorage.getItem('token');
       return !!localStorage.getItem('token');
     }
 
@@ -709,9 +718,12 @@
 
     // Initialize app
     function init() {
-      const isLoggedIn = isAuthenticated();
-      updateAuthUI(isLoggedIn);
-      showPage(isLoggedIn ? 'home' : 'login');
+        const isLoggedIn = isAuthenticated();
+        updateAuthUI(isLoggedIn);
+        showPage(isLoggedIn ? 'profile' : 'login'); // Redirect to profile page if logged in
+        if (isLoggedIn) {
+            window.location.href = "./profile-system/cv-profile-system.html"; // Redirect to cv-profile-system.html
+        }
     }
 
     document.addEventListener('DOMContentLoaded', init);

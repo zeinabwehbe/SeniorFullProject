@@ -7,6 +7,7 @@ import { User } from './entities/user.entity';
 import { UsersController } from './users.controller';
 import { UsersRepository } from './users.repository';
 import { UsersService } from './users.service';
+import { EducationModule } from '../education/education.module'; // Ensure EducationModule is imported
 
 /**
  * The UserModule is a module that handles all operations related to the user entity.
@@ -17,7 +18,7 @@ import { UsersService } from './users.service';
     forwardRef(() => AuthModule),
     HttpModule,
     SequelizeModule.forFeature([User]),
-    //UserRoleModule,
+    EducationModule
   ],
   controllers: [UsersController],
   providers: [UsersRepository, UsersService],
