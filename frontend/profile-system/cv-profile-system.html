@@ -7,18 +7,23 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
     <link rel="stylesheet" href="cv-profile-system.css">
-    </head>
+</head>
 <body>
     <header>
-        <div class="container">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
             <h1>Professional Profile</h1>
+            <button class="btn btn-danger" onclick="logout()" title="Logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
     </header>
     
     <div class="container">
+        <!-- Section 1 / 6 : PROFILE -->
         <div class="profile-header">
-            
             <div class="profile-image">
                 <img id="profilePic" alt="Profile Picture" onerror="this.onerror=null;this.src='default-profile.png';" title="Profile Picture">
                 <input type="file" id="profilePicInput" accept="image/*" style="margin-top:10px;" title="Upload your profile picture">
@@ -34,21 +39,45 @@
                     <a href="#" id="githubLink" target="_blank" title="GitHub Profile"><i class="fab fa-github"></i></a>
                     <a href="#" id="portfolioLink" target="_blank" title="Portfolio Website"><i class="fas fa-globe"></i></a>
                 </div>
-                <!-- Add Edit Profile Button -->
+                <button class="btn btn-warning" id="edit-profile-btn" onclick= openEditProfileModal() title="Edit Profile">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </button>
                 <div class="profile-actions">
-                    <button class="btn btn-primary" id="generatePdfBtn" title="Generate PDF">
+                    <button class="btn btn-primary" id="generatePdfBtn" title="Generate PDF" onclick="generatePDF()">
                         <i class="fas fa-file-pdf"></i> Generate PDF
                     </button>
-                    <button class="btn btn-secondary" id="emailCvBtn" title="Email CV">
+                    <button class="btn btn-secondary" id="emailCvBtn" title="Email CV" onclick="sendEmail()">
                         <i class="fas fa-envelope"></i> Email CV
-                    </button>
-                    <button class="btn btn-warning" id="edit-profile-btn" title="Edit Profile">
-                        <i class="fas fa-user-edit"></i> Edit Profile
                     </button>
                 </div>
             </div>
         </div>
-        
+                <!-- Edit Profile Modal -->
+                <div id="editProfileModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeEditProfileModal()">&times;</span>
+                        <h2>Edit Profile</h2>
+                        <form id="editProfileForm" >
+                            <label for="editName">Name:</label>
+                            <input type="text" id="editName" required><br><br>
+                            <label for="editEmail">Email:</label>
+                            <input type="email" id="editEmail" required><br><br>
+                            <label for="editPhone">Phone:</label>
+                            <input type="text" id="editPhone"><br><br>
+                            <label for="editAddress">Address:</label>
+                            <input type="text" id="editAddress"><br><br>
+                            <label for="editBio">Bio:</label>
+                            <textarea id="editBio"></textarea><br><br>
+                            <label for="editLinkedinUrl">LinkedIn URL:</label>
+                            <input type="url" id="editLinkedinUrl"><br><br>
+                            <label for="editGithubUrl">GitHub URL:</label>
+                            <input type="url" id="editGithubUrl"><br><br>
+                            <label for="editPortfolioUrl">Portfolio URL:</label>
+                            <input type="url" id="editPortfolioUrl"><br><br>
+                            <button type="button" class="btn btn-primary" onclick="saveProfileChanges(event)">Save Changes</button>                        </form>
+                    </div>
+                </div>
+
         <div class="section" id="bioSection">
             <div class="section-title">
                 <i class="fas fa-user"></i>
@@ -62,16 +91,66 @@
             </div>
         </div>
         
+        <!-- Section 2 / 6 : EDUCATION -->
+        <!-- Education Section -->
         <div class="section" id="educationSection">
-            <div class="section-title">
+            <div class="section-title" style="display: flex; align-items: center;">
                 <i class="fas fa-graduation-cap"></i>
-                <h3>Education</h3>
+                <h3 style="margin-right: auto;">Education</h3>
+                <button class="btn btn-success" onclick="openCreateEducationModal()">Add Education</button>
             </div>
             <div id="educationContainer">
                 <div class="empty-state">
                     <i class="fas fa-graduation-cap"></i>
                     <p>No education details added yet</p>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Create Education Modal -->
+        <div id="createEducationModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeCreateEducationModal()">&times;</span>
+                <h2>Add Education</h2>
+                <form id="createEducationForm">
+                    <label for="degree">Degree:</label>
+                    <input type="text" id="degree" required><br><br>
+                    <label for="fieldOfStudy">Field of Study:</label>
+                    <input type="text" id="fieldOfStudy" required><br><br>
+                    <label for="institution">Institution:</label>
+                    <input type="text" id="institution" required><br><br>
+                    <label for="startYear">Start Year:</label>
+                    <input type="number" id="startYear" required><br><br>
+                    <label for="endYear">End Year:</label>
+                    <input type="number" id="endYear"><br><br>
+                    <label for="educationDescription">Description:</label>
+                    <textarea id="educationDescription"></textarea><br><br>
+                    <button type="button" class="btn btn-primary" onclick="saveNewEducation()">Save</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Edit Education Modal -->
+        <div id="editEducationModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeEditEducationModal()">&times;</span>
+                <h2>Edit Education</h2>
+                <form id="editEducationForm">
+                    <input type="hidden" id="educationId">
+                    <label for="editDegree">Degree:</label>
+                    <input type="text" id="editDegree" required><br><br>
+                    <label for="editFieldOfStudy">Field of Study:</label>
+                    <input type="text" id="editFieldOfStudy" required><br><br>
+                    <label for="editInstitution">Institution:</label>
+                    <input type="text" id="editInstitution" required><br><br>
+                    <label for="editStartYear">Start Year:</label>
+                    <input type="number" id="editStartYear" required><br><br>
+                    <label for="editEndYear">End Year:</label>
+                    <input type="number" id="editEndYear"><br><br>
+                    <label for="editEducationDescription">Description:</label>
+                    <textarea id="editEducationDescription"></textarea><br><br>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedEducation()">Save Changes</button>
+                </form>
             </div>
         </div>
         
@@ -84,32 +163,28 @@
                 </button>
             </div>
             <div id="experienceContainer">
-        
                 <div class="empty-state">
                     <i class="fas fa-briefcase"></i>
                     <p>No work experience added yet</p>
                 </div>
             </div>
         </div>
-
-        <!-- Experience Modal (for Add/Edit) -->
-        <div id="experienceModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeExperienceModal()">&times;</span>
-                <h2 id="experienceModalTitle">Edit Experience</h2>
-                <form id="experienceForm">
-                    <input type="hidden" id="experienceId">
-                    <label>Job Title: <input type="text" id="experienceJobTitle" required></label><br><br>
-                    <label>Company: <input type="text" id="experienceCompany" required></label><br><br>
-                    <label>Start Date: <input type="month" id="experienceStartDate" required></label><br><br>
-                    <label>End Date: <input type="month" id="experienceEndDate"></label><br><br>
-                    <label>Description: <textarea id="experienceDescription"></textarea></label><br><br>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </form>
-            </div>
+            <!-- Experience Modal (for Add/Edit) --
+    <div id="experienceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeExperienceModal()">&times;</span>
+            <h2 id="experienceModalTitle">Edit Experience</h2>
+            <form id="experienceForm">
+                <input type="hidden" id="experienceId">
+                <label>Job Title: <input type="text" id="experienceJobTitle" required></label><br><br>
+                <label>Company: <input type="text" id="experienceCompany" required></label><br><br>
+                <label>Start Date: <input type="month" id="experienceStartDate" required></label><br><br>
+                <label>End Date: <input type="month" id="experienceEndDate"></label><br><br>
+                <label>Description: <textarea id="experienceDescription"></textarea></label><br><br>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
         </div>
-        
-        
+    </div> -->
         <div class="section" id="projectsSection">
             <div class="section-title">
                 <i class="fas fa-project-diagram"></i>
@@ -123,7 +198,6 @@
             </div>
         </div>
         
-        
         <div class="section" id="certificationsSection">
             <div class="section-title">
                 <i class="fas fa-certificate"></i>
@@ -135,16 +209,17 @@
                     <p>No certifications added yet</p>
                 </div>
             </div>
-            <div class="section" id="skillsSection">
-                <div class="section-title">
+        </div>
+            
+        <div class="section" id="skillsSection">
+            <div class="section-title">
+                <i class="fas fa-tools"></i>
+                <h3>Skills</h3>
+            </div>
+            <div id="skillsContainer">
+                <div class="empty-state">
                     <i class="fas fa-tools"></i>
-                    <h3>Skills</h3>
-                </div>
-                <div id="skillsContainer">
-                    <div class="empty-state">
-                        <i class="fas fa-tools"></i>
-                        <p>No skills added yet</p>
-                    </div>
+                    <p>No skills added yet</p>
                 </div>
             </div>
         </div>
@@ -172,7 +247,7 @@
             <div id="pdfPreview"></div>
         </div>
     </div>
-    
+ 
     <!-- Hidden PDF template for export -->
     <div id="pdfTemplate" class="pdf-container">
         <div class="pdf-header">
@@ -208,150 +283,17 @@
         <div class="pdf-section" id="pdf-certifications-section">
             <h2>Certifications</h2>
             <div id="pdf-certifications"></div>
-            
+        </div>
+        
         <div class="pdf-section" id="pdf-skills-section">
             <h2>Skills</h2>
             <div id="pdf-skills"></div>
         </div>
-        
+    </div>
 
-    </div>
-    
-    <div id="editProfileModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeEditProfileModal()">&times;</span>
-            <h2>Edit Profile</h2>
-            <form id="editProfileForm">
-                <label>Name: <input type="text" id="editName"></label><br><br>
-                <label>Email: <input type="email" id="editEmail"></label><br><br>
-                <label>Phone: <input type="text" id="editPhone"></label><br><br>
-                <label>Address: <input type="text" id="editAddress"></label><br><br>
-                <label>Bio: <textarea id="editBio"></textarea></label><br><br>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </form>
-        </div>
-    </div>
     <script src="cv-profile-system.js"></script>
-    <script>
-        // Get JWT token and user info from localStorage (set by auth-system.html)
-        function getToken() {
-            return localStorage.getItem('token');
-        }
-        function getUser() {
-            const user = localStorage.getItem('user');
-            return user ? JSON.parse(user) : null;
-        }
+    <script src="pdf-email.js"></script>
 
-        // Redirect to login if not authenticated
-        const user = getUser();
-        if (!user) {
-            window.location.href = "../auth-system.html";
-        }
 
-        // Use the actual user ID from localStorage
-        const userId = user ? user.user_id : null;
-
-        // Check for token before making requests
-        const token = getToken();
-        console.log(token);
-        if (!token) {
-            alert('Session expired. Please log in again.');
-            window.location.href = "../auth-system.html";
-        }
-
-        // Set profile picture src dynamically
-        if (userId) {
-            const profilePic = document.getElementById('profilePic');
-            profilePic.src = `http://localhost:3000/users/${user.user_id}/profile-picture`;
-            profilePic.onerror = function() {
-                this.onerror = null;
-                this.src = 'default-profile.png';
-            };
-        }
-
-        // Optionally, set user info in the profile
-        if (user) {
-            document.getElementById('userName').textContent = user.name || "No Name";
-            document.getElementById('userEmail').innerHTML = `<i class="fas fa-envelope"></i> ${user.email || "No Email"}`;
-            // Add more fields as needed
-        }
-
-    document.getElementById('uploadPicBtn').addEventListener('click', async function() {
-        const input = document.getElementById('profilePicInput');
-        if (!input.files.length) {
-            alert('Please select an image to upload.');
-            return;
-        }
-        const file = input.files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-
-        // Ensure token is present
-        if (!token) {
-            alert('Session expired. Please log in again.');
-            window.location.href = "../auth-system.html";
-            return;
-        }
-
-        try {
-            const response = await fetch(`http://localhost:3000/users/${user.user_id}/profile-picture`, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            if (response.status === 401) {
-                alert('Unauthorized. Please log in again.');
-                return;
-            }
-            if (!response.ok) throw new Error('Upload failed');
-            document.getElementById('profilePic').src = `http://localhost:3000/users/${user.user_id}/profile-picture`;
-            alert('Profile picture updated!');
-        } catch (err) {
-            console.log(err)
-            alert('Failed to upload image.');
-        }
-    });
-
-    // Ensure correct event listeners are set up
-    document.getElementById('generatePdfBtn').addEventListener('click', function() {
-        generatePDF();
-    });
-    
-    document.getElementById('emailCvBtn').addEventListener('click', function() {
-        sendEmail();
-    });
-    
-    document.getElementById('edit-profile-btn').addEventListener('click', function() {
-        const modal = document.getElementById('editProfileModal');
-        modal.style.display = 'block';
-        
-        // Pre-fill form with current user data
-        const user = getUser();
-        if (user) {
-            document.getElementById('editName').value = user.name || '';
-            document.getElementById('editEmail').value = user.email || '';
-            document.getElementById('editBio').value = user.bio || '';
-            document.getElementById('editPhone').value = user.phone || '';
-            document.getElementById('editAddress').value = user.address || '';
-        }
-    });
-    
-    // Function to close edit profile modal
-    function closeEditProfileModal() {
-        const modal = document.getElementById('editProfileModal');
-        modal.style.display = 'none';
-    }
-    
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        const modal = document.getElementById('editProfileModal');
-        if (event.target == modal) {
-            closeEditProfileModal();
-        }
-    }
-
-    </script>
 </body>
 </html>
