@@ -7,7 +7,10 @@ INSERT INTO Users (name, email, password, bio, profile_pic, role) VALUES
 INSERT INTO Users (name, email, password, bio, profile_pic, role) VALUES
 ('Narjess', 'narjess@skillup.com', '123456', 'Web Designer', 'https://cdn-icons-png.flaticon.com/512/4515/4515630.png', 'user'),
 ('Yassine', 'yassine@skillup.com', '123456', 'Web Developer', 'https://static.vecteezy.com/system/resources/previews/000/439/863/large_2x/vector-users-icon.jpg', 'user'),
-('Ayoub', 'ayoub@skillup.com', '123456', 'Graphic Designer', 'https://cdn-icons-png.flaticon.com/512/219/219970.png', 'user');
+('Ayoub', 'ayoub@skillup.com', '123456', 'Graphic Designer', 'https://cdn-icons-png.flaticon.com/512/219/219970.png', 'user'),
+('Zahraa', 'zahraa@gmail.com', '123', 'Cooking Enthusiast', 'https://cdn-icons-png.flaticon.com/512/2922/2922565.png', 'user'),
+('Tariq', 'tariq@skillup.com', '123456', 'Python Developer', 'https://cdn-icons-png.flaticon.com/512/2922/2922688.png', 'user'),
+('Lina', 'lina@skillup.com', '123456', 'Photographer', 'https://cdn-icons-png.flaticon.com/512/2922/2922616.png', 'user');
 
 -- Insert sample Category
 INSERT INTO Category (name, profile_pic, description) VALUES 
@@ -33,7 +36,12 @@ INSERT INTO User_Skills (user_id, skill_id, skill_type, skill_level) VALUES
 (2, 6, 'teach', 'Advanced'),
 (3, 3, 'teach', 'Intermediate'),
 (3, 5, 'teach', 'Beginner'),
-(2, 4, 'teach', 'Advanced');
+(2, 4, 'teach', 'Advanced'),     -- Yassine teaches Videography
+(4, 5, 'learn', 'Intermediate'),   -- Zahraa learning Cooking
+(4, 6, 'learn', 'Beginner'),       -- Zahraa learning Baking
+(5, 2, 'teach', 'Advanced'),       -- Tariq teaches Python
+(6, 3, 'teach', 'Advanced');       -- Lina teaches Photography
+
 
 
 ---Insert Sample app review
