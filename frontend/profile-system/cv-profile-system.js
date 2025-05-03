@@ -1,13 +1,6 @@
 
-// Mock data for testing - will be replaced with API data in production
-// let userData = {};
-// let educationData = [];
-// let experienceData = [];
-// let projectData = [];
-// let certificationData = [];
-// let skillsData = [];
-
-// Authentication functions
+let userId = null;
+let token = null;
 // Get JWT token from localStorage
 function getToken() {
     return localStorage.getItem('token');
@@ -24,30 +17,18 @@ function getUserFromToken(token) {
     if (!token) return null;
     try {
         const decoded = jwt_decode(token);
-        
-        // Check if the token is expired
-        const currentTime = Math.floor(Date.now() / 1000);
-        if (decoded.exp && decoded.exp < currentTime) {
-            console.error('Token has expired');
-            alert('Session expired. Please log in again.');
-            logout();
-            return null;
-        }
-
         return decoded;
     } catch (error) {
         console.error('Failed to decode token:', error);
-        alert('Invalid session detected. Redirecting to login page.');
         logout();
         return null;
     }
 }
 
+
 // <!-- Section 1 / 6 : PROFILE -->
     async function fetchUserData(userId) {
         try {
-            const token = getToken();
-            console.log('you are in users data:', userId)
             const response = await fetch(`http://localhost:3000/users/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -127,19 +108,6 @@ function getUserFromToken(token) {
 
     // Initialize user data
     function initializeUserData() {
-        const token = getToken();
-        if (!token) {
-            alert('Session expired. Please log in again.');
-            window.location.href = "../auth-system.html";
-            return null;
-        }
-        
-        const user = getUserFromToken(token);
-        if (!user) return null;
-        
-        // Set profile data
-        const userId = user.sub;
-        
         // Set profile picture
         const profilePic = document.getElementById('profilePic');
         profilePic.src = `http://localhost:3000/users/${userId}/profile-picture`;
@@ -183,17 +151,8 @@ function getUserFromToken(token) {
         const formData = new FormData();
         formData.append('file', file);
 
-        const token = getToken();
-        if (!token) {
-            alert('Session expired. Please log in again.');
-            window.location.href = "../auth-system.html";
-            return;
-        }
-
-        const user = getUserFromToken(token);
-        if (!user) return;
-
         try {
+            if (!checkAuth()) return;
             const response = await fetch(`http://localhost:3000/users/${user.sub}/profile-picture`, {
                 method: 'POST',
                 body: formData,
@@ -239,17 +198,6 @@ function getUserFromToken(token) {
     function saveProfileChanges(event) {
         event.preventDefault();
         
-        const token = getToken();
-        if (!token) {
-            alert('Session expired. Please log in again.');
-            window.location.href = "../auth-system.html";
-            return;
-        }
-        
-        const user = getUserFromToken(token);
-        if (!user) return;
-        
-        const userId = user.sub;
         
         const formData = {
             name: document.getElementById('editName').value,
@@ -261,7 +209,7 @@ function getUserFromToken(token) {
             github_url: document.getElementById('editGithubUrl').value,
             portfolio_url: document.getElementById('editPortfolioUrl').value
         };
-        
+        if (!checkAuth()) return;
         fetch(`http://localhost:3000/users/${userId}`, {
             method: 'PATCH',
             headers: {
@@ -288,15 +236,10 @@ function getUserFromToken(token) {
     }
 
 
-// API functions
+// <!-- Section 2 / 6 : EDUCATION -->
 async function fetchEducation(userId) {
     try {
-        const token = getToken();
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-
-        console.log('Fetching education data for user:', userId);
+    
         const response = await fetch(`http://localhost:3000/users/${userId}/education`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -365,18 +308,6 @@ function deleteEducation(educationId) {
         return;
     }
 
-    const token = getToken();
-    if (!token) {
-        alert('Session expired. Please log in again.');
-        window.location.href = "../auth-system.html";
-        return;
-    }
-
-    const user = getUserFromToken(token);
-    if (!user) return;
-
-    const userId = user.sub;
-
     fetch(`http://localhost:3000/users/${userId}/education/${educationId}`, {
         method: 'DELETE',
         headers: {
@@ -408,18 +339,6 @@ function closeCreateEducationModal() {
 
 // Function to save new education entry
 function saveNewEducation() {
-    const token = getToken();
-    if (!token) {
-        alert('Session expired. Please log in again.');
-        window.location.href = "../auth-system.html";
-        return;
-    }
-
-    const user = getUserFromToken(token);
-    if (!user) return;
-
-    const userId = user.sub;
-
     const formData = {
         degree: document.getElementById('degree').value,
         fieldOfStudy: document.getElementById('fieldOfStudy').value,
@@ -479,17 +398,7 @@ function closeEditEducationModal() {
 
 // Function to save edited education entry
 function saveEditedEducation() {
-    const token = getToken();
-    if (!token) {
-        alert('Session expired. Please log in again.');
-        window.location.href = "../auth-system.html";
-        return;
-    }
 
-    const user = getUserFromToken(token);
-    if (!user) return;
-
-    const userId = user.sub;
     const educationId = document.getElementById('educationId').value;
 
     const formData = {
@@ -528,9 +437,13 @@ function saveEditedEducation() {
     });
 }
 
+// <!-- Section 3 / 6 : EXPERIENCE -->
+
 async function fetchExperience(userId) {
     try {
-        const token = getToken();
+
+
+        console.log('Fetching experience data for user:', userId);
         const response = await fetch(`http://localhost:3000/users/${userId}/experience`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -538,19 +451,191 @@ async function fetchExperience(userId) {
         });
         
         if (!response.ok) {
-            throw new Error('Failed to fetch experience data');
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Server response:', response.status, errorData);
+            throw new Error(`Failed to fetch experience data: ${response.status} ${response.statusText}`);
         }
         
-        return await response.json();
+        const data = await response.json();
+        console.log('Experience data fetched successfully:', data);
+        return data;
     } catch (error) {
-        console.error('Error fetching experience data:', error);
+        console.error('Error in fetchExperience:', error.message);
+        console.error('Full error:', error);
         return [];
     }
 }
 
+function populateExperience() {
+    const experienceContainer = document.getElementById('experienceContainer');
+    
+    if (experienceData.length > 0) {
+        experienceContainer.innerHTML = '';
+        
+        experienceData.forEach(exp => {
+            const startDate = new Date(exp.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+            const endDate = exp.end_date ? new Date(exp.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Present';
+            
+            const experienceCard = document.createElement('div');
+            experienceCard.className = 'card';
+            experienceCard.innerHTML = `
+            <div style="position: relative;">
+            <div class="card-actions" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
+                <button class="btn btn-warning" onclick="openEditExperienceModal(${exp.id})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-danger" onclick="deleteExperience(${exp.id})">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+                <div class="card-title">${exp.jobTitle}</div>
+                <div class="card-subtitle">${exp.company}</div>
+                <div class="card-date">${startDate} - ${endDate}</div>
+                <div class="card-description">${exp.description || ''}</div>
+
+            </div>
+            `;
+            
+            experienceContainer.appendChild(experienceCard);
+        });
+    } else {
+        experienceContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-briefcase"></i>
+                <p>No work experience added yet</p>
+            </div>
+        `;
+    }
+}
+
+// Function to delete experience
+function deleteExperience(experienceId) {
+    if (!confirm('Are you sure you want to delete this experience record?')) {
+        return;
+    }
+
+    fetch(`http://localhost:3000/users/${userId}/experience/${experienceId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to delete experience');
+        experienceData = experienceData.filter(exp => exp.id !== experienceId);
+        populateExperience();
+        alert('Experience record deleted successfully!');
+    })
+    .catch(error => {
+        console.error('Error deleting experience:', error);
+        alert('Failed to delete experience record. Please try again.');
+    });
+}
+
+// Function to open the Create Experience Modal
+function openCreateExperienceModal() {
+    document.getElementById('createExperienceModal').style.display = 'block';
+}
+
+// Function to close the Create Experience Modal
+function closeCreateExperienceModal() {
+    document.getElementById('createExperienceModal').style.display = 'none';
+}
+
+// Function to save new experience entry
+function saveNewExperience() {
+    const formData = {
+        jobTitle: document.getElementById('jobTitle').value,
+        company: document.getElementById('company').value,
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value || null,
+        description: document.getElementById('experienceDescription').value
+    };
+
+    fetch(`http://localhost:3000/users/${userId}/experience`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to add experience');
+        return response.json();
+    })
+    .then(async data => {
+        experienceData = data;
+        populateExperience();
+        closeCreateExperienceModal();
+        alert('Experience added successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error adding experience:', error);
+        alert('Failed to add experience. Please try again.');
+    });
+}
+
+// Function to open the Edit Experience Modal
+function openEditExperienceModal(experienceId) {
+    const experience = experienceData.find(exp => exp.id === experienceId);
+    if (!experience) return;
+
+    document.getElementById('experienceId').value = experience.id;
+    document.getElementById('editJobTitle').value = experience.jobTitle;
+    document.getElementById('editCompany').value = experience.company;
+    document.getElementById('editStartDate').value = experience.startDate;
+    document.getElementById('editEndDate').value = experience.endDate || '';
+    document.getElementById('editExperienceDescription').value = experience.description || '';
+
+    document.getElementById('editExperienceModal').style.display = 'block';
+}
+
+// Function to close the Edit Experience Modal
+function closeEditExperienceModal() {
+    document.getElementById('editExperienceModal').style.display = 'none';
+}
+
+// Function to save edited experience entry
+function saveEditedExperience() {
+    const experienceId = document.getElementById('experienceId').value;
+
+    const formData = {
+        jobTitle: document.getElementById('editJobTitle').value,
+        company: document.getElementById('editCompany').value,
+        startDate: document.getElementById('editStartDate').value,
+        endDate: document.getElementById('editEndDate').value || null,
+        description: document.getElementById('editExperienceDescription').value
+    };
+
+    const data = fetch(`http://localhost:3000/users/${userId}/experience/${experienceId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to update experience');
+        return response.json();
+    })
+    .then(async data => {
+        experienceData = data;
+        populateExperience();
+        closeEditExperienceModal();
+        alert('Experience updated successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error updating experience:', error);
+        alert('Failed to update experience. Please try again.');
+    });
+}
+
 async function fetchProjects(userId) {
     try {
-        const token = getToken();
         const response = await fetch(`http://localhost:3000/users/${userId}/projects`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -570,7 +655,6 @@ async function fetchProjects(userId) {
 
 async function fetchSkills(userId) {
     try {
-        const token = getToken();
         const response = await fetch(`http://localhost:3000/users/${userId}/skills`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -590,7 +674,6 @@ async function fetchSkills(userId) {
 
 async function fetchCertifications(userId) {
     try {
-        const token = getToken();
         const response = await fetch(`http://localhost:3000/users/${userId}/certifications`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -608,47 +691,6 @@ async function fetchCertifications(userId) {
     }
 }
 
-
-
-
-function populateExperience() {
-    const experienceContainer = document.getElementById('experienceContainer');
-    
-    if (experienceData.length > 0) {
-        experienceContainer.innerHTML = '';
-        
-        experienceData.forEach(exp => {
-            const startDate = new Date(exp.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-            const endDate = exp.end_date ? new Date(exp.end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Present';
-            
-            const experienceCard = document.createElement('div');
-            experienceCard.className = 'card';
-            experienceCard.innerHTML = `
-                <div class="card-title">${exp.job_title}</div>
-                <div class="card-subtitle">${exp.company}</div>
-                <div class="card-date">${startDate} - ${endDate}</div>
-                <div class="card-description">${exp.description || ''}</div>
-                <div class="card-actions">
-                    <button class="btn btn-warning" onclick="editExperience(${exp.id})">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-danger" onclick="deleteExperience(${exp.id})">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </div>
-            `;
-            
-            experienceContainer.appendChild(experienceCard);
-        });
-    } else {
-        experienceContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-briefcase"></i>
-                <p>No work experience added yet</p>
-            </div>
-        `;
-    }
-}
 
 function populateProjects() {
     const projectsContainer = document.getElementById('projectsContainer');
@@ -761,9 +803,11 @@ function populateCertifications() {
     }
 }
 
+
 // Initialize the page
 async function initPage() {
-    const token = getToken();
+    token = getToken();
+    console.log('Token:', token);
     if (!token) {
         alert('Session expired. Please log in again.');
         window.location.href = "../auth-system.html";
@@ -771,16 +815,15 @@ async function initPage() {
     }
     
     const user = getUserFromToken(token);
-    console.log(user)
     if (!user) return;
     
-    const userId = user.sub;
-    
+    userId = user.sub;  // Set global userId
+    console.log('User ID:', userId);
     try {
         // Fetch all user data
         userData = await fetchUserData(userId) || {};
         educationData = await fetchEducation(userId) || [];
-        // experienceData = await fetchExperience(userId) || [];
+        experienceData = await fetchExperience(userId) || [];
         // projectData = await fetchProjects(userId) || [];
         // certificationData = await fetchCertifications(userId) || [];
         // skillsData = await fetchSkills(userId) || [];
@@ -788,16 +831,14 @@ async function initPage() {
         // Populate the UI with fetched data
         populateUserInfo();
         populateEducation();
-        // populateExperience();
-        // populateProjects();
-        // populateSkills();
-        // populateCertifications();
-    
+        populateExperience();
+        // ... rest of the function remains the same
     } catch (error) {
-        console.log('Error initializing page:', error);
+        console.error('Error initializing page:', error);
         alert('Failed to load data. Please try again.');
     }
 }
+
 
 // Call initPage when the document is ready
 document.addEventListener('DOMContentLoaded', initPage);
