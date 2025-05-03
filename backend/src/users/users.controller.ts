@@ -12,10 +12,9 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User, UserRole } from './entities/user.entity';
+import { Req } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../roles/roles.guard';
-import { Roles } from '../roles/roles.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserResponseDto } from './dto/user.response.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -30,6 +29,10 @@ import { EducationService } from '../education/education.service';
 import { CreateEducationDto } from '../education/dto/create-education.dto';
 import { UpdateEducationDto } from '../education/dto/update-education.dto';
 import { EducationResponseDto } from '../education/dto/education.response.dto';
+import { ExperienceService } from '../experience/experience.service';
+import { CreateExperienceDto } from '../experience/dto/create-experience.dto';
+import { UpdateExperienceDto } from '../experience/dto/update-experience.dto';
+import { ExperienceResponseDto } from '../experience/dto/experience.response.dto';
 
 @Controller('users')
 export class UsersController {
@@ -38,6 +41,7 @@ export class UsersController {
   constructor(
     private usersService: UsersService,
     private educationService: EducationService, // Inject EducationService
+    private experienceService: ExperienceService,
   ) {}
 
   @Post('/register')
@@ -145,5 +149,44 @@ export class UsersController {
     @Param('educationId', ParseIntPipe) educationId: number,
   ): Promise<void> {
     await this.educationService.deleteEducation(userId, educationId);
+  }
+
+  @Get(':userId/experience')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async getUserExperience(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<ExperienceResponseDto[]> {
+    const experienceRecords = await this.experienceService.findAllExperienceByUserId(userId);
+    return experienceRecords;
+  }
+
+  @Post(':userId/experience')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async addExperience(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Body() createExperienceDto: CreateExperienceDto,
+  ): Promise<ExperienceResponseDto> {
+    createExperienceDto.userId = userId;
+    const experience = await this.experienceService.create(createExperienceDto);
+    return experience;
+  }
+
+  @Patch(':userId/experience/:experienceId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateExperience(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('experienceId', ParseIntPipe) experienceId: number,
+    @Body() updateExperienceDto: UpdateExperienceDto,
+  ): Promise<ExperienceResponseDto> {
+    return this.experienceService.updateExperience(userId, experienceId, updateExperienceDto);
+  }
+
+  @Delete(':userId/experience/:experienceId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async deleteExperience(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('experienceId', ParseIntPipe) experienceId: number,
+  ): Promise<void> {
+     await this.experienceService.deleteExperience(userId, experienceId);
   }
 }
