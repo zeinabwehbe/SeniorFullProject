@@ -33,15 +33,35 @@ import { ExperienceService } from '../experience/experience.service';
 import { CreateExperienceDto } from '../experience/dto/create-experience.dto';
 import { UpdateExperienceDto } from '../experience/dto/update-experience.dto';
 import { ExperienceResponseDto } from '../experience/dto/experience.response.dto';
+import { ProjectService } from '../projects/project.service';
+import { CreateProjectDto } from '../projects/dto/create-project.dto';
+import { UpdateProjectDto } from '../projects/dto/update-project.dto';
+import { ProjectResponseDto } from '../projects/dto/project.response.dto';
+import { CertificationService } from '../certifications/certification.service';
+import { CreateCertificationDto } from '../certifications/dto/create-certification.dto';
+import { UpdateCertificationDto } from '../certifications/dto/update-certification.dto';
+import { CertificationResponseDto } from '../certifications/dto/certification.response.dto';
+import { CreateSkillDto } from '../skills/dto/create-skill.dto';
+import { UpdateSkillDto } from '../skills/dto/update-skill.dto';
+import { SkillResponseDto } from 'src/skills/dto/skill.response';
+import { SkillsService } from 'src/skills/skills.service';
+import { UserSkillService } from 'src/User_Skill/user-skill.service';
+import { UserSkillResponseDto } from 'src/User_Skill/dto/user-skill.response';
+import { CreateUserSkillDto } from 'src/User_Skill/dto/create-user-skill.dto';
+import { UpdateUserSkillDto } from 'src/User_Skill/dto/update-user-skill.dto';
 
 @Controller('users')
 export class UsersController {
   private readonly logger = new Logger(UsersController.name);
 
+  // First, add ProjectService to the imports and constructor
   constructor(
     private usersService: UsersService,
-    private educationService: EducationService, // Inject EducationService
+    private educationService: EducationService,
     private experienceService: ExperienceService,
+    private projectService: ProjectService,
+    private certificationService: CertificationService,
+    private userSkillService: UserSkillService,
   ) {}
 
   @Post('/register')
@@ -188,5 +208,120 @@ export class UsersController {
     @Param('experienceId', ParseIntPipe) experienceId: number,
   ): Promise<void> {
      await this.experienceService.deleteExperience(userId, experienceId);
+  }
+
+  @Get(':userId/projects')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async getUserProjects(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<ProjectResponseDto[]> {
+    const projectRecords = await this.projectService.findAllProjectsByUserId(userId);
+    return projectRecords;
+  }
+
+  @Post(':userId/projects')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async addProject(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Body() createProjectDto: CreateProjectDto,
+  ): Promise<ProjectResponseDto> {
+    createProjectDto.userId = userId;
+    const project = await this.projectService.create(createProjectDto);
+    return project;
+  }
+
+  @Patch(':userId/projects/:projectId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateProject(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('projectId', ParseIntPipe) projectId: number,
+    @Body() updateProjectDto: UpdateProjectDto,
+  ): Promise<ProjectResponseDto> {
+    return this.projectService.updateProject(userId, projectId, updateProjectDto);
+  }
+
+  @Delete(':userId/projects/:projectId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async deleteProject(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('projectId', ParseIntPipe) projectId: number,
+  ): Promise<void> {
+    await this.projectService.deleteProject(userId, projectId);
+  }
+  @Get(':userId/certifications')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async getUserCertifications(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<CertificationResponseDto[]> {
+    const certificationRecords = await this.certificationService.findAllCertificationsByUserId(userId);
+    return certificationRecords;
+  }
+
+  @Post(':userId/certifications')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async addCertification(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Body() createCertificationDto: CreateCertificationDto,
+  ): Promise<CertificationResponseDto> {
+    createCertificationDto.userId = userId;
+    const certification = await this.certificationService.create(createCertificationDto);
+    return certification;
+  }
+
+  @Patch(':userId/certifications/:certificationId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateCertification(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('certificationId', ParseIntPipe) certificationId: number,
+    @Body() updateCertificationDto: UpdateCertificationDto,
+  ): Promise<CertificationResponseDto> {
+    return this.certificationService.updateCertification(userId, certificationId, updateCertificationDto);
+  }
+
+  @Delete(':userId/certifications/:certificationId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async deleteCertification(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('certificationId', ParseIntPipe) certificationId: number,
+  ): Promise<void> {
+    await this.certificationService.deleteCertification(userId, certificationId);
+  }
+  
+  @Get(':userId/skills')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async getUserSkills(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<UserSkillResponseDto[]> {
+    const skillRecords = await this.userSkillService.findByUserId(userId);
+    return skillRecords;
+  }
+
+  @Post(':userId/skills')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async addSkill(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Body() createSkillDto: CreateUserSkillDto,
+  ): Promise<UserSkillResponseDto> {
+    createSkillDto.user_id = userId;
+    const skill = await this.userSkillService.create(createSkillDto);
+    return skill;
+  }
+
+  @Patch(':userId/skills/:skillId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateSkill(
+    @Param('skillId', ParseIntPipe) skillId: number,
+    @Body() updateSkillDto: UpdateUserSkillDto,
+  ): Promise<UserSkillResponseDto> {
+    const updatedSkill = await this.userSkillService.update(skillId, updateSkillDto);
+    return updatedSkill;
+  }
+
+  @Delete(':userId/skills/:skillId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async deleteSkill(
+    @Param('skillId', ParseIntPipe) skillId: number,
+  ): Promise<void> {
+    await this.userSkillService.remove(skillId);
   }
 }

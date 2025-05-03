@@ -102,29 +102,6 @@ function preparePdfData() {
         projSection.style.display = 'none';
     }
     
-    // Skills
-    const skillsSection = document.getElementById('pdf-skills-section');
-    const skillsContent = document.getElementById('pdf-skills');
-    if (skillsData.length > 0) {
-        const approvedSkills = skillsData.filter(skill => skill.approval_status === 'approved');
-        if (approvedSkills.length > 0) {
-            skillsContent.innerHTML = '';
-            const skillsList = document.createElement('div');
-            skillsList.className = 'pdf-skills';
-            
-            approvedSkills.forEach(skill => {
-                skillsList.innerHTML += `<span>${skill.skill_name}${skill.description ? ` (${skill.description})` : ''}</span>`;
-            });
-            
-            skillsContent.appendChild(skillsList);
-            skillsSection.style.display = 'block';
-        } else {
-            skillsSection.style.display = 'none';
-        }
-    } else {
-        skillsSection.style.display = 'none';
-    }
-    
     // Certifications
     const certSection = document.getElementById('pdf-certifications-section');
     const certContent = document.getElementById('pdf-certifications');
@@ -154,6 +131,28 @@ function preparePdfData() {
     } else {
         certSection.style.display = 'none';
     }
+        // Skills
+        const skillsSection = document.getElementById('pdf-skills-section');
+        const skillsContent = document.getElementById('pdf-skills');
+        if (skillsData.length > 0) {
+            const approvedSkills = skillsData.filter(skill => skill.approval_status === 'approved');
+            if (approvedSkills.length > 0) {
+                skillsContent.innerHTML = '';
+                const skillsList = document.createElement('div');
+                skillsList.className = 'pdf-skills';
+                
+                approvedSkills.forEach(skill => {
+                    skillsList.innerHTML += `<span>${skill.skill_name}${skill.description ? ` (${skill.description})` : ''}</span>`;
+                });
+                
+                skillsContent.appendChild(skillsList);
+                skillsSection.style.display = 'block';
+            } else {
+                skillsSection.style.display = 'none';
+            }
+        } else {
+            skillsSection.style.display = 'none';
+        }
 }
 
 // Generate PDF using jsPDF and html2canvas

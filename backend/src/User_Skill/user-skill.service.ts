@@ -63,7 +63,7 @@ export class UserSkillService {
     return true;
   }
 
-  private mapToResponseDto(userSkill: UserSkill): UserSkillResponseDto {
+  public mapToResponseDto(userSkill: UserSkill): UserSkillResponseDto {
     return {
       id: userSkill.id,
       user_id: userSkill.user_id,
