@@ -97,7 +97,7 @@
             <div class="section-title" style="display: flex; align-items: center;">
                 <i class="fas fa-graduation-cap"></i>
                 <h3 style="margin-right: auto;">Education</h3>
-                <button class="btn btn-success" onclick="openCreateEducationModal()">Add Education</button>
+                <button class="btn btn-success" onclick="openCreateEducationModal()"><i class="fas fa-plus"></i> Add Education</button>
             </div>
             <div id="educationContainer">
                 <div class="empty-state">
@@ -153,12 +153,14 @@
                 </form>
             </div>
         </div>
-        
+
+        <!-- Section 3 / 6 : WORK EXPERIENCE -->
         <div class="section" id="experienceSection">
             <div class="section-title" style="display: flex; align-items: center;">
                 <i class="fas fa-briefcase"></i>
                 <h3 style="margin-right: auto;">Work Experience</h3>
-                <button class="btn btn-success" id="addExperienceBtn">
+                <!-- Remove the nested buttons and fix the structure -->
+                <button class="btn btn-success" onclick="openCreateExperienceModal()">
                     <i class="fas fa-plus"></i> Add Experience
                 </button>
             </div>
@@ -169,22 +171,50 @@
                 </div>
             </div>
         </div>
-            <!-- Experience Modal (for Add/Edit) --
-    <div id="experienceModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeExperienceModal()">&times;</span>
-            <h2 id="experienceModalTitle">Edit Experience</h2>
-            <form id="experienceForm">
-                <input type="hidden" id="experienceId">
-                <label>Job Title: <input type="text" id="experienceJobTitle" required></label><br><br>
-                <label>Company: <input type="text" id="experienceCompany" required></label><br><br>
-                <label>Start Date: <input type="month" id="experienceStartDate" required></label><br><br>
-                <label>End Date: <input type="month" id="experienceEndDate"></label><br><br>
-                <label>Description: <textarea id="experienceDescription"></textarea></label><br><br>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </form>
+         <!-- Create Experience Modal -->
+         <div id="createExperienceModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeCreateExperienceModal()">&times;</span>
+                <h2>Add Experience</h2>
+                <form id="createExperienceForm">
+                    <label for="jobTitle">Job Title:</label>
+                    <input type="text" id="jobTitle" required><br><br>
+                    <label for="company">Company:</label>
+                    <input type="text" id="company" required><br><br>
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" required><br><br>
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate"><br><br>
+                    <label for="experienceDescription">Description:</label>
+                    <textarea id="experienceDescription"></textarea><br><br>
+                    <button type="button" class="btn btn-primary" onclick="saveNewExperience()">Save</button>
+                </form>
+            </div>
         </div>
-    </div> -->
+        
+        <!-- Edit Experience Modal -->
+        <div id="editExperienceModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeEditExperienceModal()">&times;</span>
+                <h2>Edit Experience</h2>
+                <form id="editExperienceForm">
+                    <input type="hidden" id="experienceId">
+                    <label for="editJobTitle">Job Title:</label>
+                    <input type="text" id="editJobTitle" required><br><br>
+                    <label for="editCompany">Company:</label>
+                    <input type="text" id="editCompany" required><br><br>
+                    <label for="editStartDate">Start Date:</label>
+                    <input type="date" id="editStartDate" required><br><br>
+                    <label for="editEndDate">End Date:</label>
+                    <input type="date" id="editEndDate"><br><br>
+                    <label for="editExperienceDescription">Description:</label>
+                    <textarea id="editExperienceDescription"></textarea><br><br>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedExperience()">Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+
         <div class="section" id="projectsSection">
             <div class="section-title">
                 <i class="fas fa-project-diagram"></i>
