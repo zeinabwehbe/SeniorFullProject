@@ -15,10 +15,10 @@ import { ReviewModule } from './review/review.module';
 import { CategoryModule } from './categories/category.module';
 import { SkillsModule } from './skills/skills.module';
 import { UserSkillModule } from './User_Skill/user-skill.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import { EducationModule } from './education/education.module';
 import { ExperienceModule } from './experience/experience.module';
+import { ProjectModule } from './projects/project.module';
+import { CertificationModule } from './certifications/certification.module';
 
 const envFilePath: string = getEnvPath(`.`);
 
@@ -61,7 +61,9 @@ const envFilePath: string = getEnvPath(`.`);
     SkillsModule,
     UserSkillModule,
     EducationModule,
-    ExperienceModule
+    ExperienceModule,
+    ProjectModule,
+    CertificationModule
   ],
   providers: [
     // Logger is used to log messages, errors, and other information throughout the application.

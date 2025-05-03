@@ -12,6 +12,8 @@ import { UserSkill } from 'src/User_Skill/entitiy/user-skill.entity';
 import { Skill } from 'src/skills/entities/skill.entity';
 import { Education } from 'src/education/entities/education.entity';
 import { Experience } from 'src/experience/entities/experience.entity';
+import { Project } from 'src/projects/entities/project.entity';
+import { Certification } from 'src/certifications/entities/certification.entity';
 
 /**
  * The DatabaseModule is responsible for configuring and initializing the database.
@@ -31,7 +33,7 @@ import { Experience } from 'src/experience/entities/experience.entity';
           dialect: 'sqlite',
           storage: dbPath,
           models: [
-            User, Review, Category, Skill, UserSkill, Education, Experience
+            User, Review, Category, Skill, UserSkill, Education, Experience, Project, Certification
           ],
           synchronize: false,
 
