@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { UserSkillService } from './user-skill.service';
 import { CreateUserSkillDto } from './dto/create-user-skill.dto';
 import { UpdateUserSkillDto } from './dto/update-user-skill.dto';
 import { UserSkillResponseDto } from './dto/user-skill.response';
+import { RolesGuard } from '../roles/roles.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('user-skills')
 export class UserSkillController {
   constructor(private readonly userSkillService: UserSkillService) {}
 
   @Post()
-  async create(@Body() createUserSkillDto: CreateUserSkillDto): Promise<UserSkillResponseDto> {
+  @UseGuards(JwtAuthGuard)
+  async create(@Body() createUserSkillDto:CreateUserSkillDto): Promise<UserSkillResponseDto> {
+   
     return this.userSkillService.create(createUserSkillDto);
   }
 
