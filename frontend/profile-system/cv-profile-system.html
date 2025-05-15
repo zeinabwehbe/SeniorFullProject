@@ -20,8 +20,43 @@
             </button>
         </div>
     </header>
-    
+ 
     <div class="container">
+             <!-- ATS Info Banner - Add this right after the nav element -->
+<div class="ats-banner-container">
+    <div class="ats-banner" id="atsBanner">
+      <div class="ats-banner-teaser">
+        <span class="ats-banner-icon">📝</span>
+        <span class="ats-banner-text">Boost your CV with our ATS optimization tips!</span>
+        <span class="ats-banner-toggle">▼</span>
+      </div>
+      <div class="ats-banner-content" id="atsBannerContent">
+        <div class="ats-content-wrapper">
+          <div class="ats-section">
+            <h3>What is ATS Score?</h3>
+            <p>ATS (Applicant Tracking System) is software used by employers to scan resumes for relevance. Our tool analyzes your CV to ensure it passes through these systems and reaches human recruiters.</p>
+          </div>
+          <div class="ats-section">
+            <h3>CV Optimization Tips</h3>
+            <ul>
+              <li>Use industry-relevant keywords from the job description</li>
+              <li>Keep formatting simple and consistent</li>
+              <li>Include measurable achievements</li>
+              <li>Tailor your CV for each application</li>
+              <li>Use standard section headings</li>
+            </ul>
+          </div>
+          <div class="ats-section">
+            <h3>SkillSwap Benefits</h3>
+            <p>Our platform helps you upgrade your skills, build an ATS-optimized CV, and generate professional designs that stand out to both automated systems and hiring managers.</p>
+            <a href="./profile-system/cv-profile-system.html" class="ats-cta-button">Get Started Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
         <!-- Section 1 / 6 : PROFILE -->
         <div class="profile-header">
             <div class="profile-image">
@@ -43,12 +78,15 @@
                     <i class="fas fa-user-edit"></i> Edit Profile
                 </button>
                 <div class="profile-actions">
-                    <button class="btn btn-primary" id="generatePdfBtn" title="Generate PDF" onclick="generatePDF()">
-                        <i class="fas fa-file-pdf"></i> Generate PDF
-                    </button>
-                    <button class="btn btn-secondary" id="emailCvBtn" title="Email CV" onclick="sendEmail()">
-                        <i class="fas fa-envelope"></i> Email CV
-                    </button>
+
+                    <div class="action-buttons">
+                        <button id="sendCVBtn" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Send CV via Email
+                        </button>
+                        <button id="downloadCVBtn" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Download CV as PDF
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -405,73 +443,37 @@
                 </form>
             </div>
         </div>
-        
-    
+            
     <footer>
         <div class="container">
             <p>&copy; 2025 CV Builder. All rights reserved.</p>
         </div>
     </footer>
     
-    <!-- PDF Modal -->
-    <div id="pdfModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closePdfModal()">&times;</span>
-            <h2>CV Preview</h2>
-            <div class="profile-actions" style="margin-bottom: 20px;">
-                <button class="btn btn-primary" onclick="downloadPDF()">
-                    <i class="fas fa-download"></i> Download PDF
-                </button>
-                <button class="btn btn-secondary" onclick="sendEmail()">
-                    <i class="fas fa-envelope"></i> Email CV
-                </button>
-            </div>
-            <div id="pdfPreview"></div>
+<!-- Email Confirmation Modal -->
+<div id="emailConfirmModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 5px;">
+        <span class="close" onclick="closeEmailModal()" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+        <h2>Send CV</h2>
+        <p>Enter the email address where you'd like to send your CV:</p>
+        <div class="form-group">
+            <label for="emailInput">Email Address:</label>
+            <input type="email" id="emailInput" class="form-control" placeholder="example@email.com">
+        </div>
+        <div class="form-group">
+            <button onclick="sendCVToEmail()" class="btn btn-primary">Send</button>
+            <button onclick="closeEmailModal()" class="btn btn-secondary">Cancel</button>
         </div>
     </div>
- 
-    <!-- Hidden PDF template for export -->
-    <div id="pdfTemplate" class="pdf-container">
-        <div class="pdf-header">
-            <h1 id="pdf-name">Full Name</h1>
-            <div class="pdf-contact">
-                <span id="pdf-email">email@example.com</span> | 
-                <span id="pdf-phone">Phone Number</span> | 
-                <span id="pdf-address">Address</span>
-            </div>
-            <div class="pdf-contact" id="pdf-links"></div>
-        </div>
-        
-        <div class="pdf-section" id="pdf-bio-section">
-            <h2>Professional Summary</h2>
-            <div id="pdf-bio"></div>
-        </div>
-        
-        <div class="pdf-section" id="pdf-education-section">
-            <h2>Education</h2>
-            <div id="pdf-education"></div>
-        </div>
-        
-        <div class="pdf-section" id="pdf-experience-section">
-            <h2>Work Experience</h2>
-            <div id="pdf-experience"></div>
-        </div>
+</div>
 
-        <div class="pdf-section" id="pdf-projects-section">
-            <h2>Projects</h2>
-            <div id="pdf-projects"></div>
-        </div>
-    
-        <div class="pdf-section" id="pdf-certifications-section">
-            <h2>Certifications</h2>
-            <div id="pdf-certifications"></div>
-        </div>
-        
-        <div class="pdf-section" id="pdf-skills-section">
-            <h2>Skills</h2>
-            <div id="pdf-skills"></div>
-        </div>
+<!-- Loading Overlay -->
+<div id="loadingOverlay" style="display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center;">
+    <div style="background-color: white; padding: 20px; border-radius: 5px; text-align: center;">
+        <div class="loading-spinner" style="border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 50px; height: 50px; margin: 0 auto 10px auto;"></div>
+        <p id="loadingMessage">Processing...</p>
     </div>
+</div>
 
     <script src="cv-profile-system.js"></script>
     <script src="pdf-email.js"></script>

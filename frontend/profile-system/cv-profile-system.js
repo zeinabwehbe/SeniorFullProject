@@ -25,7 +25,26 @@ function getUserFromToken(token) {
     }
 }
 
-
+     // ATS Banner Toggle Functionality
+     document.addEventListener('DOMContentLoaded', function() {
+        const atsBanner = document.getElementById('atsBanner');
+        const atsBannerContent = document.getElementById('atsBannerContent');
+        const atsBannerToggle = document.querySelector('.ats-banner-toggle');
+        
+        if (atsBanner) {
+          const bannerTeaser = atsBanner.querySelector('.ats-banner-teaser');
+          
+          bannerTeaser.addEventListener('click', function() {
+            if (atsBannerContent.style.maxHeight) {
+              atsBannerContent.style.maxHeight = null;
+              atsBannerToggle.classList.remove('active');
+            } else {
+              atsBannerContent.style.maxHeight = atsBannerContent.scrollHeight + "px";
+              atsBannerToggle.classList.add('active');
+            }
+          });
+        }
+      });
 // <!-- Section 1 / 6 : PROFILE -->
     async function fetchUserData(userId) {
         try {
@@ -1250,6 +1269,7 @@ async function initPage() {
         console.error('Error initializing page:', error);
         alert('Failed to load data. Please try again.');
     }
+    
 }
 
 
