@@ -1,10 +1,11 @@
 import * as path from 'path';
 
 import { Logger, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
 import { AcceptLanguageResolver, I18nModule } from 'nestjs-i18n';
+import { MailerModule } from '@nestjs-modules/mailer'; // Import MailerModule
 
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
@@ -19,6 +20,7 @@ import { EducationModule } from './education/education.module';
 import { ExperienceModule } from './experience/experience.module';
 import { ProjectModule } from './projects/project.module';
 import { CertificationModule } from './certifications/certification.module';
+import { CvModule } from './cv/cv.module';
 
 const envFilePath: string = getEnvPath(`.`);
 
@@ -63,7 +65,8 @@ const envFilePath: string = getEnvPath(`.`);
     EducationModule,
     ExperienceModule,
     ProjectModule,
-    CertificationModule
+    CertificationModule,
+    CvModule,
   ],
   providers: [
     // Logger is used to log messages, errors, and other information throughout the application.
