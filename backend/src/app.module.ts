@@ -21,6 +21,8 @@ import { ExperienceModule } from './experience/experience.module';
 import { ProjectModule } from './projects/project.module';
 import { CertificationModule } from './certifications/certification.module';
 import { CvModule } from './cv/cv.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 const envFilePath: string = getEnvPath(`.`);
 
@@ -37,6 +39,12 @@ const envFilePath: string = getEnvPath(`.`);
       envFilePath: envFilePath, // Path to the environment configuration file.
       load: [configuration], // Load the configuration object.
       isGlobal: true, // Make the configuration globally available.
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'frontend'),
+      serveStaticOptions: {
+        index: 'homepage.html', // Serve homepage.html as the default
+      },
     }),
     // I18nModule handles internationalization and localization.
     // It allows the application to support multiple languages and provides the mechanism to load translations.

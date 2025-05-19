@@ -17,7 +17,10 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), {
     prefix: '/users/profile-picture/',
   });
-
+  // Serve static files from the frontend build
+  app.useStaticAssets(
+    join(__dirname, '..', '..', 'frontend', 'dist'),
+  );
   await app.listen(3000);
 }
 bootstrap();
