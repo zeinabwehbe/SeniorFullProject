@@ -18,6 +18,16 @@ export class UsersService {
     return this.usersRepository.findUserById(id); // Update to use the repository
   }
 
+  async findPublicProfile(id: number) {
+    return this.usersRepository.findOne({
+      where: { id },
+      select: [
+        'id', 'name', 'email', 'bio', 'profilePic', 
+        'phone', 'linkedinUrl', 'githubUrl', 'portfolioUrl',
+        'address'
+      ]
+    });
+  }
   async create(user: CreateUserDto): Promise<UserResponseDto> {
     const { email } = user;
     const existingUser = await this.findUserByEmail(email);

@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillSwap Admin Dashboard</title>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fa;
+      color: var(--dark);
+    }
+    
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    .sidebar {
+      width: 250px;
+      background-color: var(--dark);
+      color: white;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .logo-icon {
+      margin-right: 10px;
+      font-size: 28px;
+    }
+    
+    .admin-info {
+      display: flex;
+      align-items: center;
+      margin-top: 15px;
+    }
+    
+    .admin-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+    }
+    
+    .admin-details {
+      font-size: 14px;
+    }
+    
+    .admin-details .admin-name {
+      font-weight: bold;
+    }
+    
+    .admin-details .admin-role {
+      opacity: 0.7;
+      font-size: 12px;
+    }
+    
+    .menu {
+      margin-top: 30px;
+      flex-grow: 1;
+    }
+    
+    .menu-label {
+      padding: 0 20px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.6;
+      margin-bottom: 10px;
+    }
+    
+    .menu-items {
+      list-style-type: none;
+    }
+    
+    .menu-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 5px;
+    }
+    
+    .menu-item.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-left: 4px solid var(--primary);
+    }
+    
+    .menu-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .menu-item i {
+      margin-right: 10px;
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+    }
+    
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .page-title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+    }
+    
+    .search-box {
+      position: relative;
+      margin-right: 15px;
+    }
+    
+    .search-input {
+      padding: 10px 15px 10px 40px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      width: 250px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+    }
+    
+    .notification-bell {
+      position: relative;
+      margin-right: 20px;
+      cursor: pointer;
+    }
+    
+    .notification-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      align-items: center;
+    }
+    
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-size: 24px;
+    }
+    
+    .icon-users { background-color: rgba(67, 97, 238, 0.1); color: var(--primary); }
+    .icon-skills { background-color: rgba(76, 201, 240, 0.1); color: var(--success); }
+    .icon-exchanges { background-color: rgba(247, 37, 133, 0.1); color: var(--danger); }
+    .icon-ratings { background-color: rgba(248, 150, 30, 0.1); color: var(--warning); }
+    
+    .stat-info {
+      flex-grow: 1;
+    }
+    
+    .stat-number {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: var(--gray);
+    }
+    
+    .content-cards {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    
+    .card-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .card-actions {
+      display: flex;
+      align-items: center;
+    }
+    
+    .btn {
+      padding: 8px 15px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .btn i {
+      margin-right: 5px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-secondary {
+      background-color: #e9ecef;
+      color: var(--dark);
+    }
+    
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+    
+    .btn-success {
+      background-color: var(--success);
+      color: white;
+    }
+    
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+    
+    .table-responsive {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead th {
+      text-align: left;
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      font-weight: 600;
+    }
+    
+    tbody td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    tbody tr:hover {
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    .status {
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      display: inline-block;
+    }
+    
+    .status-pending {
+      background-color: rgba(248, 150, 30, 0.1);
+      color: var(--warning);
+    }
+    
+    .status-approved {
+      background-color: rgba(76, 201, 240, 0.1);
+      color: var(--success);
+    }
+    
+    .status-rejected {
+      background-color: rgba(247, 37, 133, 0.1);
+      color: var(--danger);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      margin-right: 10px;
+      background-color: #f1f1f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--dark);
+    }
+    
+    .user-details {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .user-name {
+      font-weight: 500;
+    }
+    
+    .user-email {
+      font-size: 12px;
+      color: var(--gray);
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .activity-item {
+      display: flex;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .activity-icon.join {
+      background-color: rgba(76, 201, 240, 0.1);
+      color: var(--success);
+    }
+    
+    .activity-icon.skill {
+      background-color: rgba(67, 97, 238, 0.1);
+      color: var(--primary);
+    }
+    
+    .activity-icon.exchange {
+      background-color: rgba(247, 37, 133, 0.1);
+      color: var(--danger);
+    }
+    
+    .activity-content {
+      flex-grow: 1;
+    }
+    
+    .activity-text {
+      margin-bottom: 5px;
+      line-height: 1.4;
+    }
+    
+    .activity-time {
+      font-size: 12px;
+      color: var(--gray);
+    }
+    
+    .notification-item {
+      display: flex;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+    
+    .notification-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 10px;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    
+    .notification-dot.error {
+      background-color: var(--danger);
+    }
+    
+    .notification-dot.warning {
+      background-color: var(--warning);
+    }
+    
+    .notification-dot.info {
+      background-color: var(--primary);
+    }
+    
+    .notification-content {
+      flex-grow: 1;
+    }
+    
+    .notification-text {
+      margin-bottom: 5px;
+      line-height: 1.4;
+    }
+    
+    .notification-time {
+      font-size: 12px;
+      color: var(--gray);
+    }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background-color: white;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+    
+    .modal-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #f1f1f1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    
+    .modal-body {
+      padding: 20px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    
+    .modal-footer {
+      padding: 15px 20px;
+      border-top: 1px solid #f1f1f1;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 10px 15px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+    
+    textarea.form-control {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .form-select {
+      width: 100%;
+      padding: 10px 15px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+      appearance: none;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%236c757d' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat;
+      background-position: right 10px center;
+    }
+    
+    .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+    
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #f1f1f1;
+      margin-bottom: 20px;
+    }
+    
+    .tab-item {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+    }
+    
+    .tab-item.active {
+      border-bottom-color: var(--primary);
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .content-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+        overflow: hidden;
+      }
+      
+      .logo span, .admin-details, .menu-item span {
+        display: none;
+      }
+      
+      .menu-label {
+        text-align: center;
+        padding: 0;
+      }
+      
+      .admin-avatar {
+        margin-right: 0;
+      }
+      
+      .logo-icon {
+        margin-right: 0;
+      }
+      
+      .menu-item {
+        justify-content: center;
+        padding: 15px 5px;
+      }
+      
+      .menu-item i {
+        margin-right: 0;
+      }
+      
+      .dashboard-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+    .icon-categories {
+      background-color: rgba(106, 76, 240, 0.1); /* Purple color */
+      color: #6a4cf0; /* Matching purple */
+    }
+    .status-pending {
+      background-color: rgba(248, 150, 30, 0.1);
+      color: #f8961e;
+    }
+    
+    .status-approved {
+      background-color: rgba(76, 201, 240, 0.1);
+      color: #4cc9f0;
+    }
+    
+    .status-rejected {
+      background-color: rgba(247, 37, 133, 0.1);
+      color: #f72585;
+    }
+    
+    .btn-refresh-skills {
+      margin-left: 10px;
+    }
+    /* Modal User Profile */
+.user-profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.user-avatar-large {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  font-size: 24px;
+  color: white;
+}
+
+.user-info h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.text-muted {
+  color: var(--gray);
+}
+
+.skill-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-row {
+  display: flex;
+}
+
+.detail-label {
+  font-weight: 600;
+  min-width: 100px;
+  color: var(--gray);
+}
+
+.detail-value {
+  flex-grow: 1;
+}
+
+/* Loading state */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px;
+  color: var(--primary);
+}
+
+.loading-spinner i {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.error-message {
+  text-align: center;
+  padding: 20px;
+  color: var(--danger);
+}
+
+.error-message p {
+  margin-bottom: 10px;
+}
+
+.text-danger {
+  color: var(--danger);
+}
+.user-avatar-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.detail-row.full-width {
+  display: block;
+}
+
+.detail-label {
+  font-weight: 600;
+  min-width: 100px;
+  color: var(--gray);
+}
+
+.detail-value {
+  flex-grow: 1;
+}
+
+.user-links {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.user-info .text-muted {
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-info .text-muted i {
+    width: 16px;
+    text-align: center;
+}
+
+.user-info > * {
+  margin-bottom: 4px;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-sync-alt logo-icon"></i>
+          <span>SkillSwap</span>
+        </div>
+        <div class="admin-info">
+          <div class="admin-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="admin-details">
+            <div class="admin-name">Admin User</div>
+            <div class="admin-role">Super Admin</div>
+          </div>
+        </div>
+      </div>
+      <div class="menu">
+        <div class="menu-label">Main</div>
+        <ul class="menu-items">
+          <li class="menu-item active" data-page="dashboard">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </li>
+          
+        </ul>
+        <div class="menu-label">System</div>
+        <ul class="menu-items">
+          
+          <li class="menu-item" id="logout" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="top-bar">
+        <h1 class="page-title">Admin Dashboard</h1>
+        <div class="top-bar-actions">
+          <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search...">
+          </div>
+          <button class="btn btn-primary" id="refreshSkillsBtn">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+      </div>
+      
+      <!-- Dashboard Page -->
+      <div class="page-content" id="dashboard-page">
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <div class="stat-icon icon-users">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-number" id="total-users-count" >0</div>
+              <div class="stat-label">Total Users</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-skills">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-number" id="total-skills-count">0</div>
+              <div class="stat-label">Listed Skills</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-categories">
+              <i class="fas fa-tags"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-number" id ="total-categories-count">0</div>
+              <div class="stat-label">Categories</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-ratings">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-number" id="average-rating">0.0</div>
+              <div class="stat-label">Avg. Rating</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-cards">
+          <div>
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">Recent Skill Submissions</h2>
+                <div class="card-actions">
+                 
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="recent-skills-table">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Skill</th>
+                      <th>Submitted</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+ 
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+          </div>
+                                            <!-- User Skill Details Modal -->
+<div id="skillDetailsModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">User Skill Details</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="user-details-container">
+        <div class="user-profile">
+          <div class="user-avatar-large">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="user-info">
+            <h2 id="modalUserName">Loading...</h2>
+            <p id="modalUserEmail" class="text-muted">Loading...</p>
+          </div>
+        </div>
+        
+        <div class="skill-details">
+          <div class="detail-row">
+            <span class="detail-label">Skill:</span>
+            <span id="modalSkillName" class="detail-value"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span id="modalSkillStatus" class="detail-value"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Submitted:</span>
+            <span id="modalSkillDate" class="detail-value"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Description:</span>
+            <span id="modalSkillDescription" class="detail-value"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary modal-close-btn">Close</button>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+  const API_URL = 'http://localhost:3000';
+  const USER_URL = `${API_URL}/users/public`;
+  const SKILLS_URL = `${API_URL}/skills`;
+  const USER_SKILLS_URL = `${API_URL}/user-skills`;
+  const CATEGORIES_URL = `${API_URL}/categories`;
+  const REVIEWS_URL = `${API_URL}/reviews`;
+
+  // Test data matching your exact database schema
+  const testUsers = [
+    {
+      id: 1,
+      name: "John Doe",
+      email: "john@example.com",
+      password: "hashed_password",
+      role: "user",
+      status: "active",
+      profile_pic: null,
+      phone: "1234567890",
+      address: "123 Main St",
+      bio: "Web developer",
+      linkedin_url: "https://linkedin.com/johndoe",
+      github_url: "https://github.com/johndoe",
+      portfolio_url: "https://johndoe.dev",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+  ];
+
+  const testCategories = [
+    {
+      id: 1,
+      name: "Programming",
+      description: "Software development skills"
+    }
+  ];
+
+  const testSkills = [
+    {
+      id: 1,
+      categoryId: 1,
+      skill_name: "JavaScript",
+      description: "Programming language for web development",
+      approval_status: "approved",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+  ];
+
+  const testUserSkills = [
+    {
+      id: 1,
+      user_id: 1,
+      skill_id: 1,
+      skill_type: "teach",
+      skill_level: "Advanced",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+  ];
+
+  const searchInput = document.querySelector('.search-input');
+
+  // Function to format date
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  async function fetchData(url) {
+    try {
+      console.log(`Fetching data from: ${url}`);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(`Data from ${url}:`, data);
+      return data;
+    } catch (error) {
+      console.error(`Error fetching from ${url}:`, error);
+      document.getElementById('error-message').textContent = `Failed to load data from ${url}`;
+      return null;
+    }
+  }
+
+  async function loadDashboardData() {
+    try {
+      // Show loading state
+      document.querySelectorAll('.stat-number').forEach(el => {
+        el.textContent = '...';
+      });
+
+      
+      // Fetch all data in parallel
+      const [users, skills, categories, userSkills, reviews] = await Promise.all([
+        fetchData(USER_URL),
+        fetchData(SKILLS_URL),
+        fetchData(CATEGORIES_URL),
+        fetchData(USER_SKILLS_URL),
+        fetchData(REVIEWS_URL)
+      ]);
+
+      // Update counts
+      document.getElementById('total-users-count').textContent = users?.length || 0;
+      document.getElementById('total-skills-count').textContent = skills?.length || 0;
+      document.getElementById('total-categories-count').textContent = categories?.length || 0;
+      
+      // Update average rating
+      const averageRating = calculateAverage(reviews);
+      document.getElementById('average-rating').textContent = averageRating;
+
+      // Populate recent skills table if we have data
+      if (userSkills && users && skills && categories) {
+        populateRecentSkills(userSkills, users, skills, categories, searchInput ? searchInput.value : '');
+      } else {
+        console.log('Using test data as fallback');
+        populateRecentSkills(testUserSkills, testUsers, testSkills, testCategories, searchInput ? searchInput.value : '');
+      }
+
+      // After fetching data in loadDashboardData
+      window._userSkills = userSkills;
+      window._users = users;
+      window._skills = skills;
+      window._categories = categories;
+
+      // Now call with global variables
+      populateRecentSkills(
+        window._userSkills,
+        window._users,
+        window._skills,
+        window._categories,
+        searchInput ? searchInput.value : ''
+      );
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+      showError(`Error loading data: ${error.message}`);
+      populateRecentSkills(testUserSkills, testUsers, testSkills, testCategories, searchInput ? searchInput.value : '');
+    }
+  }
+
+  function calculateAverage(reviews) {
+    if (!reviews || !reviews.length) return 0;
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return (total / reviews.length).toFixed(1);
+  }
+
+  async function populateRecentSkills(userSkills, users, skills, categories, filterText = '') {
+    const tbody = document.querySelector('.recent-skills-table tbody');
+    tbody.innerHTML = '';
+
+    // Sort function to prioritize pending skills and then by date
+    const sortUserSkills = (a, b) => {
+        const skillA = skills.find(s => s.id === a.skill_id);
+        const skillB = skills.find(s => s.id === b.skill_id);
+        
+        // First, sort by status (pending first)
+        if (skillA?.approval_status === 'pending' && skillB?.approval_status !== 'pending') return -1;
+        if (skillA?.approval_status !== 'pending' && skillB?.approval_status === 'pending') return 1;
+        
+        // Then sort by date (most recent first)
+        return new Date(b.created_at) - new Date(a.created_at);
+    };
+
+    // Sort the user skills
+    const sortedUserSkills = [...userSkills].sort(sortUserSkills);
+
+    const lowerFilter = filterText.trim().toLowerCase();
+
+    const filteredUserSkills = sortedUserSkills.filter(userSkill => {
+        const user = users.find(u => u.id === userSkill.user_id);
+        const skill = skills.find(s => s.id === userSkill.skill_id);
+        const category = skill ? categories.find(c => c.id === skill.categoryId) : null;
+
+        const userName = (user?.name || '').toLowerCase();
+        const skillName = (skill?.skill_name || '').toLowerCase();
+        const categoryName = (category?.name || '').toLowerCase();
+
+        const words = lowerFilter.split(/\s+/).filter(Boolean);
+        return words.every(word =>
+            userName.includes(word) ||
+            skillName.includes(word) ||
+            categoryName.includes(word)
+        );
+    });
+
+    // Render filtered rows
+    filteredUserSkills.forEach(userSkill => {
+      const user = users.find(u => u.id === userSkill.user_id);
+      const skill = skills.find(s => s.id === userSkill.skill_id);
+      const category = skill ? categories.find(c => c.id === skill.categoryId) : null;
+      
+      const row = document.createElement('tr');
+      
+      // Format user info
+      const userAvatar = user && user.id
+        ? `<img src="${API_URL}/users/${user.id}/profile-picture" alt="Profile" class="user-avatar" style="width:35px;height:35px;object-fit:cover;border-radius:50%;" onerror="this.src='assets/images/default-user.jpg';">`
+        : `<div class="user-avatar">${user?.name?.split(' ').map(n => n[0]).join('') || '??'}</div>`;
+      const userName = user?.name || 'Unknown User';
+      const userEmail = user?.email || 'No email';
+
+      // Format skill info
+      const skillName = skill?.skill_name || 'Unnamed Skill';
+      let categoryName = (category && category.name) || skill.category?.name || 'Uncategorized';
+      const skillStatus = skill?.approval_status || 'pending';
+
+      // Format creation date
+      const formattedCreatedDate = formatDate(userSkill.created_at || new Date());
+
+      // Determine status
+      const statusClass = `status-${skillStatus}`;
+      const statusText = skillStatus.charAt(0).toUpperCase() + skillStatus.slice(1);
+
+      // Format skill type and level
+      const skillType = userSkill.skill_type === 'teach' ? 'Teaching' : 'Learning';
+      const skillLevel = userSkill.skill_level || 'Not specified';
+
+      row.innerHTML = `
+        <td>
+          <div class="user-info">
+            ${userAvatar}
+            <div class="user-details">
+              <div class="user-name">${userName}</div>
+              <div class="user-email">${userEmail}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <strong>${skillName}</strong><br>
+          <small class="text-muted">${categoryName} • ${skillType} (${skillLevel})</small>
+        </td>
+        <td>${formattedCreatedDate}</td>
+        <td><span class="status ${statusClass}">${statusText}</span></td>
+        <td>
+          <div class="action-buttons">
+            ${skillStatus === 'pending' ? `
+              <button class="btn btn-sm btn-success approve-skill" data-skill-id="${skill?.id}">
+                <i class="fas fa-check"></i> Approve
+              </button>
+              <button class="btn btn-sm btn-danger reject-skill" data-skill-id="${skill?.id}">
+                <i class="fas fa-times"></i> Reject
+              </button>
+            ` : ''}
+            <button class="btn btn-sm btn-secondary view-skill" 
+                    data-user-skill-id="${userSkill.id}" 
+                    data-user-id="${userSkill.user_id}"
+                    data-skill-id="${userSkill.skill_id}">
+              <i class="fas fa-eye"></i> View
+            </button>
+          </div>
+        </td>
+      `;
+      
+      tbody.appendChild(row);
+    });
+
+    // Add event listeners to new buttons
+    document.querySelectorAll('.view-skill').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const userSkillId = e.target.closest('button').dataset.userSkillId;
+        const userId = e.target.closest('button').dataset.userId;
+        const skillId = e.target.closest('button').dataset.skillId;
+        viewSkillDetails(userSkillId, userId, skillId);
+      });
+    });
+
+    document.querySelectorAll('.approve-skill').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const skillId = e.target.closest('button').dataset.skillId;
+        const confirmed = window.confirm('Are you sure you want to approve this skill?');
+        if (confirmed) {
+          await updateSkillStatus(skillId, 'approved');
+        }
+      });
+    });
+
+    document.querySelectorAll('.reject-skill').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const skillId = e.target.closest('button').dataset.skillId;
+        const confirmed = window.confirm('Are you sure you want to reject this skill?');
+        if (confirmed) {
+          await updateSkillStatus(skillId, 'rejected');
+        }
+      });
+    });
+  }
+
+  async function updateSkillStatus(skillId, status) {
+    try {
+      const response = await fetch(`${SKILLS_URL}/${skillId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        body: JSON.stringify({ 
+          approval_status: status,
+          updated_at: new Date().toISOString() 
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update skill status');
+      }
+
+      // Refresh the data
+      loadDashboardData();
+      showToast('Skill status updated successfully!', 'success');
+    } catch (error) {
+      console.error('Error updating skill status:', error);
+      showToast('Failed to update skill status', 'error');
+    }
+  }
+  async function viewSkillDetails(userSkillId, userId, skillId) {
+    const modal = document.getElementById('skillDetailsModal');
+    const modalBody = modal.querySelector('.modal-body');
+    if (!userId || !skillId) {
+        modalBody.innerHTML = `<div class="error-message">Missing required information</div>`;
+        modal.classList.add('show');
+        return;
+    }
+    modal.classList.add('show');
+    modalBody.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner"></i> Loading details...</div>`;
+    try {
+        const userUrl = `${API_URL}/users/public/${userId}`;
+        const skillUrl = `${API_URL}/skills/${skillId}`;
+        const userSkillUrl = `${API_URL}/user-skills/${userSkillId}`;
+        const skillResponse = await fetch(skillUrl);
+        if (!skillResponse.ok) throw new Error('Failed to fetch skill');
+        const skill = await skillResponse.json();
+        const [userResponse, userSkillResponse, categoryResponse] = await Promise.all([
+            fetch(userUrl),
+            fetch(userSkillUrl),
+            fetch(`${API_URL}/categories/${skill.categoryId}`).catch(() => null)
+        ]);
+        if (!userResponse.ok || !userSkillResponse.ok) throw new Error('Failed to fetch user data');
+        const user = await userResponse.json();
+        const userSkill = await userSkillResponse.json();
+        const category = categoryResponse ? await categoryResponse.json() : null;
+
+        console.log('Skill:', skill);
+        console.log('Category:', category);
+        console.log('User:', user);
+
+        let categoryName = (category && category.name) || skill.category?.name || 'Uncategorized';
+
+        const userProfileHTML = `
+            <div class="flex justify-center mb-4">
+                <div class="user-avatar-large" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 36px; background: #4361ee; color: #fff;">
+                    ${user && user.id
+                        ? `<img src="${API_URL}/users/${user.id}/profile-picture" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.src='assets/images/default-user.jpg';">`
+                        : `<i class="fas fa-user"></i>`
+                    }
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold mb-2" style="color: #4361ee">${user.name || 'No name'}</h2>
+            <div class="text-left" style="max-width: 400px; margin: 0 auto;">
+                <p class="text-gray-600 mb-1"><strong>Email:</strong> ${user.email || 'No email'}</p>
+                <p class="text-gray-600 mb-1"><strong>Phone:</strong> ${user.phone || 'No phone number'}</p>
+                <p class="text-gray-600 mb-1"><strong>Bio:</strong> ${user.bio || 'No bio'}</p>
+                ${user.linkedin_url ? `<p class="text-gray-600 mb-1"><strong>LinkedIn:</strong> <a href="${user.linkedin_url}" target="_blank" class="text-blue-500 hover:underline">${user.linkedin_url}</a></p>` : ''}
+                ${user.github_url ? `<p class="text-gray-600 mb-1"><strong>GitHub:</strong> <a href="${user.github_url}" target="_blank" class="text-blue-500 hover:underline">${user.github_url}</a></p>` : ''}
+                ${user.portfolio_url ? `<p class="text-gray-600 mb-1"><strong>Portfolio:</strong> <a href="${user.portfolio_url}" target="_blank" class="text-blue-500 hover:underline">${user.portfolio_url}</a></p>` : ''}
+            </div>
+        `;
+        const modalContent = `
+            <div class="text-center">
+                ${userProfileHTML}
+                <hr style="margin: 20px 0;">
+                <div class="text-left" style="max-width: 400px; margin: 0 auto;">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-lg">Skill Details</h3>
+                    <p class="mb-1"><strong>Skill:</strong> ${skill.skill_name || 'Unnamed Skill'}</p>
+                    <p class="mb-1"><strong>Status:</strong> ${skill.approval_status || 'Pending'}</p>
+                    <p class="mb-1"><strong>Submitted:</strong> ${formatDate(userSkill.created_at)}</p>
+                    <p class="mb-1"><strong>Description:</strong> ${skill.description || 'No description available'}</p>
+                    <p class="mb-1"><strong>Category:</strong> ${categoryName}</p>
+                    <p class="mb-1"><strong>Type:</strong> ${userSkill.skill_type === 'teach' ? 'Teaching' : 'Learning'}</p>
+                    <p class="mb-1"><strong>Level:</strong> ${userSkill.skill_level || 'Not specified'}</p>
+                </div>
+            </div>
+        `;
+        modalBody.innerHTML = modalContent;
+
+        // Add close button event listener after setting modal content
+        const closeBtns = modal.querySelectorAll('.modal-close, .modal-close-btn');
+        closeBtns.forEach(btn => btn.addEventListener('click', () => modal.classList.remove('show')));
+    } catch (error) {
+        modalBody.innerHTML = `<div class="error-message">Error loading details: ${error.message}</div>`;
+    }
+}
+  function showError(message) {
+    const errorDiv = document.getElementById('error-message') || document.createElement('div');
+    errorDiv.id = 'error-message';
+    errorDiv.style.color = 'red';
+    errorDiv.style.padding = '10px';
+    errorDiv.style.margin = '10px 0';
+    errorDiv.textContent = message;
+    document.querySelector('.main-content').prepend(errorDiv);
+  }
+
+  function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }, 100);
+  }
+
+  // Add this at the top of your script
+  function handleLogout() {
+    console.log('Logout function called');
+    localStorage.removeItem('token');
+    window.location.href = 'homepage.html';
+  }
+
+  // Initialize dashboard when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    loadDashboardData();
+
+    // Add refresh button event listener with the new ID
+    const refreshBtn = document.getElementById('refreshSkillsBtn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+
+            console.log('Refresh button clicked');
+            loadDashboardData();
+            showToast('Skills refreshed successfully!', 'success');
+        });
+    }
+
+    // Add logout functionality
+    const logoutBtn = document.getElementById('logout');
+    if (logoutBtn) {
+      console.log('Logout button found');
+      logoutBtn.addEventListener('click', () => {
+        console.log('Logout clicked');
+        localStorage.removeItem('token');
+        window.location.href = 'homepage.html';
+      });
+    } else {
+      console.log('Logout button not found');
+    }
+
+    // Add modal close functionality
+    document.querySelectorAll('.modal-close, .modal-close-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            document.getElementById('skillDetailsModal').classList.remove('show');
+        });
+    });
+
+    // Add search input event listener
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        console.log('Search event:', window._userSkills, window._users, window._skills, window._categories);
+        if (
+          window._userSkills &&
+          window._users &&
+          window._skills &&
+          window._categories
+        ) {
+          populateRecentSkills(
+            window._userSkills,
+            window._users,
+            window._skills,
+            window._categories,
+            searchInput.value
+          );
+        }
+      });
+    }
+  });
+</script>
+</html>
+          
+         
