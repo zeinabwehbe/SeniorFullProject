@@ -45,7 +45,20 @@ export class UsersController {
     const user = await this.usersService.create(createUserDto);
     return user;
   }
-
+  @Get('public')
+  
+  async findAllUser(): Promise<UserResponseDto[]> {
+    const users = await this.usersService.findAllUsers();
+    return users.map((user) => user.toDto());
+  }
+  
+  @Get('public/:id')
+  async findPublic(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<UserResponseDto> {
+    const user = await this.usersService.findPublicProfile(id);
+    return user.toDto();
+  }
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   async findAll(): Promise<UserResponseDto[]> {
@@ -61,13 +74,7 @@ export class UsersController {
     const user = await this.usersService.findUserById(id);
     return user.toDto();
   }
-  @Get('public/:id')
-  async findPublic(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<UserResponseDto> {
-    const user = await this.usersService.findPublicProfile(id);
-    return user.toDto();
-  }
+  
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
