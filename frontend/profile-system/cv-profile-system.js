@@ -1,13 +1,6 @@
 
-// Mock data for testing - will be replaced with API data in production
-// let userData = {};
-// let educationData = [];
-// let experienceData = [];
-// let projectData = [];
-// let certificationData = [];
-// let skillsData = [];
-
-// Authentication functions
+let userId = null;
+let token = null;
 // Get JWT token from localStorage
 function getToken() {
     return localStorage.getItem('token');
@@ -24,30 +17,37 @@ function getUserFromToken(token) {
     if (!token) return null;
     try {
         const decoded = jwt_decode(token);
-        
-        // Check if the token is expired
-        const currentTime = Math.floor(Date.now() / 1000);
-        if (decoded.exp && decoded.exp < currentTime) {
-            console.error('Token has expired');
-            alert('Session expired. Please log in again.');
-            logout();
-            return null;
-        }
-
         return decoded;
     } catch (error) {
         console.error('Failed to decode token:', error);
-        alert('Invalid session detected. Redirecting to login page.');
         logout();
         return null;
     }
 }
 
+     // ATS Banner Toggle Functionality
+     document.addEventListener('DOMContentLoaded', function() {
+        const atsBanner = document.getElementById('atsBanner');
+        const atsBannerContent = document.getElementById('atsBannerContent');
+        const atsBannerToggle = document.querySelector('.ats-banner-toggle');
+        
+        if (atsBanner) {
+          const bannerTeaser = atsBanner.querySelector('.ats-banner-teaser');
+          
+          bannerTeaser.addEventListener('click', function() {
+            if (atsBannerContent.style.maxHeight) {
+              atsBannerContent.style.maxHeight = null;
+              atsBannerToggle.classList.remove('active');
+            } else {
+              atsBannerContent.style.maxHeight = atsBannerContent.scrollHeight + "px";
+              atsBannerToggle.classList.add('active');
+            }
+          });
+        }
+      });
 // <!-- Section 1 / 6 : PROFILE -->
     async function fetchUserData(userId) {
         try {
-            const token = getToken();
-            console.log('you are in users data:', userId)
             const response = await fetch(`http://localhost:3000/users/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -90,23 +90,20 @@ function getUserFromToken(token) {
         const githubLink = document.getElementById('githubLink');
         const portfolioLink = document.getElementById('portfolioLink');
         
-        if (userData.linkedin_url) {
-            linkedinLink.href = userData.linkedin_url;
-            linkedinLink.style.display = 'inline-block';
+        if (userData.linkedinUrl) {
+            linkedinLink.href = userData.linkedinUrl;
         } else {
             linkedinLink.style.display = 'none';
         }
         
-        if (userData.github_url) {
-            githubLink.href = userData.github_url;
-            githubLink.style.display = 'inline-block';
+        if (userData.githubUrl) {
+            githubLink.href = userData.githubUrl;
         } else {
             githubLink.style.display = 'none';
         }
         
-        if (userData.portfolio_url) {
-            portfolioLink.href = userData.portfolio_url;
-            portfolioLink.style.display = 'inline-block';
+        if (userData.portfolioUrl) {
+            portfolioLink.href = userData.portfolioUrl;
         } else {
             portfolioLink.style.display = 'none';
         }
@@ -127,19 +124,6 @@ function getUserFromToken(token) {
 
     // Initialize user data
     function initializeUserData() {
-        const token = getToken();
-        if (!token) {
-            alert('Session expired. Please log in again.');
-            window.location.href = "../auth-system.html";
-            return null;
-        }
-        
-        const user = getUserFromToken(token);
-        if (!user) return null;
-        
-        // Set profile data
-        const userId = user.sub;
-        
         // Set profile picture
         const profilePic = document.getElementById('profilePic');
         profilePic.src = `http://localhost:3000/users/${userId}/profile-picture`;
@@ -183,16 +167,6 @@ function getUserFromToken(token) {
         const formData = new FormData();
         formData.append('file', file);
 
-        const token = getToken();
-        if (!token) {
-            alert('Session expired. Please log in again.');
-            window.location.href = "../auth-system.html";
-            return;
-        }
-
-        const user = getUserFromToken(token);
-        if (!user) return;
-
         try {
             const response = await fetch(`http://localhost:3000/users/${user.sub}/profile-picture`, {
                 method: 'POST',
@@ -224,9 +198,9 @@ function getUserFromToken(token) {
         document.getElementById('editPhone').value = userData.phone || '';
         document.getElementById('editAddress').value = userData.address || '';
         document.getElementById('editBio').value = userData.bio || '';
-        document.getElementById('editLinkedinUrl').value = userData.linkedin_url || '';
-        document.getElementById('editGithubUrl').value = userData.github_url || '';
-        document.getElementById('editPortfolioUrl').value = userData.portfolio_url || '';
+        document.getElementById('editLinkedinUrl').value = userData.linkedinUrl || '';
+        document.getElementById('editGithubUrl').value = userData.githubUrl || '';
+        document.getElementById('editPortfolioUrl').value = userData.portfolioUrl || '';
         
         modal.style.display = 'block';
     }
@@ -239,17 +213,6 @@ function getUserFromToken(token) {
     function saveProfileChanges(event) {
         event.preventDefault();
         
-        const token = getToken();
-        if (!token) {
-            alert('Session expired. Please log in again.');
-            window.location.href = "../auth-system.html";
-            return;
-        }
-        
-        const user = getUserFromToken(token);
-        if (!user) return;
-        
-        const userId = user.sub;
         
         const formData = {
             name: document.getElementById('editName').value,
@@ -257,11 +220,10 @@ function getUserFromToken(token) {
             phone: document.getElementById('editPhone').value,
             address: document.getElementById('editAddress').value,
             bio: document.getElementById('editBio').value,
-            linkedin_url: document.getElementById('editLinkedinUrl').value,
-            github_url: document.getElementById('editGithubUrl').value,
-            portfolio_url: document.getElementById('editPortfolioUrl').value
+            linkedinUrl: document.getElementById('editLinkedinUrl').value,
+            githubUrl: document.getElementById('editGithubUrl').value,
+            portfolioUrl: document.getElementById('editPortfolioUrl').value
         };
-        
         fetch(`http://localhost:3000/users/${userId}`, {
             method: 'PATCH',
             headers: {
@@ -288,15 +250,10 @@ function getUserFromToken(token) {
     }
 
 
-// API functions
+// <!-- Section 2 / 6 : EDUCATION -->
 async function fetchEducation(userId) {
     try {
-        const token = getToken();
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-
-        console.log('Fetching education data for user:', userId);
+    
         const response = await fetch(`http://localhost:3000/users/${userId}/education`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -314,7 +271,6 @@ async function fetchEducation(userId) {
         return data;
     } catch (error) {
         console.error('Error in fetchEducation:', error.message);
-        console.error('Full error:', error);
         return [];
     }
 }
@@ -365,18 +321,6 @@ function deleteEducation(educationId) {
         return;
     }
 
-    const token = getToken();
-    if (!token) {
-        alert('Session expired. Please log in again.');
-        window.location.href = "../auth-system.html";
-        return;
-    }
-
-    const user = getUserFromToken(token);
-    if (!user) return;
-
-    const userId = user.sub;
-
     fetch(`http://localhost:3000/users/${userId}/education/${educationId}`, {
         method: 'DELETE',
         headers: {
@@ -408,18 +352,6 @@ function closeCreateEducationModal() {
 
 // Function to save new education entry
 function saveNewEducation() {
-    const token = getToken();
-    if (!token) {
-        alert('Session expired. Please log in again.');
-        window.location.href = "../auth-system.html";
-        return;
-    }
-
-    const user = getUserFromToken(token);
-    if (!user) return;
-
-    const userId = user.sub;
-
     const formData = {
         degree: document.getElementById('degree').value,
         fieldOfStudy: document.getElementById('fieldOfStudy').value,
@@ -479,17 +411,7 @@ function closeEditEducationModal() {
 
 // Function to save edited education entry
 function saveEditedEducation() {
-    const token = getToken();
-    if (!token) {
-        alert('Session expired. Please log in again.');
-        window.location.href = "../auth-system.html";
-        return;
-    }
 
-    const user = getUserFromToken(token);
-    if (!user) return;
-
-    const userId = user.sub;
     const educationId = document.getElementById('educationId').value;
 
     const formData = {
@@ -528,9 +450,13 @@ function saveEditedEducation() {
     });
 }
 
+// <!-- Section 3 / 6 : EXPERIENCE -->
+
 async function fetchExperience(userId) {
     try {
-        const token = getToken();
+
+
+        console.log('Fetching experience data for user:', userId);
         const response = await fetch(`http://localhost:3000/users/${userId}/experience`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -538,19 +464,192 @@ async function fetchExperience(userId) {
         });
         
         if (!response.ok) {
-            throw new Error('Failed to fetch experience data');
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Server response:', response.status, errorData);
+            throw new Error(`Failed to fetch experience data: ${response.status} ${response.statusText}`);
         }
         
-        return await response.json();
+        const data = await response.json();
+        console.log('Experience data fetched successfully:', data);
+        return data;
     } catch (error) {
-        console.error('Error fetching experience data:', error);
+        console.error('Error in fetchExperience:', error.message);
+        console.error('Full error:', error);
         return [];
     }
 }
 
+function populateExperience() {
+    const experienceContainer = document.getElementById('experienceContainer');
+    
+    if (experienceData.length > 0) {
+        experienceContainer.innerHTML = '';
+        
+        experienceData.forEach(exp => {
+            const startDate = new Date(exp.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+            const endDate = exp.end_date ? new Date(exp.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Present';
+            
+            const experienceCard = document.createElement('div');
+            experienceCard.className = 'card';
+            experienceCard.innerHTML = `
+            <div style="position: relative;">
+            <div class="card-actions" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
+                <button class="btn btn-warning" onclick="openEditExperienceModal(${exp.id})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-danger" onclick="deleteExperience(${exp.id})">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+                <div class="card-title">${exp.jobTitle}</div>
+                <div class="card-subtitle">${exp.company}</div>
+                <div class="card-date">${startDate} - ${endDate}</div>
+                <div class="card-description">${exp.description || ''}</div>
+
+            </div>
+            `;
+            
+            experienceContainer.appendChild(experienceCard);
+        });
+    } else {
+        experienceContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-briefcase"></i>
+                <p>No work experience added yet</p>
+            </div>
+        `;
+    }
+}
+
+// Function to delete experience
+function deleteExperience(experienceId) {
+    if (!confirm('Are you sure you want to delete this experience record?')) {
+        return;
+    }
+
+    fetch(`http://localhost:3000/users/${userId}/experience/${experienceId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to delete experience');
+        experienceData = experienceData.filter(exp => exp.id !== experienceId);
+        populateExperience();
+        alert('Experience record deleted successfully!');
+    })
+    .catch(error => {
+        console.error('Error deleting experience:', error);
+        alert('Failed to delete experience record. Please try again.');
+    });
+}
+
+// Function to open the Create Experience Modal
+function openCreateExperienceModal() {
+    document.getElementById('createExperienceModal').style.display = 'block';
+}
+
+// Function to close the Create Experience Modal
+function closeCreateExperienceModal() {
+    document.getElementById('createExperienceModal').style.display = 'none';
+}
+
+// Function to save new experience entry
+function saveNewExperience() {
+    const formData = {
+        jobTitle: document.getElementById('jobTitle').value,
+        company: document.getElementById('company').value,
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value || null,
+        description: document.getElementById('experienceDescription').value
+    };
+
+    fetch(`http://localhost:3000/users/${userId}/experience`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to add experience');
+        return response.json();
+    })
+    .then(async data => {
+        experienceData = data;
+        populateExperience();
+        closeCreateExperienceModal();
+        alert('Experience added successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error adding experience:', error);
+        alert('Failed to add experience. Please try again.');
+    });
+}
+
+// Function to open the Edit Experience Modal
+function openEditExperienceModal(experienceId) {
+    const experience = experienceData.find(exp => exp.id === experienceId);
+    if (!experience) return;
+
+    document.getElementById('experienceId').value = experience.id;
+    document.getElementById('editJobTitle').value = experience.jobTitle;
+    document.getElementById('editCompany').value = experience.company;
+    document.getElementById('editStartDate').value = experience.startDate;
+    document.getElementById('editEndDate').value = experience.endDate || '';
+    document.getElementById('editExperienceDescription').value = experience.description || '';
+
+    document.getElementById('editExperienceModal').style.display = 'block';
+}
+
+// Function to close the Edit Experience Modal
+function closeEditExperienceModal() {
+    document.getElementById('editExperienceModal').style.display = 'none';
+}
+
+// Function to save edited experience entry
+function saveEditedExperience() {
+    const experienceId = document.getElementById('experienceId').value;
+
+    const formData = {
+        jobTitle: document.getElementById('editJobTitle').value,
+        company: document.getElementById('editCompany').value,
+        startDate: document.getElementById('editStartDate').value,
+        endDate: document.getElementById('editEndDate').value || null,
+        description: document.getElementById('editExperienceDescription').value
+    };
+
+    const data = fetch(`http://localhost:3000/users/${userId}/experience/${experienceId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to update experience');
+        return response.json();
+    })
+    .then(async data => {
+        experienceData = data;
+        populateExperience();
+        closeEditExperienceModal();
+        alert('Experience updated successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error updating experience:', error);
+        alert('Failed to update experience. Please try again.');
+    });
+}
+
+// <!-- Section 4 / 6 : EXPERIENCE -->
 async function fetchProjects(userId) {
     try {
-        const token = getToken();
         const response = await fetch(`http://localhost:3000/users/${userId}/projects`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -568,9 +667,169 @@ async function fetchProjects(userId) {
     }
 }
 
+function populateProjects() {
+    const projectsContainer = document.getElementById('projectsContainer');
+    
+    if (projectData.length > 0) {
+        projectsContainer.innerHTML = '';
+        
+        projectData.forEach(project => {
+            const dates = project.startDate ? 
+                `${new Date(project.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })} - 
+                 ${project.endDate ? new Date(project.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Present'}` : '';
+            
+            const projectCard = document.createElement('div');
+            projectCard.className = 'card';
+            projectCard.innerHTML = `
+                <div style="position: relative;">
+                    <div class="card-actions" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
+                        <button class="btn btn-warning" onclick="openEditProjectModal(${project.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteProject(${project.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                    <div class="card-title">${project.title}</div>
+                    ${dates ? `<div class="card-date">${dates}</div>` : ''}
+                    <div class="card-description">${project.description || ''}</div>
+                    ${project.link ? `<a href="${project.link}" target="_blank" class="link-btn"><i class="fas fa-link"></i> Project Link</a>` : ''}
+                </div>
+            `;
+            
+            projectsContainer.appendChild(projectCard);
+        });
+    } else {
+        projectsContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-project-diagram"></i>
+                <p>No projects added yet</p>
+            </div>
+        `;
+    }
+}
+
+function deleteProject(projectId) {
+    if (!confirm('Are you sure you want to delete this project?')) {
+        return;
+    }
+
+    fetch(`http://localhost:3000/users/${userId}/projects/${projectId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to delete project');
+        projectData = projectData.filter(project => project.id !== projectId);
+        populateProjects();
+        alert('Project deleted successfully!');
+    })
+    .catch(error => {
+        console.error('Error deleting project:', error);
+        alert('Failed to delete project. Please try again.');
+    });
+}
+
+function openCreateProjectModal() {
+    document.getElementById('createProjectModal').style.display = 'block';
+}
+
+function closeCreateProjectModal() {
+    document.getElementById('createProjectModal').style.display = 'none';
+}
+
+function saveNewProject() {
+    const formData = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        link: document.getElementById('link').value,
+        startDate: document.getElementById('projectStartDate').value,
+        endDate: document.getElementById('projectEndDate').value || null
+    };
+
+    fetch(`http://localhost:3000/users/${userId}/projects`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to add project');
+        return response.json();
+    })
+    .then(data => {
+        projectData = data;
+        populateProjects();
+        closeCreateProjectModal();
+        alert('Project added successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error adding project:', error);
+        alert('Failed to add project. Please try again.');
+    });
+}
+
+function openEditProjectModal(projectId) {
+    const project = projectData.find(proj => proj.id === projectId);
+    if (!project) return;
+
+    document.getElementById('projectId').value = project.id;
+    document.getElementById('editTitle').value = project.title;
+    document.getElementById('editDescription').value = project.description || '';
+    document.getElementById('editLink').value = project.link || '';
+    document.getElementById('editProjectStartDate').value = project.startDate || '';
+    document.getElementById('editProjectEndDate').value = project.endDate || '';
+
+    document.getElementById('editProjectModal').style.display = 'block';
+}
+
+function closeEditProjectModal() {
+    document.getElementById('editProjectModal').style.display = 'none';
+}
+
+function saveEditedProject() {
+    const projectId = document.getElementById('projectId').value;
+
+    const formData = {
+        title: document.getElementById('editTitle').value,
+        description: document.getElementById('editDescription').value,
+        link: document.getElementById('editLink').value,
+        startDate: document.getElementById('editProjectStartDate').value,
+        endDate: document.getElementById('editProjectEndDate').value || null
+    };
+
+    fetch(`http://localhost:3000/users/${userId}/projects/${projectId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to update project');
+        return response.json();
+    })
+    .then(data => {
+        projectData = data;
+        populateProjects();
+        closeEditProjectModal();
+        alert('Project updated successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error updating project:', error);
+        alert('Failed to update project. Please try again.');
+    });
+}
+
 async function fetchSkills(userId) {
     try {
-        const token = getToken();
         const response = await fetch(`http://localhost:3000/users/${userId}/skills`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -588,9 +847,10 @@ async function fetchSkills(userId) {
     }
 }
 
+// <!-- Section 5 / 6 : CERTIFICATIONS -->
+
 async function fetchCertifications(userId) {
     try {
-        const token = getToken();
         const response = await fetch(`http://localhost:3000/users/${userId}/certifications`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -607,122 +867,6 @@ async function fetchCertifications(userId) {
         return [];
     }
 }
-
-
-
-
-function populateExperience() {
-    const experienceContainer = document.getElementById('experienceContainer');
-    
-    if (experienceData.length > 0) {
-        experienceContainer.innerHTML = '';
-        
-        experienceData.forEach(exp => {
-            const startDate = new Date(exp.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-            const endDate = exp.end_date ? new Date(exp.end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Present';
-            
-            const experienceCard = document.createElement('div');
-            experienceCard.className = 'card';
-            experienceCard.innerHTML = `
-                <div class="card-title">${exp.job_title}</div>
-                <div class="card-subtitle">${exp.company}</div>
-                <div class="card-date">${startDate} - ${endDate}</div>
-                <div class="card-description">${exp.description || ''}</div>
-                <div class="card-actions">
-                    <button class="btn btn-warning" onclick="editExperience(${exp.id})">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-danger" onclick="deleteExperience(${exp.id})">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </div>
-            `;
-            
-            experienceContainer.appendChild(experienceCard);
-        });
-    } else {
-        experienceContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-briefcase"></i>
-                <p>No work experience added yet</p>
-            </div>
-        `;
-    }
-}
-
-function populateProjects() {
-    const projectsContainer = document.getElementById('projectsContainer');
-    
-    if (projectData.length > 0) {
-        projectsContainer.innerHTML = '';
-        
-        projectData.forEach(project => {
-            let date = '';
-            if (project.start_date) {
-                const startDate = new Date(project.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-                const endDate = project.end_date ? 
-                    new Date(project.end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 
-                    'Present';
-                date = `${startDate} - ${endDate}`;
-            }
-            
-            const projectCard = document.createElement('div');
-            projectCard.className = 'card';
-            projectCard.innerHTML = `
-                <div class="card-title">${project.title}</div>
-                ${date ? `<div class="card-date">${date}</div>` : ''}
-                <div class="card-description">${project.description || ''}</div>
-                ${project.link ? `<a href="${project.link}" target="_blank" class="link-btn"><i class="fas fa-link"></i> Project Link</a>` : ''}
-            `;
-            
-            projectsContainer.appendChild(projectCard);
-        });
-    } else {
-        projectsContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-project-diagram"></i>
-                <p>No projects added yet</p>
-            </div>
-        `;
-    }
-}
-
-function populateSkills() {
-    const skillsContainer = document.getElementById('skillsContainer');
-    
-    if (skillsData.length > 0) {
-        const approvedSkills = skillsData.filter(skill => skill.approval_status === 'approved');
-        
-        if (approvedSkills.length > 0) {
-            skillsContainer.innerHTML = '<div class="skills-container"></div>';
-            const skillsWrapper = skillsContainer.querySelector('.skills-container');
-            
-            approvedSkills.forEach(skill => {
-                const skillTag = document.createElement('div');
-                skillTag.className = 'skill-tag';
-                skillTag.textContent = skill.skill_name;
-                skillTag.title = skill.description || '';
-                
-                skillsWrapper.appendChild(skillTag);
-            });
-        } else {
-            skillsContainer.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-tools"></i>
-                    <p>No approved skills yet</p>
-                </div>
-            `;
-        }
-    } else {
-        skillsContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-tools"></i>
-                <p>No skills added yet</p>
-            </div>
-        `;
-    }
-}
-
 function populateCertifications() {
     const certificationsContainer = document.getElementById('certificationsContainer');
     
@@ -730,23 +874,27 @@ function populateCertifications() {
         certificationsContainer.innerHTML = '';
         
         certificationData.forEach(cert => {
-            let validity = '';
-            if (cert.start_date) {
-                const startDate = new Date(cert.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-                const endDate = cert.end_date ? 
-                    new Date(cert.end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 
-                    'No Expiration';
-                validity = `${startDate} - ${endDate}`;
-            }
+            const startDate = cert.startDate ? new Date(cert.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : '';
+            const endDate = cert.endDate ? new Date(cert.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'No Expiration';
             
             const certCard = document.createElement('div');
             certCard.className = 'card';
             certCard.innerHTML = `
-                <div class="card-title">${cert.name}</div>
-                <div class="card-subtitle">${cert.authority || ''}</div>
-                ${validity ? `<div class="card-date">${validity}</div>` : ''}
-                ${cert.license_number ? `<div class="cert-license"><strong>License:</strong> ${cert.license_number}</div>` : ''}
-                <div class="card-description">${cert.description || ''}</div>
+                <div style="position: relative;">
+                    <div class="card-actions" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
+                        <button class="btn btn-warning" onclick="openEditCertificationModal(${cert.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteCertification(${cert.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                    <div class="card-title">${cert.name}</div>
+                    <div class="card-subtitle">${cert.authority || ''}</div>
+                    ${startDate ? `<div class="card-date">${startDate} - ${endDate}</div>` : ''}
+                    ${cert.licenseNumber ? `<div class="cert-license"><strong>License:</strong> ${cert.licenseNumber}</div>` : ''}
+                    <div class="card-description">${cert.description || ''}</div>
+                </div>
             `;
             
             certificationsContainer.appendChild(certCard);
@@ -761,9 +909,335 @@ function populateCertifications() {
     }
 }
 
+function deleteCertification(certificationId) {
+    if (!confirm('Are you sure you want to delete this certification?')) {
+        return;
+    }
+
+    fetch(`http://localhost:3000/users/${userId}/certifications/${certificationId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to delete certification');
+        certificationData = certificationData.filter(cert => cert.id !== certificationId);
+        populateCertifications();
+        alert('Certification deleted successfully!');
+    })
+    .catch(error => {
+        console.error('Error deleting certification:', error);
+        alert('Failed to delete certification. Please try again.');
+    });
+}
+
+function openCreateCertificationModal() {
+    document.getElementById('createCertificationModal').style.display = 'block';
+}
+
+function closeCreateCertificationModal() {
+    document.getElementById('createCertificationModal').style.display = 'none';
+}
+
+function saveNewCertification() {
+    const formData = {
+        name: document.getElementById('name').value,
+        authority: document.getElementById('authority').value,
+        licenseNumber: document.getElementById('licenseNumber').value,
+        startDate: document.getElementById('certificationStartDate').value,
+        endDate: document.getElementById('certificationEndDate').value || null,
+        description: document.getElementById('certificationDescription').value
+    };
+
+    fetch(`http://localhost:3000/users/${userId}/certifications`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to add certification');
+        return response.json();
+    })
+    .then(data => {
+        certificationData = data;
+        populateCertifications();
+        closeCreateCertificationModal();
+        alert('Certification added successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error adding certification:', error);
+        alert('Failed to add certification. Please try again.');
+    });
+}
+
+function openEditCertificationModal(certificationId) {
+    const certification = certificationData.find(cert => cert.id === certificationId);
+    if (!certification) return;
+
+    document.getElementById('certificationId').value = certification.id;
+    document.getElementById('editCertificateName').value = certification.name;
+    document.getElementById('editAuthority').value = certification.authority || '';
+    document.getElementById('editLicenseNumber').value = certification.licenseNumber || '';
+    document.getElementById('editCertificationStartDate').value = certification.startDate || '';
+    document.getElementById('editCertificationEndDate').value = certification.endDate || '';
+    document.getElementById('editCertificationDescription').value = certification.description || '';
+
+    document.getElementById('editCertificationModal').style.display = 'block';
+}
+
+function closeEditCertificationModal() {
+    document.getElementById('editCertificationModal').style.display = 'none';
+}
+
+function saveEditedCertification() {
+    const certificationId = document.getElementById('certificationId').value;
+
+    const formData = {
+        name: document.getElementById('editName').value,
+        authority: document.getElementById('editAuthority').value,
+        licenseNumber: document.getElementById('editLicenseNumber').value,
+        startDate: document.getElementById('editCertificationStartDate').value,
+        endDate: document.getElementById('editCertificationEndDate').value || null,
+        description: document.getElementById('editCertificationDescription').value
+    };
+
+    fetch(`http://localhost:3000/users/${userId}/certifications/${certificationId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to update certification');
+        return response.json();
+    })
+    .then(data => {
+        certificationData = data;
+        populateCertifications();
+        closeEditCertificationModal();
+        alert('Certification updated successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error updating certification:', error);
+        alert('Failed to update certification. Please try again.');
+    });
+}
+// ... existing code ...
+
+async function fetchSkillsList() {
+    try {
+        const response = await fetch('http://localhost:3000/skills', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch skills list');
+        }
+
+        const skills = await response.json();
+        console.log('Skills:', skills);
+        populateSkillsDropdown(skills);
+    } catch (error) {
+        console.error('Error fetching skills list:', error);
+    }
+}
+
+function populateSkillsDropdown(skills) {
+    const skillNameSelect = document.getElementById('skillName');
+    skillNameSelect.innerHTML = ''; // Clear existing options
+
+    skills.forEach(skill => {
+        const option = document.createElement('option');
+        option.value = skill.skill_id; // Use skill_id as the value
+        option.textContent = skill.skill_name; // Display skill_name
+        skillNameSelect.appendChild(option);
+    });
+}
+
+// <!-- Section 6 / 6 : SKILLS -->
+async function fetchSkills(userId) {
+    try {
+        const response = await fetch(`http://localhost:3000/users/${userId}/skills`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch skills data');
+        }
+        
+        const data = await response.json();
+        console.log('Skills data fetched successfully:', data);
+        return data;
+    } catch (error) {
+        console.error('Error in fetchSkills:', error.message);
+        return [];
+    }
+}
+
+function populateSkills() {
+    const skillsContainer = document.getElementById('skillsContainer');
+    
+    if (!skillsData || skillsData.length === 0) {
+        skillsContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-tools"></i>
+                <p>No skills added yet</p>
+            </div>
+        `;
+        return;
+    }
+
+    skillsContainer.innerHTML = ''; // Clear existing content
+
+    skillsData.forEach(skill => {
+        const skillCard = document.createElement('div');
+        skillCard.className = 'card';
+        skillCard.innerHTML = `
+            <div style="position: relative;">
+                <div class="card-actions" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
+                    <button class="btn btn-warning" onclick="openEditSkillModal(${skill.id})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteSkill(${skill.id})">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+                <div class="card-title">${skill.skill_name}</div>
+                <div class="card-subtitle">${skill.skill_type} - ${skill.skill_level}</div>
+            </div>
+        `;
+        
+        skillsContainer.appendChild(skillCard);
+    });
+}
+function deleteSkill(skillId) {
+    if (!confirm('Are you sure you want to delete this skill?')) {
+        return;
+    }
+
+    fetch(`http://localhost:3000/users/${userId}/skills/${skillId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to delete skill');
+        skillsData = skillsData.filter(skill => skill.id !== skillId);
+        populateSkills();
+        alert('Skill deleted successfully!');
+    })
+    .catch(error => {
+        console.error('Error deleting skill:', error);
+        alert('Failed to delete skill. Please try again.');
+    });
+}
+
+function openCreateSkillModal() {
+    document.getElementById('createSkillModal').style.display = 'block';
+}
+
+function closeCreateSkillModal() {
+    document.getElementById('createSkillModal').style.display = 'none';
+}
+
+function saveNewSkill() {
+    const formData = {
+        user_id: userId,
+        skill_id: document.getElementById('skillId').value,
+        skill_type: document.getElementById('skillType').value,
+        skill_level: document.getElementById('skillLevel').value
+    };
+
+    fetch(`http://localhost:3000/users/${userId}/skills`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to add skill');
+        return response.json();
+    })
+    .then(data => {
+        skillsData = data;
+        populateSkills();
+        closeCreateSkillModal();
+        alert('Skill added successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error adding skill:', error);
+        alert('Failed to add skill. Please try again.');
+    });
+}
+
+function openEditSkillModal(skillId) {
+    const skill = skillsData.find(skill => skill.id === skillId);
+    if (!skill) return;
+
+    document.getElementById('skillId').value = skill.skill_id;
+    document.getElementById('editSkillType').value = skill.skill_type;
+    document.getElementById('editSkillLevel').value = skill.skill_level;
+
+    document.getElementById('editSkillModal').style.display = 'block';
+}
+
+function closeEditSkillModal() {
+    document.getElementById('editSkillModal').style.display = 'none';
+}
+
+function saveEditedSkill() {
+    const skillId = document.getElementById('skillId').value;
+
+    const formData = {
+        skill_type: document.getElementById('editSkillType').value,
+        skill_level: document.getElementById('editSkillLevel').value
+    };
+
+    fetch(`http://localhost:3000/users/${userId}/skills/${skillId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to update skill');
+        return response.json();
+    })
+    .then(data => {
+        skillsData = data;
+        populateSkills();
+        closeEditSkillModal();
+        alert('Skill updated successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error updating skill:', error);
+        alert('Failed to update skill. Please try again.');
+    });
+}
+
 // Initialize the page
 async function initPage() {
-    const token = getToken();
+    token = getToken();
+    console.log('Token:', token);
     if (!token) {
         alert('Session expired. Please log in again.');
         window.location.href = "../auth-system.html";
@@ -771,33 +1245,33 @@ async function initPage() {
     }
     
     const user = getUserFromToken(token);
-    console.log(user)
     if (!user) return;
     
-    const userId = user.sub;
-    
+    userId = user.sub;  // Set global userId
+    console.log('User ID:', userId);
     try {
         // Fetch all user data
         userData = await fetchUserData(userId) || {};
         educationData = await fetchEducation(userId) || [];
-        // experienceData = await fetchExperience(userId) || [];
-        // projectData = await fetchProjects(userId) || [];
-        // certificationData = await fetchCertifications(userId) || [];
-        // skillsData = await fetchSkills(userId) || [];
-        
+        experienceData = await fetchExperience(userId) || [];
+        projectData = await fetchProjects(userId) || [];
+        certificationData = await fetchCertifications(userId) || [];
+        skillsData = await fetchSkills(userId) || [];
+        // Call this function when the page loads or when the modal is opened
         // Populate the UI with fetched data
         populateUserInfo();
         populateEducation();
-        // populateExperience();
-        // populateProjects();
-        // populateSkills();
-        // populateCertifications();
-    
+        populateExperience();
+        populateProjects();
+        populateCertifications();
+        populateSkills();
     } catch (error) {
-        console.log('Error initializing page:', error);
+        console.error('Error initializing page:', error);
         alert('Failed to load data. Please try again.');
     }
+    
 }
+
 
 // Call initPage when the document is ready
 document.addEventListener('DOMContentLoaded', initPage);
