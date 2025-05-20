@@ -15,16 +15,14 @@ export class CreateEducationDto {
   institution: string;
 
   @IsString()
-  @IsOptional()
   degree?: string;
 
   @IsString()
-  @IsOptional()
-  fieldOfStudy?: string;
+  fieldOfStudy: string;
 
   @IsInt()
   @IsOptional()
-  startYear?: number;
+  startYear: number;
 
   @IsInt()
   @IsOptional()

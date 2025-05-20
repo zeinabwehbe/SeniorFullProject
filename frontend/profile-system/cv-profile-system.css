@@ -105,6 +105,7 @@
             text-decoration: none;
             transition: all 0.3s ease;
         }
+
         
         .social-links a:hover {
             background-color: var(--primary);
@@ -226,26 +227,70 @@
             color: var(--dark);
         }
         
-        .skills-container {
+         
+        .skills-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
+        
+        .skill-item {
+            background-color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            color: white;
+            gap: 6px;
+        }
+        
+        .skill-level {
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        
         
         .skill-tag {
-            background-color: var(--light);
-            color: var(--primary);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            border: 1px solid var(--accent);
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--light-gray);
+            padding: 4px 12px;
+            border-radius: 16px;
+            margin-right: 8px;
+            margin-bottom: 8px;
         }
         
-        .skill-tag:hover {
-            background-color: var(--accent);
-            color: white;
+        .remove-skill {
+            margin-left: 6px;
+            cursor: pointer;
+            color: var(--gray);
         }
+        
+        .skill-input-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .skill-input-container .form-input {
+            flex-grow: 1;
+        }
+        
+        .select-level {
+            min-width: 120px;
+            padding: 10px;
+            border: 1px solid var(--gray);
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
         
         footer {
             text-align: center;
@@ -373,3 +418,160 @@
                 justify-content: center;
             }
         }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-spinner {
+            animation: spin 2s linear infinite;
+        }
+        
+        .action-buttons {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal {
+            font-family: Arial, sans-serif;
+        }
+        
+        .modal-content h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+                     
+    .ats-banner-container {
+        width: 100%;
+        margin: 0 0 20px 0;
+        padding: 0;
+      }
+    
+      .ats-banner {
+        width: 100%;
+        background: linear-gradient(135deg, #ffd050e8 0%, #e0ae26 100%);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+    
+      .ats-banner-teaser {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        color: white;
+        font-weight: 600;
+      }
+    
+      .ats-banner-icon {
+        font-size: 24px;
+        margin-right: 15px;
+      }
+    
+      .ats-banner-text {
+        flex-grow: 1;
+        font-size: 24px;
+        text-align: center;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 0 20px;
+      }
+    
+      .ats-banner-toggle {
+        font-size: 14px;
+        transition: transform 0.3s ease;
+      }
+    
+      .ats-banner-toggle.active {
+        transform: rotate(180deg);
+      }
+    
+      .ats-banner-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+        background-color: #f9f9f9;
+        color: #333;
+      }
+    
+      .ats-content-wrapper {
+        padding: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+    
+      .ats-section {
+        flex: 1 1 300px;
+      }
+    
+      .ats-section h3 {
+        color: #2d4373;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+    
+      .ats-section ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+    
+      .ats-section ul li {
+        padding: 8px 0;
+        position: relative;
+        padding-left: 25px;
+      }
+    
+      .ats-section ul li:before {
+        content: '✓';
+        color: #4a6fa5;
+        position: absolute;
+        left: 0;
+        top: 8px;
+        font-weight: bold;
+      }
+    
+      .ats-cta-button {
+        display: inline-block;
+        background-color: #4a6fa5;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 15px;
+        transition: background-color 0.3s ease;
+      }
+    
+      .ats-cta-button:hover {
+        background-color: #2d4373;
+      }
+    
+      /* Mobile responsive adjustments */
+      @media (max-width: 768px) {
+        .ats-content-wrapper {
+          flex-direction: column;
+        }
+        
+        .ats-section {
+          flex: 1 1 100%;
+        }
+      }
+        

@@ -1,10 +1,11 @@
 import * as path from 'path';
 
 import { Logger, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
 import { AcceptLanguageResolver, I18nModule } from 'nestjs-i18n';
+import { MailerModule } from '@nestjs-modules/mailer'; // Import MailerModule
 
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
@@ -15,9 +16,13 @@ import { ReviewModule } from './review/review.module';
 import { CategoryModule } from './categories/category.module';
 import { SkillsModule } from './skills/skills.module';
 import { UserSkillModule } from './User_Skill/user-skill.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import { EducationModule } from './education/education.module';
+import { ExperienceModule } from './experience/experience.module';
+import { ProjectModule } from './projects/project.module';
+import { CertificationModule } from './certifications/certification.module';
+import { CvModule } from './cv/cv.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 const envFilePath: string = getEnvPath(`.`);
 
@@ -34,6 +39,12 @@ const envFilePath: string = getEnvPath(`.`);
       envFilePath: envFilePath, // Path to the environment configuration file.
       load: [configuration], // Load the configuration object.
       isGlobal: true, // Make the configuration globally available.
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'frontend'),
+      serveStaticOptions: {
+        index: 'homepage.html', // Serve homepage.html as the default
+      },
     }),
     // I18nModule handles internationalization and localization.
     // It allows the application to support multiple languages and provides the mechanism to load translations.
@@ -59,7 +70,11 @@ const envFilePath: string = getEnvPath(`.`);
     CategoryModule,
     SkillsModule,
     UserSkillModule,
-    EducationModule
+    EducationModule,
+    ExperienceModule,
+    ProjectModule,
+    CertificationModule,
+    CvModule,
   ],
   providers: [
     // Logger is used to log messages, errors, and other information throughout the application.
