@@ -44,7 +44,7 @@ const envFilePath: string = getEnvPath(`.`);
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '..', 'frontend'),
       serveStaticOptions: {
-        index: 'homepage.html', // Serve homepage.html as the default
+        index: 'homepage.html', // Serve homepage.html as the default instead of index.html
       },
     }),
     // I18nModule handles internationalization and localization.
