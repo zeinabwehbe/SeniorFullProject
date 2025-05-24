@@ -8,4 +8,6 @@ export class SendCvEmailDto {
   @IsObject()
   @IsNotEmpty()
   cvData: any; // Contains all CV information
+
+  customMessage?: string;
 }
