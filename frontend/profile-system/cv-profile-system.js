@@ -1239,8 +1239,7 @@ async function initPage() {
     token = getToken();
     console.log('Token:', token);
     if (!token) {
-        alert('Session expired. Please log in again.');
-        window.location.href = "../auth-system.html";
+         window.location.href = "../auth-system.html";
         return;
     }
     

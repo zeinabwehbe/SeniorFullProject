@@ -474,6 +474,11 @@
   </div>
 
   <script>
+    // Redirect to login if not authenticated
+    if (!localStorage.getItem('token')) {
+      window.location.href = 'auth-system.html'; // or your login page path
+    }
+  
     document.addEventListener('DOMContentLoaded', function() {
       // DOM elements
       const sidebar = document.getElementById('sidebar');
