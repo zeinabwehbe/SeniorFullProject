@@ -42,42 +42,41 @@ async function downloadCV() {
             education: educationData.map(edu => ({
                 degree: edu.degree,
                 institution: edu.institution,
-                startDate: edu.start_date,
-                endDate: edu.end_date,
+                startDate: edu.startYear,
+                endDate: edu.endYear,
                 description: edu.description
             })),
             
             // Experience section
             experience: experienceData.map(exp => ({
-                title: exp.job_title,
+                title: exp.jobTitle,
                 company: exp.company,
-                startDate: exp.start_date,
-                endDate: exp.end_date,
+                startDate: exp.startDate,
+                endDate: exp.endDate,
                 description: exp.description
             })),
             
             // Projects section
             projects: projectData.map(proj => ({
-                title: proj.project_name,
+                title: proj.title,
                 description: proj.description,
-                technologies: proj.technologies
+                technologies: proj.link
             })),
             
             // Certifications section
             certifications: certificationData.map(cert => ({
-                name: cert.certification_name,
-                issuer: cert.issuing_organization,
-                date: cert.issue_date,
-                expiry: cert.expiry_date
+                name: cert.name,
+                authority: cert.authority,
+                date: cert.startDate,
+                expiry: cert.endDate
             })),
             
             // Skills section
-            skills: skillsData.map(skill => ({
-                name: skill.skill_name,
-                type: skill.skill_type,
-                level: skill.skill_level
-            }))
-        };
+ skills: skillsData.map(skill => ({
+    name: skill.skill.skill_name,
+     level: skill.skill_level
+}))
+         };
         
         // Send request to backend to generate PDF
         const response = await fetch('http://localhost:3000/cv/generate-pdf', {
@@ -123,39 +122,48 @@ async function generateAndSendCV(email) {
     try {
         showLoading('Preparing your CV...');
         const cvData = {
+            // Basic user info
             ...userData,
+            
+            // Education section
             education: educationData.map(edu => ({
                 degree: edu.degree,
                 institution: edu.institution,
-                startDate: edu.start_date,
-                endDate: edu.end_date,
+                startDate: edu.startYear,
+                endDate: edu.endYear,
                 description: edu.description
             })),
+            
+            // Experience section
             experience: experienceData.map(exp => ({
-                title: exp.job_title,
+                title: exp.jobTitle,
                 company: exp.company,
-                startDate: exp.start_date,
-                endDate: exp.end_date,
+                startDate: exp.startDate,
+                endDate: exp.endDate,
                 description: exp.description
             })),
+            
+            // Projects section
             projects: projectData.map(proj => ({
-                title: proj.project_name,
+                title: proj.title,
                 description: proj.description,
-                technologies: proj.technologies
+                technologies: proj.link
             })),
+            
+            // Certifications section
             certifications: certificationData.map(cert => ({
-                name: cert.certification_name,
-                issuer: cert.issuing_organization,
-                date: cert.issue_date,
-                expiry: cert.expiry_date
+                name: cert.name,
+                authority: cert.authority,
+                date: cert.startDate,
+                expiry: cert.endDate
             })),
+            
+            // Skills section
             skills: skillsData.map(skill => ({
-                name: skill.skill_name,
-                type: skill.skill_type,
-                level: skill.skill_level
-            }))
-        };
-
+            name: skill.skill.skill_name,
+            level: skill.skill_level
+        }))
+         };
         const response = await fetch('http://localhost:3000/cv/send-email', {
             method: 'POST',
             headers: {
