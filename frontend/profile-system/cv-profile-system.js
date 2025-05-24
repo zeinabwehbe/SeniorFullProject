@@ -828,24 +828,6 @@ function saveEditedProject() {
     });
 }
 
-async function fetchSkills(userId) {
-    try {
-        const response = await fetch(`http://localhost:3000/users/${userId}/skills`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to fetch skills data');
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching skills data:', error);
-        return [];
-    }
-}
 
 // <!-- Section 5 / 6 : CERTIFICATIONS -->
 
@@ -874,6 +856,7 @@ function populateCertifications() {
         certificationsContainer.innerHTML = '';
         
         certificationData.forEach(cert => {
+            console.log("each certification", cert)
             const startDate = cert.startDate ? new Date(cert.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : '';
             const endDate = cert.endDate ? new Date(cert.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'No Expiration';
             
@@ -1030,39 +1013,7 @@ function saveEditedCertification() {
         alert('Failed to update certification. Please try again.');
     });
 }
-// ... existing code ...
 
-async function fetchSkillsList() {
-    try {
-        const response = await fetch('http://localhost:3000/skills', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch skills list');
-        }
-
-        const skills = await response.json();
-        console.log('Skills:', skills);
-        populateSkillsDropdown(skills);
-    } catch (error) {
-        console.error('Error fetching skills list:', error);
-    }
-}
-
-function populateSkillsDropdown(skills) {
-    const skillNameSelect = document.getElementById('skillName');
-    skillNameSelect.innerHTML = ''; // Clear existing options
-
-    skills.forEach(skill => {
-        const option = document.createElement('option');
-        option.value = skill.skill_id; // Use skill_id as the value
-        option.textContent = skill.skill_name; // Display skill_name
-        skillNameSelect.appendChild(option);
-    });
-}
 
 // <!-- Section 6 / 6 : SKILLS -->
 async function fetchSkills(userId) {
@@ -1085,7 +1036,6 @@ async function fetchSkills(userId) {
         return [];
     }
 }
-
 function populateSkills() {
     const skillsContainer = document.getElementById('skillsContainer');
     
@@ -1102,10 +1052,23 @@ function populateSkills() {
     skillsContainer.innerHTML = ''; // Clear existing content
 
     skillsData.forEach(skill => {
-        const skillCard = document.createElement('div');
+         const skillName = skill.skill.skill_name || '';
+        const skillLevel = skill.skill_level || '';
+        skills: skillsData.map(skill => ({
+            name: skill.skill.skill_name,
+            level: skill.skill_level
+        }))
+          const skillCard = document.createElement('div');
         skillCard.className = 'card';
         skillCard.innerHTML = `
-            <div style="position: relative;">
+            <div style="position: relative; display: flex; align-items: center;">
+                 <div style="flex: 1;">
+                    <div class="card-title">${skillName}</div>
+                    <div class="card-subtitle">
+                        ${skillName ? `<span class="badge badge-info">${skillName}</span>` : ''}
+                         ${skillLevel ? `<span class="badge badge-primary">${skillLevel}</span>` : ''}
+                     </div>
+                 </div>
                 <div class="card-actions" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
                     <button class="btn btn-warning" onclick="openEditSkillModal(${skill.id})">
                         <i class="fas fa-edit"></i> Edit
@@ -1114,11 +1077,8 @@ function populateSkills() {
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
-                <div class="card-title">${skill.skill_name}</div>
-                <div class="card-subtitle">${skill.skill_type} - ${skill.skill_level}</div>
             </div>
         `;
-        
         skillsContainer.appendChild(skillCard);
     });
 }
@@ -1156,7 +1116,7 @@ function closeCreateSkillModal() {
 function saveNewSkill() {
     const formData = {
         user_id: userId,
-        skill_id: document.getElementById('skillId').value,
+        skill_name: document.getElementById('skillId').value,
         skill_type: document.getElementById('skillType').value,
         skill_level: document.getElementById('skillLevel').value
     };
@@ -1239,8 +1199,7 @@ async function initPage() {
     token = getToken();
     console.log('Token:', token);
     if (!token) {
-        alert('Session expired. Please log in again.');
-        window.location.href = "../auth-system.html";
+         window.location.href = "../auth-system.html";
         return;
     }
     

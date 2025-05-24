@@ -21,6 +21,7 @@ export class PdfService {
   }
   
   private addContentToPdf(doc: PDFKit.PDFDocument, cvData: any) {
+    console.log("i am in pdf service, your info that will be converted to pdf:", cvData)
     // Apply styling
     this.applyStyles(doc);
     
@@ -78,45 +79,43 @@ export class PdfService {
       this.addSection(doc, 'Certifications');
       
       cvData.certifications.forEach((cert) => {
-        doc.fontSize(12).font('Helvetica-Bold').text(cert.name || cert.certification_name || '');
-        doc.fontSize(11).font('Helvetica-Oblique').text(`${cert.issuer || cert.issuing_organization || ''} | ${cert.date || cert.issue_date || ''}`);
-        doc.moveDown(0.5);
-      });
-      doc.moveDown(0.5);
-    }
-    
-    // Skills
-    if (cvData.skills && cvData.skills.length > 0) {
-      this.addSection(doc, 'Skills');
-      
-      // Group skills by type if available
-      const skillsByType = {};
-      
-      cvData.skills.forEach(skill => {
-        const type = skill.type || skill.skill_type || 'General';
-        if (!skillsByType[type]) {
-          skillsByType[type] = [];
+        doc.fontSize(12).font('Helvetica-Bold').text(cert.name || '');
+        doc.fontSize(11).font('Helvetica-Oblique').text(
+          `${cert.authority || ''}${cert.licenseNumber ? ' | License: ' + cert.licenseNumber : ''}`
+        );
+        doc.fontSize(11).font('Helvetica').text(
+          `${cert.startDate ? 'From: ' + cert.startDate : ''}${cert.endDate ? ' To: ' + cert.endDate : ''}`
+        );
+        if (cert.description) {
+          doc.fontSize(11).font('Helvetica').text(cert.description);
         }
-        skillsByType[type].push(skill.name || skill.skill_name || '');
-      });
-      
-      Object.keys(skillsByType).forEach(type => {
-        doc.fontSize(12).font('Helvetica-Bold').text(type);
-        doc.fontSize(11).font('Helvetica').text(skillsByType[type].join(', '));
-        doc.moveDown(0.5);
+        doc.moveDown(1);
       });
     }
     
+    if (cvData.skills && cvData.skills.length > 0) {
+    this.addSection(doc, 'Skills');
+    cvData.skills.forEach(skill => {
+      const skillName = skill.name || '';
+      const skillLevel = skill.level || '';
+      const skillDisplay = `${skillName}${skillLevel ? ' (' + skillLevel + ')' : ''}`;
+      doc.fontSize(12).font('Helvetica').text(skillDisplay);
+      doc.moveDown(0.5);
+    });
+  }
+
     // Add page numbers
     const pageCount = doc.bufferedPageRange().count;
-    for (let i = 0; i < pageCount; i++) {
-      doc.switchToPage(i);
-      doc.fontSize(10).text(
-        `Page ${i + 1} of ${pageCount}`,
-        doc.page.margins.left,
-        doc.page.height - doc.page.margins.bottom - 20,
-        { align: 'center' }
-      );
+    if (pageCount > 1) {
+      for (let i = 0; i < pageCount; i++) {
+        doc.switchToPage(i);
+        doc.fontSize(10).text(
+          `Page ${i + 1} of ${pageCount}`,
+          doc.page.margins.left,
+          doc.page.height - doc.page.margins.bottom - 20,
+          { align: 'center' }
+        );
+      }
     }
   }
   
@@ -127,16 +126,53 @@ export class PdfService {
   }
   
   private addHeader(doc: PDFKit.PDFDocument, cvData: any) {
-    const name = `${cvData.first_name || ''} ${cvData.last_name || ''}`.trim() || 'CV Profile';
+    const name = `${cvData.first_name || ''} ${cvData.last_name || ''}`.trim() || cvData.name || 'CV Profile';
     
     doc.fontSize(24).font('Helvetica-Bold').fillColor('#0066cc').text(name, { align: 'center' });
     
     if (cvData.title || cvData.job_title) {
-      doc.moveDown(0.2).fontSize(16).font('Helvetica').fillColor('#555555').text(cvData.title || cvData.job_title, { align: 'center' });
+      doc.moveDown(0.2).fontSize(16).font('Helvetica-Bold').fillColor('#555555').text(cvData.title || cvData.job_title, { align: 'center' });
     }
-    
-    doc.moveDown(1);
-    
+
+    // Add user info below the name/title
+    doc.moveDown(0.5);
+    doc.fontSize(11).font('Helvetica').fillColor('#333333');
+
+    const infoArr = [];
+
+    // Do NOT add LinkedIn here
+    if (cvData.githubUrl) infoArr.push(`GitHub: ${cvData.githubUrl}`);
+    if (cvData.portfolioUrl) infoArr.push(`Portfolio: ${cvData.portfolioUrl}`);
+
+    if (infoArr.length > 0) {
+      doc.text(infoArr.join(' | '), { align: 'center' });
+      doc.moveDown(0.2);
+    }
+
+    // Add LinkedIn as a clickable link with only the word "LinkedIn"
+    if (cvData.linkedinUrl) {
+      const prefix = 'LinkedIn link   '; // Added extra spaces for padding
+      const linkText = 'LinkedIn';
+
+      doc.fillColor('#333333').font('Helvetica').text(prefix, {
+        align: 'center',
+        continued: true,
+      });
+      doc
+        .fillColor('#0e76a8')
+        .font('Helvetica-Bold')
+        .text(linkText, {
+          link: cvData.linkedinUrl,
+          underline: true,
+          align: 'center',
+          continued: false,
+        });
+      doc.moveDown(0.2);
+      doc.fillColor('#333333').font('Helvetica');
+    }
+    // Reduce or remove extra moveDown here
+    // doc.moveDown(1); // Remove or change to doc.moveDown(0.5); if you want a little space
+
     // Reset text color
     doc.fillColor('#333333');
   }

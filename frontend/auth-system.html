@@ -589,7 +589,7 @@ async function signup(name, email, password) {
 
         // Optionally, you can log the user in automatically after signup
         localStorage.setItem('token', data.access_token);
-        window.location.href = "./profile-system/cv-profile-system.html";
+        window.location.href = "./homepage.html";
     } catch (error) {
         showAlert(signupAlert, error.message);
     }
@@ -616,7 +616,7 @@ async function signup(name, email, password) {
             // Save only the token in local storage
             localStorage.setItem('token', data.access_token);
     
-            window.location.href = "./profile-system/cv-profile-system.html";
+            window.location.href = "./homepage.html";
         } catch (error) {
             showAlert(loginAlert, error.message);
         }
@@ -664,8 +664,7 @@ async function signup(name, email, password) {
     // Helper Functions
     function isAuthenticated() {
       return !!localStorage.getItem('token');
-      return !!localStorage.getItem('token');
-    }
+     }
 
     function updateAuthUI(isLoggedIn) {
       if (isLoggedIn) {
@@ -717,15 +716,7 @@ async function signup(name, email, password) {
       forgotSuccess.classList.add('hidden');
     }
 
-    // Initialize app
-    function init() {
-        const isLoggedIn = isAuthenticated();
-        updateAuthUI(isLoggedIn);
-        showPage(isLoggedIn ? 'profile' : 'login'); // Redirect to profile page if logged in
-        if (isLoggedIn) {
-            window.location.href = "./profile-system/cv-profile-system.html"; // Redirect to cv-profile-system.html
-        }
-    }
+
 
     document.addEventListener('DOMContentLoaded', init);
   </script>

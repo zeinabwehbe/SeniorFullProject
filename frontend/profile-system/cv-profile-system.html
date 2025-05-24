@@ -398,7 +398,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Create Skill Modal -->
         <div id="createSkillModal" class="modal">
             <div class="modal-content">
@@ -407,17 +407,8 @@
                 <form id="createSkillForm">
                     <label for="skillName">Skill Name:</label>
                     <input type="text" id="skillName" required><br><br>
-                    <label for="skillType">Skill Type:</label>
-                    <select id="skillType" required>
-                        <option value="teach">Teach</option>
-                        <option value="learn">Learn</option>
-                    </select><br><br>
                     <label for="skillLevel">Skill Level:</label>
-                    <select id="skillLevel" required>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                    </select><br><br>
+                    <input type="text" id="skillLevel" required><br><br>
                     <button type="button" class="btn btn-primary" onclick="saveNewSkill()">Save</button>
                 </form>
             </div>
@@ -433,22 +424,15 @@
                     <label for="editSkillName">Skill Name:</label>
                     <input type="text" id="editSkillName" required><br><br>
                     <label for="editSkillType">Skill Type:</label>
-                    <select id="editSkillType" required>
-                        <option value="teach">Teach</option>
-                        <option value="learn">Learn</option>
-                    </select><br><br>
+                    <input type="text" id="editSkillType" required><br><br>
                     <label for="editSkillLevel">Skill Level:</label>
-                    <select id="editSkillLevel" required>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                    </select><br><br>
+                    <input type="text" id="editSkillLevel" required><br><br>
                     <button type="button" class="btn btn-primary" onclick="saveEditedSkill()">Save Changes</button>
                 </form>
             </div>
         </div>
-            
-    <footer>
+        
+     <footer>
         <div class="container">
             <p>&copy; 2025 CV Builder. All rights reserved.</p>
         </div>
