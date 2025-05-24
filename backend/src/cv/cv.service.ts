@@ -48,7 +48,7 @@ export class CvService {
       throw new Error(`Failed to send CV: ${error.message}`);
     }
   }
-    // Existing constructor and methods...
+
   
     async generatePdf(cvData: any): Promise<Buffer> {
         try {
