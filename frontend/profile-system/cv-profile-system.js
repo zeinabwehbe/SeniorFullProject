@@ -454,9 +454,6 @@ function saveEditedEducation() {
 
 async function fetchExperience(userId) {
     try {
-
-
-        console.log('Fetching experience data for user:', userId);
         const response = await fetch(`http://localhost:3000/users/${userId}/experience`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -487,7 +484,7 @@ function populateExperience() {
         
         experienceData.forEach(exp => {
             const startDate = new Date(exp.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-            const endDate = exp.end_date ? new Date(exp.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Present';
+            const endDate = exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Present';
             
             const experienceCard = document.createElement('div');
             experienceCard.className = 'card';
@@ -1193,6 +1190,67 @@ function saveEditedSkill() {
         alert('Failed to update skill. Please try again.');
     });
 }
+
+
+//validation
+document.getElementById('createEducationForm').addEventListener('input', function() {
+    const form = this;
+    const saveButton = document.getElementById('saveNewEducationBtn');
+    saveButton.disabled = !form.checkValidity();
+});
+
+document.getElementById('editEducationForm').addEventListener('input', function() {
+    const form = this;
+    const saveButton = document.getElementById('saveEditedEducationBtn');
+    saveButton.disabled = !form.checkValidity();
+});
+
+document.getElementById('createExperienceForm').addEventListener('input', function() {
+    const form = this;
+    const saveButton = document.getElementById('saveNewExperienceBtn');
+    saveButton.disabled = !form.checkValidity();
+});
+
+document.getElementById('editExperienceForm').addEventListener('input', function() {
+    const form = this;
+    const saveButton = document.getElementById('saveEditedExperienceBtn');
+    saveButton.disabled = !form.checkValidity();
+});
+
+document.getElementById('createProjectForm').addEventListener('input', function() {
+    const form = this;
+    const saveButton = document.getElementById('saveNewProjectBtn');
+    saveButton.disabled = !form.checkValidity();
+});
+
+document.getElementById('editProjectForm').addEventListener('input', function() {
+    const form = this;
+    const saveButton = document.getElementById('saveEditedProjectBtn');
+    saveButton.disabled = !form.checkValidity();
+});
+
+document.getElementById('createCertificationForm').addEventListener('input', function() {
+    const form = this;
+    const saveButton = document.getElementById('saveCertificationBtn');
+    saveButton.disabled = !form.checkValidity();
+});
+
+document.getElementById('editCertificationForm').addEventListener('input', function() {
+    const form = this;
+    const saveButton = document.getElementById('saveEditedCertificationBtn');
+    saveButton.disabled = !form.checkValidity();
+});
+document.getElementById('createSkillForm').addEventListener('input', function() {
+    const form = this;
+    const saveButton = document.getElementById('saveNewSkillBtn');
+    saveButton.disabled =!form.checkValidity();
+});
+
+document.getElementById('editSkillForm').addEventListener('input', function() {
+    const form = this;
+    const saveButton = document.getElementById('saveEditedSkillBtn');
+    saveButton.disabled =!form.checkValidity();
+});
 
 // Initialize the page
 async function initPage() {

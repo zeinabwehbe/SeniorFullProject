@@ -9,8 +9,8 @@ function closeEmailModal() {
 }
 
 function sendCVToEmail() {
+    const customMessage = document.getElementById('customMessage').value;
     const email = document.getElementById('emailInput').value;
-    
     if (!email) {
         alert('Please enter an email address.');
         return;
@@ -37,7 +37,7 @@ async function downloadCV() {
         const cvData = {
             // Basic user info
             ...userData,
-            
+            customMessage,
             // Education section
             education: educationData.map(edu => ({
                 degree: edu.degree,
@@ -121,10 +121,11 @@ async function downloadCV() {
 async function generateAndSendCV(email) {
     try {
         showLoading('Preparing your CV...');
+        const customMessage = document.getElementById('customMessage').value;
+
         const cvData = {
-            // Basic user info
             ...userData,
-            
+            customMessage,
             // Education section
             education: educationData.map(edu => ({
                 degree: edu.degree,
@@ -172,6 +173,7 @@ async function generateAndSendCV(email) {
             },
             body: JSON.stringify({
                 email: email,
+                customMessage: customMessage,
                 cvData: cvData
             })
         });
