@@ -13,7 +13,7 @@ export class CvService {
   ) {}
 
   async sendCvByEmail(sendCvEmailDto: SendCvEmailDto) {
-    const { email, cvData } = sendCvEmailDto;
+    const { email, cvData, customMessage } = sendCvEmailDto;
     
     try {
       // Generate PDF from CV data
@@ -22,20 +22,23 @@ export class CvService {
       // Send email with PDF attachment
       await this.emailService.sendEmailWithAttachment({
         to: email,
-        subject: `${cvData.first_name || ''} ${cvData.last_name || ''} - CV`,
+        subject: `${cvData.name || ''} - CV`,
         text: `Please find the CV for ${cvData.first_name || ''} ${cvData.last_name || ''} attached.`,
         html: `
           <div style="font-family: Arial, sans-serif; color: #333;">
-            <h2>Your CV is attached</h2>
-            <p>Thank you for using our CV generation service. Please find your CV attached to this email.</p>
-            <p>If you have any questions or need to make changes, please log back into your account.</p>
+            <h2>${customMessage}</h2>
+            <p>Best Regards, ${cvData.name || ''} ${cvData.last_name || ''}. Please find it attached to this email.</p>
             <hr>
-            <p style="font-size: 12px; color: #666;">This is an automated message, please do not reply.</p>
+            <p style="font-size: 12px; color: #666;">
+                <strong>Contact Information:</strong><br>
+                Email: ${cvData.email || 'N/A'}<br>
+                Phone: ${cvData.phone || 'N/A'}<br>
+            </p>
           </div>
         `,
         attachments: [
           {
-            filename: `${cvData.first_name || 'CV'}_${cvData.last_name || 'Profile'}.pdf`,
+            filename: `${cvData.name || 'CV'}_${cvData.last_name || 'Profile'}.pdf`,
             content: pdfBuffer,
           },
         ],
