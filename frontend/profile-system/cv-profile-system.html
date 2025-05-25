@@ -13,18 +13,59 @@
     <link rel="stylesheet" href="cv-profile-system.css">
 </head>
 <body>
-    <header>
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>Professional Profile</h1>
-            <a href="../homepage.html" class="btn btn-light" title="Go to Home">
-                <i class="fas fa-home"></i> Home
-            </a>
-            <button class="btn btn-danger" onclick="logout()" title="Logout">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelector('.nav-links');
+            const authButtons = document.querySelector('.auth-buttons');
+            
+            // Check if the user is authorized
+            const token = localStorage.getItem('token');
+            
+            if (token) {
+                  // User is authorized, show "CV Profile", "Chatbot", "Marketplace", and "Logout"
+                navLinks.innerHTML = `
+                <div style="display: flex; align-items: center; width: 100%;">
+                    <div style="flex:1"></div>
+                    <div style="display: flex; justify-content: center; flex:2; gap: 20px;">
+                        <a href="../homepage.html" >Home</a>
+                        <a href="../skill-marketplace.html">Marketplace</a>
+    
+                        <a href="profile-system/cv-profile-system.html" style="pointer-events: none; color: #2a75bb;">CV Profile</a>
+                        <a href="../chat-interface.html">Chatbot</a>
+                    </div>
+                    <div style="flex:1; display: flex; justify-content: flex-end;">
+                        <button class="btn btn-primary" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+                `;
+     
+            } else {
+                // User is not authorized, show "Marketplace", "Login", and "Sign Up"
+                navLinks.innerHTML = `
+                <div style="display: flex; align-items: center; width: 100%;">
+                </div>`;
+                }
+              });
+    
+        function logout() {
+            // Remove token from localStorage and refresh the page
+            localStorage.removeItem('token');
+            location.reload();
+        }
+    </script>
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <img src="..\assets\images\M1-proj-logo-trans.png" alt="SkillSwap Logo" class="logo" style="max-height: 70px; width: auto;">
+            <div class="nav-links">
+                <!-- Links will be dynamically inserted here -->
+            </div>
+            <div class="auth-buttons">
+                <!-- Buttons will be dynamically inserted here -->
+            </div>
         </div>
-    </header>
- 
+    </nav>
     <div class="container">
              <!-- ATS Info Banner - Add this right after the nav element -->
 <div class="ats-banner-container">
@@ -167,7 +208,7 @@
                     <input type="number" id="endYear"><br><br>
                     <label for="educationDescription">Description:</label>
                     <textarea id="educationDescription"></textarea><br><br>
-                    <button type="button" class="btn btn-primary" onclick="saveNewEducation()">Save</button>
+                    <button type="button" class="btn btn-primary" id="saveNewEducationBtn" onclick="saveNewEducation()" disabled>Save</button>
                 </form>
             </div>
         </div>
@@ -191,7 +232,7 @@
                     <input type="number" id="editEndYear"><br><br>
                     <label for="editEducationDescription">Description:</label>
                     <textarea id="editEducationDescription"></textarea><br><br>
-                    <button type="button" class="btn btn-primary" onclick="saveEditedEducation()">Save Changes</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedEducation()" id="saveEditedEducationBtn" disabled>Save Changes</button>
                 </form>
             </div>
         </div>
@@ -229,7 +270,7 @@
                     <input type="date" id="endDate"><br><br>
                     <label for="experienceDescription">Description:</label>
                     <textarea id="experienceDescription"></textarea><br><br>
-                    <button type="button" class="btn btn-primary" onclick="saveNewExperience()">Save</button>
+                    <button type="button" class="btn btn-primary" onclick="saveNewExperience()" id="saveNewExperienceBtn" disabled>Save</button>
                 </form>
             </div>
         </div>
@@ -251,7 +292,7 @@
                     <input type="date" id="editEndDate"><br><br>
                     <label for="editExperienceDescription">Description:</label>
                     <textarea id="editExperienceDescription"></textarea><br><br>
-                    <button type="button" class="btn btn-primary" onclick="saveEditedExperience()">Save Changes</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedExperience()" id="saveEditedExperienceBtn" disabled>Save Changes</button>
                 </form>
             </div>
         </div>
@@ -289,7 +330,7 @@
                             <input type="date" id="projectStartDate" required><br><br>
                             <label for="projectEndDate">End Date:</label>
                             <input type="date" id="projectEndDate"><br><br>
-                            <button type="button" class="btn btn-primary" onclick="saveNewProject()">Save</button>
+                            <button type="button" class="btn btn-primary" onclick="saveNewProject()" id="saveNewProjectBtn" disabled>Save</button>
                         </form>
                     </div>
                 </div>
@@ -311,7 +352,7 @@
                             <input type="date" id="editProjectStartDate" required><br><br>
                             <label for="editProjectEndDate">End Date:</label>
                             <input type="date" id="editProjectEndDate"><br><br>
-                            <button type="button" class="btn btn-primary" onclick="saveEditedProject()">Save Changes</button>
+                            <button type="button" class="btn btn-primary" onclick="saveEditedProject()" id="saveEditedProjectBtn" disabled>Save Changes</button>
                         </form>
                     </div>
                 </div>
@@ -343,16 +384,16 @@
                     <label for="name">Certification Name:</label>
                     <input type="text" id="name" required><br><br>
                     <label for="authority">Issuing Authority:</label>
-                    <input type="text" id="authority"><br><br>
+                    <input type="text" id="authority" required><br><br>
                     <label for="licenseNumber">License Number:</label>
-                    <input type="text" id="licenseNumber"><br><br>
+                    <input type="text" id="licenseNumber" required><br><br>
                     <label for="certificationStartDate">Start Date:</label>
                     <input type="date" id="certificationStartDate" required><br><br>
                     <label for="certificationEndDate">End Date:</label>
                     <input type="date" id="certificationEndDate"><br><br>
                     <label for="certificationDescription">Description:</label>
                     <textarea id="certificationDescription"></textarea><br><br>
-                    <button type="button" class="btn btn-primary" onclick="saveNewCertification()">Save</button>
+                    <button type="button" class="btn btn-primary" id="saveCertificationBtn" onclick="saveNewCertification()" disabled>Save</button>
                 </form>
             </div>
         </div>
@@ -376,7 +417,7 @@
                     <input type="date" id="editCertificationEndDate"><br><br>
                     <label for="editCertificationDescription">Description:</label>
                     <textarea id="editCertificationDescription"></textarea><br><br>
-                    <button type="button" class="btn btn-primary" onclick="saveEditedCertification()">Save Changes</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedCertification()" id="saveEditedCertificationBtn" disabled>Save Changes</button>
                 </form>
             </div>
         </div>
@@ -409,7 +450,7 @@
                     <input type="text" id="skillName" required><br><br>
                     <label for="skillLevel">Skill Level:</label>
                     <input type="text" id="skillLevel" required><br><br>
-                    <button type="button" class="btn btn-primary" onclick="saveNewSkill()">Save</button>
+                    <button type="button" class="btn btn-primary" onclick="saveNewSkill()" id="saveNewSkillBtn" disabled>Save</button>
                 </form>
             </div>
         </div>
@@ -427,7 +468,7 @@
                     <input type="text" id="editSkillType" required><br><br>
                     <label for="editSkillLevel">Skill Level:</label>
                     <input type="text" id="editSkillLevel" required><br><br>
-                    <button type="button" class="btn btn-primary" onclick="saveEditedSkill()">Save Changes</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedSkill()" id="saveEditedSkillBtn" disabled>Save Changes</button>
                 </form>
             </div>
         </div>
@@ -447,6 +488,10 @@
         <div class="form-group">
             <label for="emailInput">Email Address:</label>
             <input type="email" id="emailInput" class="form-control" placeholder="example@email.com">
+        </div>
+        <div class="form-group">
+            <label for="customMessage">Custom Message:</label>
+            <textarea id="customMessage" class="form-control" placeholder="Enter your custom message here..."></textarea>
         </div>
         <div class="form-group">
             <button onclick="sendCVToEmail()" class="btn btn-primary">Send</button>
