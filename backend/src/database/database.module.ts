@@ -26,22 +26,22 @@ import { Certification } from 'src/certifications/entities/certification.entity'
     // Configure SequelizeModule asynchronously
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
-        const dbPath =
-          configService.get<string>('SQLITE_DB_FILE') || '.db/database.sqlite3';
-        return {
-          dialect: 'sqlite',
-          storage: dbPath,
-          models: [
-            User, Review, Category, Skill, UserSkill, Education, Experience, Project, Certification
-          ],
-          synchronize: false,
-
-          logging: false, // Enable logging for troubleshooting
-          retryAttempts: 5, // Increase retry attempts
-          retryDelay: 3000, // Set delay between retries (in ms)
-        };
-      },
+      useFactory: async (configService: ConfigService) => ({
+        dialect: 'mysql',
+        host: configService.get<string>('DB_HOST'),
+        port: parseInt(configService.get<string>('DB_PORT', '3306')),
+        username: configService.get<string>('DB_USER'),
+        password: configService.get<string>('DB_PASS'),
+        database: configService.get<string>('DB_NAME'),
+        models: [
+          User, Review, Category, Skill, UserSkill, Education, Experience, Project, Certification
+        ],
+        autoLoadModels: true,
+        synchronize: true, // Set to false in production!
+        logging: false,
+        retryAttempts: 5,
+        retryDelay: 3000,
+      }),
       inject: [ConfigService],
     }),
   ],
