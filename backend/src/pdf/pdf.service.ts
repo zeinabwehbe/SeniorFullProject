@@ -55,10 +55,10 @@ export class PdfService {
       this.addSection(doc, 'Education');
       
       cvData.education.forEach((edu) => {
-        doc.fontSize(12).font('Helvetica-Bold').text(edu.degree || '');
-        doc.fontSize(11).font('Helvetica-Oblique').text(`${edu.institution} | ${edu.startDate || edu.start_date || ''} - ${edu.endDate || edu.end_date || 'Present'}`);
-        if (edu.description) doc.fontSize(11).font('Helvetica').text(edu.description);
-        doc.moveDown(1);
+          doc.fontSize(12).font('Helvetica-Bold').text(`${edu.degree || ''} in ${edu.fieldOfStudy || ''}`);
+          doc.fontSize(11).font('Helvetica-Oblique').text(`${edu.institution} | ${edu.startDate || edu.start_date || ''} - ${edu.endDate || edu.end_date || 'Present'}`);
+          if (edu.description) doc.fontSize(11).font('Helvetica').text(edu.description);
+          doc.moveDown(1);
       });
     }
     
