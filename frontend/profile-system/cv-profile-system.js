@@ -168,7 +168,7 @@ function getUserFromToken(token) {
         formData.append('file', file);
 
         try {
-            const response = await fetch(`http://localhost:3000/users/${user.sub}/profile-picture`, {
+            const response = await fetch(`http://localhost:3000/users/${userId}/profile-picture`, {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -180,7 +180,7 @@ function getUserFromToken(token) {
                 return;
             }
             if (!response.ok) throw new Error('Upload failed');
-            document.getElementById('profilePic').src = `http://localhost:3000/users/${user.sub}/profile-picture`;
+            document.getElementById('profilePic').src = `http://localhost:3000/users/${userId}/profile-picture`;
             alert('Profile picture updated!');
         } catch (err) {
             console.log(err);
