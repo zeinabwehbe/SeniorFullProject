@@ -1,6 +1,11 @@
 import { IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
+export enum ApprovalStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected'
+}
 
 export enum SkillLevel {
   BEGINNER = 'Beginner',
@@ -19,9 +24,15 @@ export class CreateUserSkillDto {
   @IsNotEmpty()
   skill_id: number;
 
- 
-
-  @IsEnum(SkillLevel, { message: 'Skill level must be Beginner, Intermediate, or Advanced' })
+  @IsEnum(SkillLevel)
   @IsNotEmpty()
   skill_level: SkillLevel;
+
+  /**
+   * The approval status of the skill
+   * @example "pending"
+   */
+  @IsEnum(ApprovalStatus)
+  @IsNotEmpty()
+  approval_status: ApprovalStatus = ApprovalStatus.PENDING;
 } 
