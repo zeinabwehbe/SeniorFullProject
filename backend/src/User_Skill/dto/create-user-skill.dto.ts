@@ -1,10 +1,6 @@
 import { IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export enum SkillType {
-  TEACH = 'teach',
-  LEARN = 'learn'
-}
 
 export enum SkillLevel {
   BEGINNER = 'Beginner',
@@ -23,9 +19,7 @@ export class CreateUserSkillDto {
   @IsNotEmpty()
   skill_id: number;
 
-  @IsEnum(SkillType, { message: 'Skill type must be either teach or learn' })
-  @IsNotEmpty()
-  skill_type: SkillType;
+ 
 
   @IsEnum(SkillLevel, { message: 'Skill level must be Beginner, Intermediate, or Advanced' })
   @IsNotEmpty()
