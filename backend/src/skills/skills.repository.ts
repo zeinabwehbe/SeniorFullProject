@@ -1,3 +1,4 @@
+
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Skill } from './entities/skill.entity';
@@ -69,10 +70,8 @@ export class SkillsRepository {
     });
   }
 
-  async findByApprovalStatus(status: string): Promise<Skill[]> {
-    return this.skillModel.findAll({
-      where: { approval_status: status },
-      include: ['category'],
-    });
-  }
+
 } 
+
+
+
