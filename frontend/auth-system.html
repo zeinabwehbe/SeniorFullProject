@@ -42,7 +42,66 @@
     #mobile-menu-btn {
         display: none;
     }
+    .hidden {
+        display: none;
+    }
 
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5); /* Faded background */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        width: 300px;
+        max-width: 90%;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .modal-input {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
     @media (max-width: 768px) {
         #mobile-menu-btn {
             display: block;
@@ -399,6 +458,8 @@
                     <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
                     <div class="d-flex justify-between mt-3">
                         <a href="#" class="forgot-password" id="forgotPasswordLink">Forgot Password?</a>
+                        <a href="#" id="goToReset">Reset Password</a>
+
                     </div>
                 </div>
                 <button type="submit" class="btn">Sign In</button>
@@ -508,6 +569,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+
 <script>
     // Mobile menu functionality
     document.addEventListener('DOMContentLoaded', function() {
@@ -861,5 +923,56 @@
         }
     });
 </script>
+
+<!-- Email Prompt Modal -->
+<div id="emailModalOverlay" class="modal-overlay hidden">
+    <div class="modal-content">
+        <h3>Reset Password</h3>
+        <p>Please enter your email address:</p>
+        <input type="email" id="resetEmailInput" class="modal-input" placeholder="you@example.com" required>
+        <div class="modal-actions">
+            <button id="emailModalSubmit" class="btn">Continue</button>
+            <button id="emailModalCancel" class="btn btn-secondary">Cancel</button>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const goToReset = document.getElementById('goToReset');
+        const modalOverlay = document.getElementById('emailModalOverlay');
+        const emailInput = document.getElementById('resetEmailInput');
+        const submitBtn = document.getElementById('emailModalSubmit');
+        const cancelBtn = document.getElementById('emailModalCancel');
+
+        goToReset.addEventListener('click', function (e) {
+            e.preventDefault();
+            emailInput.value = '';
+            modalOverlay.classList.remove('hidden');
+        });
+
+        cancelBtn.addEventListener('click', function () {
+            modalOverlay.classList.add('hidden');
+        });
+
+        submitBtn.addEventListener('click', function () {
+            const email = emailInput.value.trim();
+            if (validateEmail(email)) {
+                localStorage.setItem('resetEmail', email);
+                modalOverlay.classList.add('hidden');
+                switchToForm('reset');
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        });
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+    });
+</script>
+
+
+
+
 </body>
 </html>
