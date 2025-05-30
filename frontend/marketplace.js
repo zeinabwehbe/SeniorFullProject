@@ -112,12 +112,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             const user = await userResponse.json();
             const userSkills = await skillsResponse.json();
     
-            // Separate teaching and learning skills
-            const teachingSkills = userSkills.filter(skill => skill.skill_type === 'teach');
-            const learningSkills = userSkills.filter(skill => skill.skill_type === 'learn');
-    
+           
             // Create HTML for skills lists with descriptions
-            const teachingSkillsHTML = teachingSkills.map(skill => 
+            const teachingSkillsHTML = userSkills.map(skill => 
                 `<div class="mb-3 p-3 bg-gray-50 rounded-lg">
                     <h4 class="font-semibold text-gray-800">${skill.skill?.skill_name || 'Unnamed Skill'}</h4>
                     <p class="text-sm text-gray-600">${skill.skill_level ? `Proficiency: ${skill.skill_level}` : ''}</p>
@@ -126,14 +123,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </div>`
             ).join('');
     
-            const learningSkillsHTML = learningSkills.map(skill => 
-                `<div class="mb-3 p-3 bg-gray-50 rounded-lg">
-                    <h4 class="font-semibold text-gray-800">${skill.skill?.skill_name || 'Unnamed Skill'}</h4>
-                    <p class="text-sm text-gray-600">${skill.skill_level ? `Current Level: ${skill.skill_level}` : ''}</p>
-                    ${skill.skill?.description ? `<p class="mt-1 text-gray-700">${skill.skill.description}</p>` : ''}
-                    ${skill.skill?.category?.name ? `<p class="text-xs text-gray-500 mt-1">Category: ${skill.skill.category.name}</p>` : ''}
-                </div>`
-            ).join('');
     
             // Create optional fields HTML
             const optionalFieldsHTML = `
@@ -157,13 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <p class="text-gray-600 mb-2"><strong>Bio:</strong> ${user.bio || 'No bio'}</p>
                         <p class="text-gray-600 mb-2"><strong>Email:</strong> ${user.email || 'No email'}</p>
                         ${optionalFieldsHTML}
-                        
-                        <div class="mt-6">
-                            <h3 class="font-semibold text-gray-800 mb-3 text-lg">Skills to Teach:</h3>
-                            ${teachingSkills.length > 0 ? 
-                                `<div class="space-y-3">${teachingSkillsHTML}</div>` : 
-                                `<p class="text-gray-500">None specified</p>`}
-                        </div>
+                       
                         
                     </div>
                 </div>
@@ -184,14 +167,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function displayUserSkills(userSkills) {
         skillListings.innerHTML = '';
-        const teachingSkills = userSkills.filter(skill => skill.skill_type === 'teach');
-        if (teachingSkills.length === 0) {
+        if (userSkills.length === 0) {
             document.getElementById('no-results').classList.remove('hidden');
             return;
         }
         document.getElementById('no-results').classList.add('hidden');
 
-        teachingSkills.forEach(skill => {
+        userSkills.forEach(skill => {
             const card = skillCardTemplate.content.cloneNode(true);
             card.querySelector('.user-name').textContent = skill.user?.name || 'Anonymous User';
             card.querySelector('.user-bio').textContent = skill.user?.bio || 'SkillSwap User';
@@ -234,7 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const proficiency = proficiencyFilter.value;
     
         const filteredSkills = userSkills
-            .filter(skill => skill.skill_type === 'teach')
+           
             .filter(skill => {
                 const matchesSearch = skill.skill?.skill_name?.toLowerCase().includes(searchTerm) || 
                                    skill.user?.name?.toLowerCase().includes(searchTerm);
@@ -307,64 +289,141 @@ document.addEventListener("DOMContentLoaded", async () => {
             ).join('');
 
             content.innerHTML = `
-                <div class="text-center">
-                    <h2 class="text-2xl font-bold mb-4">Add New Skill</h2>
-                    <form id="add-skill-form" class="text-left space-y-4">
-                        <!-- Skill Type -->
-                        <div>
-                            <label class="block text-gray-700 mb-2 font-medium">Skill Type</label>
-                            <select name="skill_type" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500" required>
-                                <option value="">Select type</option>
-                                <option value="teach">I can teach this</option>
-                                <option value="learn">I want to learn this</option>
-                            </select>
+                <div class="text-center h-full flex flex-col" style="background-color: #f8f9fa;">
+                    <!-- Header - Fixed at top -->
+                    <div class="mb-6 flex-shrink-0 p-4" style="background: linear-gradient(to right, #668a8d, #4a6c6f);">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center shadow-lg">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
                         </div>
-                        
-                        <!-- Skill Name -->
-                        <div>
-                            <label class="block text-gray-700 mb-2 font-medium">Skill Name</label>
-                            <input type="text" name="skill_name" 
-                                   class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500" 
-                                   placeholder="e.g. JavaScript, Graphic Design" required>
-                        </div>
-                        
-                        <!-- Category -->
-                        <div>
-                            <label class="block text-gray-700 mb-2 font-medium">Category</label>
-                            <select name="category_id" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500" required>
-                                <option value="">Select a category</option>
-                                ${categoryOptions}
-                            </select>
-                        </div>
-                        
-                        <!-- Proficiency Level -->
-                        <div>
-                            <label class="block text-gray-700 mb-2 font-medium">Your Level</label>
-                            <select name="skill_level" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
-                                <option value="">Select your level (optional)</option>
-                                <option value="Beginner">Beginner</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Advanced">Advanced</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Description -->
-                        <div>
-                            <label class="block text-gray-700 mb-2 font-medium">Description</label>
-                            <textarea name="description" 
-                                      class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500" 
-                                      rows="3"
-                                      placeholder="Briefly describe your skill or what you want to learn"></textarea>
-                        </div>
-                        
-                        <!-- Submit Button -->
+                        <h2 class="text-2xl font-bold mb-2 text-white">Add New Skill</h2>
+                        <p class="text-white text-opacity-80 italic">Share your expertise with the community</p>
+                    </div>
+
+                    <!-- Scrollable Form Content -->
+                    <div class="flex-grow overflow-y-auto p-4" style="max-height: 60vh; background-color: #f8f9fa;">
+                        <form id="add-skill-form" class="text-left space-y-4">
+                            <!-- Progress Indicator -->
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm font-medium" style="color: #668a8d;">Form Progress</span>
+                                    <span class="text-sm font-medium" style="color: #668a8d;">0%</span>
+                                </div>
+                                <div class="w-full rounded-full h-2" style="background-color: #e9ecef;">
+                                    <div class="progress-bar h-2 rounded-full transition-all duration-300" style="width: 0%; background-color: #668a8d;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Form Fields -->
+                            <div class="space-y-4">
+                                <!-- Skill Name -->
+                                <div class="group">
+                                    <label class="block mb-2 font-medium flex items-center" style="color: #4a6c6f;">
+                                        <div class="w-8 h-8 mr-2 rounded-full flex items-center justify-center" style="background-color: #668a8d; opacity: 0.1;">
+                                            <svg class="w-5 h-5" style="color: #668a8d;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                            </svg>
+                                        </div>
+                                        Skill Name
+                                    </label>
+                                    <input type="text" name="skill_name" 
+                                           class="w-full rounded-lg p-2 transition-all duration-200" 
+                                           style="border: 2px solid #e9ecef; background-color: #ffffff;"
+                                           placeholder="e.g. JavaScript, Graphic Design" required>
+                                </div>
+                                
+                                <!-- Category -->
+                                <div class="group">
+                                    <label class="block mb-2 font-medium flex items-center" style="color: #4a6c6f;">
+                                        <div class="w-8 h-8 mr-2 rounded-full flex items-center justify-center" style="background-color: #668a8d; opacity: 0.1;">
+                                            <svg class="w-5 h-5" style="color: #668a8d;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                            </svg>
+                                        </div>
+                                        Category
+                                    </label>
+                                    <select name="category_id" 
+                                            class="w-full rounded-lg p-2 transition-all duration-200" 
+                                            style="border: 2px solid #e9ecef; background-color: #ffffff;"
+                                            required>
+                                        <option value="">Select a category</option>
+                                        ${categoryOptions}
+                                    </select>
+                                </div>
+                                
+                                <!-- Proficiency Level -->
+                                <div class="group">
+                                    <label class="block mb-2 font-medium flex items-center" style="color: #4a6c6f;">
+                                        <div class="w-8 h-8 mr-2 rounded-full flex items-center justify-center" style="background-color: #668a8d; opacity: 0.1;">
+                                            <svg class="w-5 h-5" style="color: #668a8d;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                            </svg>
+                                        </div>
+                                        Your Level
+                                    </label>
+                                    <select name="skill_level" 
+                                            class="w-full rounded-lg p-2 transition-all duration-200"
+                                            style="border: 2px solid #e9ecef; background-color: #ffffff;">
+                                        <option value="">Select your level</option>
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Description -->
+                                <div class="group">
+                                    <label class="block mb-2 font-medium flex items-center" style="color: #4a6c6f;">
+                                        <div class="w-8 h-8 mr-2 rounded-full flex items-center justify-center" style="background-color: #668a8d; opacity: 0.1;">
+                                            <svg class="w-5 h-5" style="color: #668a8d;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                                            </svg>
+                                        </div>
+                                        Description
+                                    </label>
+                                    <textarea name="description" 
+                                              class="w-full rounded-lg p-2 transition-all duration-200"
+                                              style="border: 2px solid #e9ecef; background-color: #ffffff;"
+                                              rows="3"
+                                              placeholder="Briefly describe your skill or what you want to learn"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Fixed Submit Button at Bottom -->
+                    <div class="p-4 border-t" style="border-color: #e9ecef; background-color: #f8f9fa;">
                         <button type="submit" 
-                                class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors mt-6">
-                            Add Skill
+                                form="add-skill-form"
+                                class="w-full text-white p-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl" 
+                                style="background: linear-gradient(to right, #668a8d, #4a6c6f);">
+                            <span class="submit-text text-lg font-medium">Add Skill</span>
+                            <svg class="w-5 h-5 loading-icon hidden animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
                         </button>
-                    </form>
+                    </div>
                 </div>
             `;
+            
+            // Add form progress tracking
+            const form = document.getElementById("add-skill-form");
+            const progressBar = form.querySelector(".progress-bar");
+            const progressText = form.querySelector(".text-sm.font-medium:last-of-type");
+            const inputs = form.querySelectorAll("input, select, textarea");
+
+            function updateProgress() {
+                const filledInputs = Array.from(inputs).filter(input => input.value.trim() !== "");
+                const progress = (filledInputs.length / inputs.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `${Math.round(progress)}%`;
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener("input", updateProgress);
+                input.addEventListener("change", updateProgress);
+            });
             
             // Form submission handler
             document.getElementById("add-skill-form").addEventListener("submit", async (e) => {
