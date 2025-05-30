@@ -186,8 +186,16 @@ nav {
     font-weight: bold;
 }
 
-
 </style>
+<script>
+    function logout() {
+        // Remove the auth token from localStorage
+        localStorage.removeItem('token');
+        // Redirect to login page (or homepage)
+        window.location.href = './auth-system.html';
+    }
+</script>
+
 <body class="bg-gray-100">
     <header class="bg-white shadow">
         <nav>
@@ -210,7 +218,7 @@ nav {
                     <!-- Auth Buttons - Right aligned -->
                     <div class="hidden md:flex items-center space-x-4">
                         <a href="./auth-system.html" class="btn btn-secondary">Login</a>
-                        <button class="btn btn-primary">Sign Up</button>
+                        <button onclick="logout()" class="btn btn-primary">Log Out</button>
                     </div>
                     
                     <!-- Mobile menu button -->
@@ -233,7 +241,7 @@ nav {
                         <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">CV</a>
                         <div class="pt-4 border-t border-gray-200">
                             <a href="./auth-system.html" class="block w-full px-4 py-2 text-center rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">Login</a>
-                            <button class="block w-full mt-2 px-4 py-2 text-center rounded-md bg-blue-600 text-white hover:bg-blue-700">Sign Up</button>
+                            <button onclick="logout()" class="block w-full mt-2 px-4 py-2 text-center rounded-md bg-blue-600 text-white hover:bg-blue-700">LogOut</button>
                         </div>
                     </div>
                 </div>
