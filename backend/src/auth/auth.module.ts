@@ -7,13 +7,18 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthController } from './auth.controller';
 import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
+import { MailModule } from 'src/mail/mail.module';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from 'src/users/entities/user.entity';
 
 @Module({
   imports: [
+    SequelizeModule.forFeature([User]),
     UsersModule,
     ConfigModule,
     UsersModule,
     PassportModule,
+    MailModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

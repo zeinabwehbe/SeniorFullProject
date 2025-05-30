@@ -127,6 +127,13 @@ export class User extends Model<User> {
   })
   portfolioUrl: string;
 
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+    field: 'must_change_password',
+  })
+  mustChangePassword: Boolean;
+
   @BeforeCreate
   static async hashPassword(instance: User) {
     if (instance.password) {

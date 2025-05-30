@@ -24,6 +24,7 @@ import { CvModule } from './cv/cv.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ChatbotModule } from './chatbot/chatbot.module';
+import { MailModule } from './mail/mail.module';
 
 const envFilePath: string = getEnvPath(`.`);
 
@@ -77,6 +78,7 @@ const envFilePath: string = getEnvPath(`.`);
     CertificationModule,
     CvModule,
     ChatbotModule,
+    MailModule
   ],
   providers: [
     // Logger is used to log messages, errors, and other information throughout the application.
