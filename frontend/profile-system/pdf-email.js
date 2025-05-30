@@ -40,6 +40,7 @@ async function downloadCV() {
             customMessage,
             // Education section
             education: educationData.map(edu => ({
+                fieldOfStudy: edu.fieldOfStudy,
                 degree: edu.degree,
                 institution: edu.institution,
                 startDate: edu.startYear,
@@ -128,6 +129,7 @@ async function generateAndSendCV(email) {
             customMessage,
             // Education section
             education: educationData.map(edu => ({
+                fieldOfStudy: edu.fieldOfStudy,
                 degree: edu.degree,
                 institution: edu.institution,
                 startDate: edu.startYear,

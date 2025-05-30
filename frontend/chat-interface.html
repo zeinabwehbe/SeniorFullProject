@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat Interface</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+
   <style>
     /* Reset and base styles */
     * {
@@ -41,65 +43,71 @@
       height: 100vh;
       position: relative;
     }
-       
-        /* Navigation */
-        nav {
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
- 
-        .nav-center {
+      
+    .nav-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            gap: 20px;
-            width: 100%;
+            padding: 0 20px;
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        /* Optionally, override .nav-links margin if needed */
-        .nav-links {
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-         
+
         .logo {
-            position: absolute;
-            left: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #2a75bb;
-            max-height: 90px;
+            height: 70px;
             width: auto;
             object-fit: contain;
-            padding-bottom: 10px;
-            padding-left: 70px;
+            position: absolute;
+            left: 20px;
+            z-index: 101;
         }
-        
+
         .nav-links {
-            margin-left: 850px;
-            margin-right: 20px;
             display: flex;
             gap: 20px;
+            margin-left: 120px; /* Space for logo */
+            margin-right: auto;
+            transition: all 0.3s ease;
         }
-        
+
         .nav-links a {
             padding: 10px 12px;
             border-radius: 4px;
-            transition: background-color 0.3s;
-            text-decoration: none; /* Remove underline */
-            color: #425d60;
+            transition: all 0.3s;
+            color: #4a6c6f;
+            white-space: nowrap;
         }
-        
+
         .nav-links a:hover {
             background-color: #f5f5f5;
         }
+
+        /* Mobile menu styles */
+        #mobile-menu-btn {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            #mobile-menu-btn {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+        
+    /* Mobile menu active state */
+    #mobile-menu.active {
+        display: block;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
         
         .auth-buttons {
              gap: 10px;
@@ -488,60 +496,97 @@
     }
   </style>
 </head>
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-      const navLinks = document.querySelector('.nav-links');
-      const authButtons = document.querySelector('.auth-buttons');
-      
-      // Check if the user is authorized
-      const token = localStorage.getItem('token');
-      
-      if (token) {
-            // User is authorized, show "CV Profile", "Chatbot", "Marketplace", and "Logout"
-          navLinks.innerHTML = `
-          <div style="display: flex; align-items: center; width: 100%;">
-              <div style="flex:1"></div>
-              <div style="display: flex; justify-content: center; flex:2; gap: 20px;">
-                  <a href="../homepage.html" >Home</a>
-                  <a href="../skill-marketplace.html">Marketplace</a>
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
 
-                  <a href="profile-system/cv-profile-system.html">CV Profile</a>
-                  <a href="../chat-interface.html"  style="pointer-events: none; color: #2a75bb;">Chatbot</a>
-              </div>
-              <div style="flex:1; display: flex; justify-content: flex-end;">
-                  <button class="btn btn-primary" onclick="logout()">Logout</button>
-              </div>
-          </div>
-          `;
+      // Toggle menu on button click
+      mobileMenuBtn.addEventListener('click', function(e) {
+          e.stopPropagation(); // Prevent event from bubbling up
+          mobileMenu.classList.toggle('hidden');
+          // You can keep or remove the 'active' class toggle depending on your CSS animation setup
+          // mobileMenu.classList.toggle('active');
+      });
 
-      } else {
-          // User is not authorized, show "Marketplace", "Login", and "Sign Up"
-          navLinks.innerHTML = `
-          <div style="display: flex; align-items: center; width: 100%;">
-          </div>`;
+      // Close menu when clicking on a link inside the menu
+      const mobileLinks = mobileMenu.querySelectorAll('a, button'); // Include buttons like Sign Up
+      mobileLinks.forEach(link => {
+          link.addEventListener('click', function() {
+              mobileMenu.classList.add('hidden');
+              // mobileMenu.classList.remove('active'); // Remove active class if used
+          });
+      });
+
+      // Close menu when clicking anywhere else on the page
+      document.addEventListener('click', function(e) {
+          // Check if the click is outside the menu AND outside the menu button
+          // And check if the menu is currently NOT hidden
+          if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
+              mobileMenu.classList.add('hidden');
+              // mobileMenu.classList.remove('active'); // Remove active class if used
           }
-        });
+      });
+  });
 
-  function logout() {
-      // Remove token from localStorage and refresh the page
-      localStorage.removeItem('token');
-      location.reload();
-  }
+    function logout() {
+        // Remove the auth token from localStorage
+        localStorage.removeItem('token');
+        // Redirect to login page (or homepage)
+        window.location.href = './auth-system.html';
+    }
 </script>
+
 <!-- Navigation -->
-<nav>
-  <div class="container nav-container">
-      <img src="..\assets\images\M1-proj-logo-trans.png" alt="SkillSwap Logo" class="logo" style="max-height: 70px; width: auto;">
-      <div class="nav-links">
-          <!-- Links will be dynamically inserted here -->
-      </div>
-      <div class="auth-buttons">
-          <!-- Buttons will be dynamically inserted here -->
-      </div>
-  </div>
-</nav>
-<body>
+<body class="bg-gray-100">
+  <!-- Updated Navigation -->
+  <header class="bg-white shadow">
+      <nav>
+          <div class="container mx-auto px-4">
+              <div class="flex items-center justify-between">
+                  <!-- Logo on far left -->
+                  <div class="flex-shrink-0">
+                      <img src="assets/images/M1-proj-logo-trans.png" alt="SkillSwap Logo" class="h-16 w-auto">
+                  </div>
+                  
+                  <!-- Navigation Links - Center aligned -->
+                  <div class="hidden md:flex items-center space-x-8">
+                      <a href="homepage.html" class="text-gray-700 hover:text-blue-600">Home</a>
+                      <a href="skill-marketplace.html" class="text-gray-700 hover:text-blue-600">Marketplace</a>
+                      <a href="profile-system/cv-profile-system.html" class="text-gray-700 hover:text-blue-600">CV Profile</a>
+                      <a href="./chat-interface.html" class="chat-color font-medium">Chat</a>
+                  </div>
+                  
+                  <!-- Auth Buttons - Right aligned -->
+                  <div class="hidden md:flex items-center space-x-4">
+                      <a href="./auth-system.html" class="btn btn-secondary">Login</a>
+                      <button onclick="logout()" class="btn btn-primary">Log Out</button>
+                  </div>
+                  
+                  <!-- Mobile menu button -->
+                  <button class="md:hidden text-gray-700 focus:outline-none" id="mobile-menu-btn">
+                      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                      </svg>
+                  </button>
+              </div>
+              
+                        <!-- Mobile menu -->
+                        <div class="md:hidden hidden" id="mobile-menu">
+                          <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                              <a href="homepage.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Home</a>
+                              <a href="skill-marketplace.html" class="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:bg-blue-50">Marketplace</a>
+                              <a href="profile-system/cv-profile-system.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">CV Profile</a>
+                              <a href="./chat-interface.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Chat</a>
+                              <div class="pt-4 border-t border-gray-200">
+                                  <a href="./auth-system.html" class="block w-full px-4 py-2 text-center rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">Login</a>
+                                  <button onclick="logout()" class="block w-full mt-2 px-4 py-2 text-center rounded-md bg-blue-600 text-white hover:bg-blue-700">LogOut</button>
+                              </div>
+                          </div>
+                      </div>
+          </div>
+      </nav>
+  </header>
   <div class="chat-container">
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
@@ -563,9 +608,10 @@
       
       <div class="sidebar-footer">
         <button class="settings-button" id="advancedSettingsBtn">
+          <!-- Corrected SVG path for settings icon -->
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 .51l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
           </svg>
           Advanced Settings
         </button>
