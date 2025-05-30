@@ -372,121 +372,173 @@
       </nav>
   </header>    
 
-  
+  <!-- Auth Container -->
   <div class="auth-container" id="authContainer">
-      <div class="auth-card">
+    <div class="auth-card">
         <div class="auth-switch">
-          <div class="auth-switch-btn active" id="loginSwitch">Login</div>
-          <div class="auth-switch-btn" id="signupSwitch">Sign Up</div>
+            <div class="auth-switch-btn active" id="loginSwitch">Login</div>
+            <div class="auth-switch-btn" id="signupSwitch">Sign Up</div>
         </div>
 
         <!-- Login Form -->
         <div id="loginForm">
-          <div class="auth-header">
-            <h2>Welcome Back</h2>
-            <p>Sign in to your account</p>
-          </div>
-
-          <div class="alert alert-danger hidden" id="loginAlert"></div>
-
-          <form id="loginFormElement">
-            <div class="form-group">
-              <label for="loginEmail">Email Address</label>
-              <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email" required>
+            <div class="auth-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to your account</p>
             </div>
-            <div class="form-group">
-              <label for="loginPassword">Password</label>
-              <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
-              <div class="d-flex justify-between mt-3">
-                <a href="#" class="forgot-password" id="forgotPasswordLink">Forgot Password?</a>
-              </div>
-            </div>
-            <button type="submit" class="btn">Sign In</button>
-          </form>
+
+            <div class="alert alert-danger hidden" id="loginAlert"></div>
+
+            <form id="loginFormElement">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                    <div class="d-flex justify-between mt-3">
+                        <a href="#" class="forgot-password" id="forgotPasswordLink">Forgot Password?</a>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
         </div>
 
         <!-- Sign Up Form -->
         <div id="signupForm" class="hidden">
-          <div class="auth-header">
-            <h2>Create Account</h2>
-            <p>Join us today</p>
-          </div>
+            <div class="auth-header">
+                <h2>Create Account</h2>
+                <p>Join us today</p>
+            </div>
 
-          <div class="alert alert-danger hidden" id="signupAlert"></div>
+            <div class="alert alert-danger hidden" id="signupAlert"></div>
 
-          <form id="signupFormElement">
-            <div class="form-group">
-              <label for="signupName">Full Name</label>
-              <input type="text" class="form-control" id="signupName" placeholder="Enter your full name" required>
-            </div>
-            <div class="form-group">
-              <label for="bio">Bio</label>
-              <input type="text" class="form-control" id="bio" placeholder="Enter about yourself" required>
-            </div>
-            <div class="form-group">
-              <label for="signupEmail">Email Address</label>
-              <input type="email" class="form-control" id="signupEmail" placeholder="Enter your email" required>
-            </div>
-            <div class="form-group">
-              <label for="signupPassword">Password</label>
-              <input type="password" class="form-control" id="signupPassword" placeholder="Create a password" required>
-            </div>
-            <div class="form-group">
-              <label for="signupConfirmPassword">Confirm Password</label>
-              <input type="password" class="form-control" id="signupConfirmPassword" placeholder="Confirm your password" required>
-            </div>
-            <button type="submit" class="btn">Create Account</button>
-          </form>
+            <form id="signupFormElement">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" class="form-control" id="signupName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <input type="text" class="form-control" id="bio" placeholder="Enter about yourself" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" class="form-control" id="signupEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" class="form-control" id="signupPassword" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" class="form-control" id="signupConfirmPassword" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="btn">Create Account</button>
+            </form>
         </div>
 
         <!-- Forgot Password Form -->
         <div id="forgotPasswordForm" class="hidden">
-          <div class="auth-header">
-            <h2>Forgot Password</h2>
-            <p>We'll send you a reset link</p>
-          </div>
-
-          <div class="alert alert-danger hidden" id="forgotAlert"></div>
-          <div class="alert alert-success hidden" id="forgotSuccess"></div>
-
-          <form id="forgotPasswordFormElement">
-            <div class="form-group">
-              <label for="forgotEmail">Email Address</label>
-              <input type="email" class="form-control" id="forgotEmail" placeholder="Enter your email" required>
+            <div class="auth-header">
+                <h2>Forgot Password</h2>
+                <p>We'll send you a reset link</p>
             </div>
-            <button type="submit" class="btn">Reset Password</button>
-            <div class="text-center mt-3">
-              <a href="#" class="forgot-password" id="backToLoginLink">Back to Login</a>
-            </div>
-          </form>
+
+            <div class="alert alert-danger hidden" id="forgotAlert"></div>
+            <div class="alert alert-success hidden" id="forgotSuccess"></div>
+
+            <form id="forgotPasswordFormElement">
+                <div class="form-group">
+                    <label for="forgotEmail">Email Address</label>
+                    <input type="email" class="form-control" id="forgotEmail" placeholder="Enter your email" required>
+                </div>
+                <button type="submit" class="btn">Send Reset Link</button>
+                <div class="text-center mt-3">
+                    <a href="#" class="forgot-password" id="backToLoginLink">Back to Login</a>
+                </div>
+            </form>
         </div>
-      </div>
-    </div>
 
-    <!-- Protected Content -->
-    <div id="homeContent" class="hidden">
-      <h1>Welcome to the App</h1>
-      <p>This is the home page. You're authenticated!</p>
-    </div>
+        <!-- Reset Password Form -->
+        <div id="resetPasswordForm" class="hidden">
+            <div class="auth-header">
+                <h2>Reset Password</h2>
+                <p>Enter your current and new password</p>
+            </div>
 
-    <div id="profileContent" class="hidden">
-      <h1>Your Profile</h1>
-      <div id="userInfo">
+            <div class="alert alert-danger hidden" id="resetAlert"></div>
+            <div class="alert alert-success hidden" id="resetSuccess"></div>
+
+            <form id="resetPasswordFormElement">
+
+                <div class="form-group">
+                    <label for="oldPassword">Current Password</label>
+                    <input type="password" class="form-control" id="oldPassword" placeholder="Enter your current password" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" class="form-control" id="newPassword" placeholder="Enter your new password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmNewPassword">Confirm New Password</label>
+                    <input type="password" class="form-control" id="confirmNewPassword" placeholder="Confirm your new password" required>
+                </div>
+                <button type="submit" class="btn">Update Password</button>
+                <div class="text-center mt-3">
+                    <a href="#" class="forgot-password" id="backToLoginFromReset">Back to Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Protected Content -->
+<div id="homeContent" class="hidden">
+    <h1>Welcome to the App</h1>
+    <p>This is the home page. You're authenticated!</p>
+</div>
+
+<div id="profileContent" class="hidden">
+    <h1>Your Profile</h1>
+    <div id="userInfo">
         <p>Loading user information...</p>
-      </div>
     </div>
-  </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
-  <script>
-    
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+<script>
+    // Mobile menu functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuBtn && mobileMenu) {
+            // Toggle menu on button click
+            mobileMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Close menu when clicking on a link inside the menu
+            const mobileLinks = mobileMenu.querySelectorAll('a, button');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // Close menu when clicking anywhere else on the page
+            document.addEventListener('click', function(e) {
+                if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        }
+    });
+
     // DOM Elements
-    const navLinks = document.getElementById('navLinks');
-    const loginLink = document.getElementById('loginLink');
-    const logoutLink = document.getElementById('logoutLink');
-    const profileLink = document.getElementById('profileLink');
-    const homeLink = document.getElementById('homeLink');
-    
     const authContainer = document.getElementById('authContainer');
     const homeContent = document.getElementById('homeContent');
     const profileContent = document.getElementById('profileContent');
@@ -496,18 +548,23 @@
     const loginForm = document.getElementById('loginForm');
     const signupForm = document.getElementById('signupForm');
     const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const resetPasswordForm = document.getElementById('resetPasswordForm');
     
     const loginFormElement = document.getElementById('loginFormElement');
     const signupFormElement = document.getElementById('signupFormElement');
     const forgotPasswordFormElement = document.getElementById('forgotPasswordFormElement');
+    const resetPasswordFormElement = document.getElementById('resetPasswordFormElement');
     
     const forgotPasswordLink = document.getElementById('forgotPasswordLink');
     const backToLoginLink = document.getElementById('backToLoginLink');
+    const backToLoginFromReset = document.getElementById('backToLoginFromReset');
     
     const loginAlert = document.getElementById('loginAlert');
     const signupAlert = document.getElementById('signupAlert');
     const forgotAlert = document.getElementById('forgotAlert');
     const forgotSuccess = document.getElementById('forgotSuccess');
+    const resetAlert = document.getElementById('resetAlert');
+    const resetSuccess = document.getElementById('resetSuccess');
     
     const userInfo = document.getElementById('userInfo');
 
@@ -516,92 +573,94 @@
     const LOGIN_URL = `${API_URL}/auth/login`;
     const SIGNUP_URL = `${API_URL}/users/register`;
     const FORGOT_PASSWORD_URL = `${API_URL}/auth/forgot-password`;
+    const RESET_PASSWORD_URL = `${API_URL}/auth/change-password`;
 
-
-
-    // Auth switch
+    // Auth switch functionality
     loginSwitch.addEventListener('click', () => {
-      loginSwitch.classList.add('active');
-      signupSwitch.classList.remove('active');
-      loginForm.classList.remove('hidden');
-      signupForm.classList.add('hidden');
-      forgotPasswordForm.classList.add('hidden');
-      clearAlerts();
+        switchToForm('login');
     });
 
     signupSwitch.addEventListener('click', () => {
-      signupSwitch.classList.add('active');
-      loginSwitch.classList.remove('active');
-      signupForm.classList.remove('hidden');
-      loginForm.classList.add('hidden');
-      forgotPasswordForm.classList.add('hidden');
-      clearAlerts();
+        switchToForm('signup');
     });
 
-    // Forgot password link
+    // Navigation links
     forgotPasswordLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      loginForm.classList.add('hidden');
-      forgotPasswordForm.classList.remove('hidden');
-      clearAlerts();
+        e.preventDefault();
+        switchToForm('forgot');
     });
 
-    // Back to login link
     backToLoginLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      forgotPasswordForm.classList.add('hidden');
-      loginForm.classList.remove('hidden');
-      clearAlerts();
+        e.preventDefault();
+        switchToForm('login');
     });
 
-    // Form Submissions
+    backToLoginFromReset.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchToForm('login');
+    });
+
+    // Form submissions
     loginFormElement.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value;
-      const password = document.getElementById('loginPassword').value;
-      login(email, password);
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        login(email, password);
     });
 
     signupFormElement.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = document.getElementById('signupName').value;
-      const bio = document.getElementById('bio').value;
-      const email = document.getElementById('signupEmail').value;
-      const password = document.getElementById('signupPassword').value;
-      const confirmPassword = document.getElementById('signupConfirmPassword').value;
+        e.preventDefault();
+        const name = document.getElementById('signupName').value;
+        const bio = document.getElementById('bio').value;
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('signupConfirmPassword').value;
 
-      if (password !== confirmPassword) {
-        showAlert(signupAlert, 'Passwords do not match');
-        return;
-      }
+        if (password !== confirmPassword) {
+            showAlert(signupAlert, 'Passwords do not match');
+            return;
+        }
 
-      signup(name, email, password);
+        signup(name, email, password, bio);
     });
 
     forgotPasswordFormElement.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('forgotEmail').value;
-      forgotPassword(email);
+        e.preventDefault();
+        const email = document.getElementById('forgotEmail').value;
+        forgotPassword(email);
+    });
+
+    resetPasswordFormElement.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = localStorage.getItem('resetEmail').value;
+        const oldPassword = document.getElementById('oldPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+        if (newPassword !== confirmNewPassword) {
+            showAlert(resetAlert, 'New passwords do not match');
+            return;
+        }
+        resetPassword(localStorage.getItem('resetEmail'), oldPassword, newPassword);
     });
 
     // Authentication Functions
-    async function signup(name, email, password) {
+    async function signup(name, email, password, bio) {
         try {
             const response = await fetch(SIGNUP_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name, email, password }),
+                body: JSON.stringify({ name, email, password, bio }),
             });
-    
+
             const data = await response.json();
-    
+
             if (!response.ok) {
                 throw new Error(data.message || 'Signup failed');
             }
-    
-            // Optionally, you can log the user in automatically after signup
+
             localStorage.setItem('token', data.access_token);
             window.location.href = "./homepage.html";
         } catch (error) {
@@ -609,7 +668,6 @@
         }
     }
 
-    // Authentication Functions
     async function login(email, password) {
         try {
             const response = await fetch(LOGIN_URL, {
@@ -619,30 +677,95 @@
                 },
                 body: JSON.stringify({ email, password }),
             });
-    
+
             const data = await response.json();
-    
+
             if (!response.ok) {
                 throw new Error(data.message || 'Login failed');
             }
-    
-            // Save only the token in local storage
+
             localStorage.setItem('token', data.access_token);
-    
             window.location.href = "./homepage.html";
         } catch (error) {
             showAlert(loginAlert, error.message);
         }
     }
-    
+
+    async function forgotPassword(email) {
+        try {
+            const response = await fetch(FORGOT_PASSWORD_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to send reset email');
+            }
+
+            showAlert(forgotSuccess, 'Reset email sent successfully! Please check your email.', 'success');
+            
+            // Store email for password reset and redirect after 2 seconds
+            localStorage.setItem('resetEmail', email);
+            setTimeout(() => {
+                switchToForm('reset');
+            }, 2000);
+
+        } catch (error) {
+            showAlert(forgotAlert, error.message);
+        }
+    }
+
+    async function resetPassword(email,oldPassword, newPassword) {
+        
+        try {
+          const response = await fetch(RESET_PASSWORD_URL, {
+                method: 'POST',
+                headers: { // Add this headers object
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  email: String(email),
+                  oldPassword: String(oldPassword),
+                    newPassword: String(newPassword)
+                }),
+                
+            });
+            console.log("Sending:", {
+    email: String(email),
+    oldPassword: String(oldPassword),
+    newPassword: String(newPassword)
+});
+
+            console.log(oldPassword)
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Password reset failed');
+            }
+
+            showAlert(resetSuccess, 'Password updated successfully!', 'success');
+            localStorage.removeItem('resetEmail');
+            setTimeout(() => {
+                switchToForm('login');
+            }, 2000);
+
+        } catch (error) {
+            showAlert(resetAlert, error.message);
+        }
+    }
+
     async function fetchUserProfile() {
         const token = localStorage.getItem('token');
         if (!token) return;
-    
-        // Decode the JWT to extract user information
+
         const decodedToken = jwt_decode(token);
-        const userId = decodedToken.sub; // Extract userId from the token
-    
+        const userId = decodedToken.sub;
+
         try {
             const response = await fetch(`${API_URL}/users/${userId}`, {
                 method: 'GET',
@@ -651,17 +774,17 @@
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             const data = await response.json();
-    
+
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to fetch profile');
             }
-    
+
             userInfo.innerHTML = `
-              <p><strong>Name:</strong> ${data.name}</p>
-              <p><strong>Email:</strong> ${data.email}</p>
-              <p><strong>Role:</strong> ${data.role}</p>
+                <p><strong>Name:</strong> ${data.name}</p>
+                <p><strong>Email:</strong> ${data.email}</p>
+                <p><strong>Role:</strong> ${data.role}</p>
             `;
         } catch (error) {
             userInfo.innerHTML = `<p class="alert alert-danger">Error: ${error.message}</p>`;
@@ -669,68 +792,74 @@
     }
 
     function logout() {
-      localStorage.removeItem('token');
-      updateAuthUI(false);
-      showPage('login');
+        localStorage.removeItem('token');
+        localStorage.removeItem('resetEmail');
+        window.location.href = "./auth-system.html";
     }
 
     // Helper Functions
-    function isAuthenticated() {
-      return !!localStorage.getItem('token');
-     }
-
-    function updateAuthUI(isLoggedIn) {
-      if (isLoggedIn) {
-        loginLink.classList.add('hidden');
-        logoutLink.classList.remove('hidden');
-        profileLink.classList.remove('hidden');
-      } else {
-        loginLink.classList.remove('hidden');
-        logoutLink.classList.add('hidden');
-        profileLink.classList.add('hidden');
-      }
-    }
-
-    function showPage(page) {
-      authContainer.classList.add('hidden');
-      homeContent.classList.add('hidden');
-      profileContent.classList.add('hidden');
-
-      homeLink.classList.remove('active');
-      profileLink.classList.remove('active');
-      loginLink.classList.remove('active');
-
-      switch (page) {
-        case 'home':
-          homeContent.classList.remove('hidden');
-          homeLink.classList.add('active');
-          break;
-        case 'profile':
-          profileContent.classList.remove('hidden');
-          profileLink.classList.add('active');
-          break;
-        case 'login':
-          authContainer.classList.remove('hidden');
-          loginLink.classList.add('active');
-          break;
-      }
+    function switchToForm(formType) {
+        // Hide all forms
+        loginForm.classList.add('hidden');
+        signupForm.classList.add('hidden');
+        forgotPasswordForm.classList.add('hidden');
+        resetPasswordForm.classList.add('hidden');
+        
+        // Reset switch buttons
+        loginSwitch.classList.remove('active');
+        signupSwitch.classList.remove('active');
+        
+        // Clear all alerts
+        clearAlerts();
+        
+        // Show appropriate form
+        switch (formType) {
+            case 'login':
+                loginForm.classList.remove('hidden');
+                loginSwitch.classList.add('active');
+                break;
+            case 'signup':
+                signupForm.classList.remove('hidden');
+                signupSwitch.classList.add('active');
+                break;
+            case 'forgot':
+                forgotPasswordForm.classList.remove('hidden');
+                break;
+            case 'reset':
+                resetPasswordForm.classList.remove('hidden');
+                break;
+        }
     }
 
     function showAlert(alertElement, message, type = 'danger') {
-      alertElement.textContent = message;
-      alertElement.classList.remove('hidden', 'alert-danger', 'alert-success');
-      alertElement.classList.add(type === 'danger' ? 'alert-danger' : 'alert-success');
+        alertElement.textContent = message;
+        alertElement.classList.remove('hidden', 'alert-danger', 'alert-success');
+        alertElement.classList.add(type === 'danger' ? 'alert-danger' : 'alert-success');
     }
 
     function clearAlerts() {
-      loginAlert.classList.add('hidden');
-      signupAlert.classList.add('hidden');
-      forgotAlert.classList.add('hidden');
-      forgotSuccess.classList.add('hidden');
+        const alerts = [loginAlert, signupAlert, forgotAlert, forgotSuccess, resetAlert, resetSuccess];
+        alerts.forEach(alert => {
+            if (alert) {
+                alert.classList.add('hidden');
+            }
+        });
     }
 
+    function isAuthenticated() {
+        return !!localStorage.getItem('token');
+    }
 
-
-  </script>
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user came from forgot password flow
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+        
+        if (action === 'reset' && localStorage.getItem('resetEmail')) {
+            switchToForm('reset');
+        }
+    });
+</script>
 </body>
 </html>

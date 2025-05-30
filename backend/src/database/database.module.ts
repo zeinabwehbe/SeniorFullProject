@@ -34,7 +34,7 @@ import { Certification } from 'src/certifications/entities/certification.entity'
         password: configService.get<string>('DB_PASS'),
         database: configService.get<string>('DB_NAME'),
         models: [
-          User, Review, Category, Skill, UserSkill, Education, Experience, Project, Certification
+          User, Review, Category, Skill, UserSkill, Education, Experience, Project, Certification,
         ],
         autoLoadModels: true,
         synchronize: true, // Set to false in production!

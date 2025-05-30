@@ -59,4 +59,6 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   portfolioUrl?: string;
+
+  mustChangePassword?: boolean;
 }
