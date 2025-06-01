@@ -11,12 +11,5 @@
       "src": "/api/(.*)",
       "dest": "src/main.ts"
     }
-  ],
-  "build": {
-    "env": {},
-    "commands": [
-      "npm install --legacy-peer-deps",
-      "npm run build"
-    ]
-  }
+  ]
 }
