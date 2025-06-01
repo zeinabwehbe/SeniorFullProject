@@ -7,9 +7,10 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Enable CORS
+  // Configure CORS to allow requests from your GitHub Pages frontend
   app.enableCors({
-    origin: true, // Allow all origins in development
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: ['https://zeinabwehbe.github.io', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
   });
 
@@ -20,7 +21,11 @@ async function bootstrap() {
   // Serve static files from the frontend build
   app.useStaticAssets(
     join(__dirname, '..', '..', 'frontend', 'dist'),
+    {
+      index: 'homepage.html',
+      prefix: '/'
+    }
   );
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
