@@ -40,13 +40,19 @@ async function createApp() {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (!cachedServer) {
-    const app = await createApp();
-    const expressApp = app.getHttpAdapter().getInstance();
-    cachedServer = serverless(expressApp);
+  try {
+    if (!cachedServer) {
+      const app = await createApp();
+      const expressApp = app.getHttpAdapter().getInstance();
+      cachedServer = serverless(expressApp);
+    }
+    return cachedServer(req, res);
+  } catch (error) {
+    console.error('Handler error:', error);
+    res.status(500).send('Internal Server Error');
   }
-  return cachedServer(req, res);
 }
+
 
 // For local development:
 if (process.env.VERCEL !== '1') {
