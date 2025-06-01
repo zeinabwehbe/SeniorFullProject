@@ -76,43 +76,43 @@
                     method: method,
                     headers: {
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    credentials: 'include'  // Important for cookies/auth
                 };
                 
                 if (method === 'POST') {
                     options.body = JSON.stringify({
                         "email": "zaynab-wehbe@hotmail.com",
-                        "password":"12345"
+                        "password": "12345"
                     });
                 }
                 
-                const response = await fetch(endpoint, options);
+                // Use absolute URL for testing
+                const baseUrl = window.location.origin;
+                const response = await fetch(`${baseUrl}${endpoint}`, options);
                 
-                // Handle both JSON and text responses
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    const errorData = await response.json().catch(() => null);
+                    throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
                 }
 
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    const data = await response.json();
-                    responseDiv.textContent = JSON.stringify(data, null, 2);
-                } else {
-                    const text = await response.text();
-                    responseDiv.textContent = text;
-                }
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+                
             } catch (error) {
-                if (error.message.includes('404')) {
-                    responseDiv.innerHTML = `Endpoint not found (404)<br><br>
-                        Try these test endpoints:<br>
-                        <ul>
-                            <li>POST /auth/login</li>
-                            <li>POST /auth/forgot-password</li>
-                            <li>POST /auth/change-password</li>
-                        </ul>`;
-                } else {
-                    responseDiv.textContent = `Error: ${error.message}`;
-                }
+                responseDiv.innerHTML = `
+                    <strong>Error:</strong> ${error.message}<br><br>
+                    <strong>Testing Tips:</strong>
+                    <ul>
+                        <li>Ensure vercel.json routes are configured</li>
+                        <li>Check your controller has @Post('login') decorator</li>
+                        <li>Verify your AuthModule is imported in AppModule</li>
+                    </ul>
+                    <strong>Sample curl command:</strong><br>
+                    <code>curl -X POST ${window.location.origin}/auth/login \<br>
+                    -H "Content-Type: application/json" \<br>
+                    -d '{"email":"test@example.com","password":"12345"}'</code>
+                `;
             }
         }
     </script>
