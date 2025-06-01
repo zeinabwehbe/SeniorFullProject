@@ -8,8 +8,16 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "src/main.ts"
+      "src": "/api/(.*)",
+      "dest": "backend/dist/main.js"
+    },
+    {
+      "src": "/users(?:/.*)?",
+      "dest": "backend/dist/main.js"
+    },
+    {
+      "src": "/auth(?:/.*)?",
+      "dest": "backend/dist/main.js"
     }
   ]
 }
