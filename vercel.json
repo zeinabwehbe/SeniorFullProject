@@ -16,7 +16,11 @@
       "dest": "backend/dist/main.js"
     },
     {
-      "src": "/auth/(.*)",
+      "src": "/auth/(.*)", 
+      "dest": "backend/dist/main.js"
+    },
+    {
+      "src": "/users/(.*)",
       "dest": "backend/dist/main.js"
     }
   ]
