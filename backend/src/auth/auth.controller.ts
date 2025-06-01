@@ -12,8 +12,15 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto) {
-    const result = this.authService.login(loginDto.email, loginDto.password);
-    return result;
+    try {
+      const result = await this.authService.login(loginDto.email, loginDto.password);
+      return result;
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Login failed',
+        error.status || HttpStatus.UNAUTHORIZED
+      );
+    }
   }
   
   @Post('forgot-password')
