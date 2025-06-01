@@ -5,31 +5,23 @@ import { join } from 'path';
 import serverless from 'serverless-http';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-let cachedServer;
+let cachedServer: any;
 
 async function createApp() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  
+
   app.setGlobalPrefix('api');
-  
+
   app.enableCors({
     origin: [
       'https://zeinabwehbe.github.io',
       'http://localhost:3000',
       'https://senior-full-project-bsn1.vercel.app',
       'https://senior-full-project-bsn1.vercel.app:3000',
-      window.location.origin // Allow current deployment domain
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'Accept',
-      'X-Requested-With'
-    ],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
     credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204
   });
 
   app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), {
@@ -44,8 +36,8 @@ async function createApp() {
   return app;
 }
 
-// export this to vercel
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+// ✅ Correctly export as Vercel serverless handler
+export const handler = async (req: VercelRequest, res: VercelResponse) => {
   if (!cachedServer) {
     const app = await createApp();
     await app.init();
@@ -53,9 +45,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     cachedServer = serverless(expressApp);
   }
   return cachedServer(req, res);
-}
+};
 
-// Local development
+// ✅ Local development support
 if (process.env.VERCEL !== '1') {
   createApp().then(app =>
     app.listen(process.env.PORT || 3000).then(() => {
