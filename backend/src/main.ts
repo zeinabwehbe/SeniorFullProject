@@ -2,25 +2,57 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import serverless from 'serverless-http';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-async function bootstrap() {
+let cachedServer: ReturnType<typeof serverless>;
+
+async function createApp() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Enable CORS
+  app.setGlobalPrefix('api');
+
   app.enableCors({
-    origin: true, // Allow all origins in development
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: [
+      'https://zeinabwehbe.github.io',
+      'http://localhost:3000',
+      'https://senior-full-project-bsn1.vercel.app',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
     credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
-  // Serve static files from the uploads directory
   app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), {
     prefix: '/users/profile-picture/',
   });
-  // Serve static files from the frontend build
-  app.useStaticAssets(
-    join(__dirname, '..', '..', 'frontend', 'dist'),
-  );
-  await app.listen(3000);
+
+  app.useStaticAssets(join(__dirname, '..', '..', 'frontend', 'dist'), {
+    index: 'homepage.html',
+    prefix: '/',
+  });
+
+  await app.init(); // Important for serverless
+
+  return app;
 }
-bootstrap();
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (!cachedServer) {
+    const app = await createApp();
+    const expressApp = app.getHttpAdapter().getInstance();
+    cachedServer = serverless(expressApp);
+  }
+  return cachedServer(req, res);
+}
+
+// For local development:
+if (process.env.VERCEL !== '1') {
+  createApp().then(app => {
+    app.listen(process.env.PORT || 3000, () => {
+      console.log(`🚀 Server running on port ${process.env.PORT || 3000}`);
+    });
+  });
+}
