@@ -9,11 +9,18 @@ let cachedServer;
 
 async function createApp() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
+  
+  // Ensure this matches your Vercel project settings
+  app.setGlobalPrefix('api');
+  
   app.enableCors({
-    origin: ['https://zeinabwehbe.github.io', 'http://localhost:3000'],
+    origin: [
+      'https://zeinabwehbe.github.io',
+      'http://localhost:3000',
+      'https://senior-full-project-bsn1.vercel.app'
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true,
+    credentials: true
   });
 
   app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), {
