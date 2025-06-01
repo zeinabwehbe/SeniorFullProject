@@ -8,9 +8,12 @@
   ],
   "routes": [
     {
-      "src": "/(.*)", 
-      "dest": "backend/src/main.ts",
-      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH"]
+      "src": "/auth/(.*)",
+      "dest": "backend/src/main.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "backend/public/index.html"
     }
   ]
 }
