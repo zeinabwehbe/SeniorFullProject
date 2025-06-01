@@ -2,8 +2,8 @@ import { Inject, Injectable, InternalServerErrorException, UnauthorizedException
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
-import { MailService } from 'src/mail/mail.service';
-import { UsersRepository } from 'src/users/users.repository';
+import { MailService } from '../mail/mail.service';
+import { UsersRepository } from '../users/users.repository';
 
 @Injectable()
 export class AuthService {

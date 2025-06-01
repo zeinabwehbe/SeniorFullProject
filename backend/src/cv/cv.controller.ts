@@ -2,7 +2,7 @@ import { Body, Controller, HttpException, HttpStatus, Post, Res, UseGuards } fro
 import { CvService } from './cv.service';
 import { SendCvEmailDto } from './dto/send-cv-email.dto';
 import { Response } from 'express';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('cv')
 export class CvController {

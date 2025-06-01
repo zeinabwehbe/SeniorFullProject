@@ -6,7 +6,7 @@ import {
   Table,
   BelongsTo, CreatedAt, UpdatedAt,
 } from 'sequelize-typescript';
-import { Category } from 'src/categories/entities/category.entity';
+import { Category } from '../../categories/entities/category.entity';
 
 export enum ApprovalStatus {
   PENDING = 'PENDING',

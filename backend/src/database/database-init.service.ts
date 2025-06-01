@@ -5,7 +5,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import * as sqlite3 from 'sqlite3';
-// import seedDatabase from 'src/database/scripts/seed';
+// import seedDatabase from './database/scripts/seed';
 
 /**
  * Service responsible for initializing the SQLite database.

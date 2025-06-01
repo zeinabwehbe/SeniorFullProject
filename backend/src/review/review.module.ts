@@ -2,7 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { Review } from './entities/review.entity';
 import { ReviewController } from './review.controller';
 import { ReviewRepository } from './review.repository';

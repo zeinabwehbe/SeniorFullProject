@@ -41,14 +41,10 @@ import { CertificationService } from '../certifications/certification.service';
 import { CreateCertificationDto } from '../certifications/dto/create-certification.dto';
 import { UpdateCertificationDto } from '../certifications/dto/update-certification.dto';
 import { CertificationResponseDto } from '../certifications/dto/certification.response.dto';
-import { CreateSkillDto } from '../skills/dto/create-skill.dto';
-import { UpdateSkillDto } from '../skills/dto/update-skill.dto';
-import { SkillResponseDto } from 'src/skills/dto/skill.response';
-import { SkillsService } from 'src/skills/skills.service';
-import { UserSkillService } from 'src/User_Skill/user-skill.service';
-import { UserSkillResponseDto } from 'src/User_Skill/dto/user-skill.response';
-import { CreateUserSkillDto } from 'src/User_Skill/dto/create-user-skill.dto';
-import { UpdateUserSkillDto } from 'src/User_Skill/dto/update-user-skill.dto';
+import { UserSkillService } from '../User_Skill/user-skill.service';
+import { UserSkillResponseDto } from '../User_Skill/dto/user-skill.response';
+import { CreateUserSkillDto } from '../User_Skill/dto/create-user-skill.dto';
+import { UpdateUserSkillDto } from '../User_Skill/dto/update-user-skill.dto';
 
 @Controller('users')
 export class UsersController {

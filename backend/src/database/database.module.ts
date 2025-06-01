@@ -3,17 +3,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 import { DatabaseInitService } from './database-init.service';
-import { AuthModule } from 'src/auth/auth.module';
-import { UsersModule } from 'src/users/users.module';
-import { User } from 'src/users/entities/user.entity';
-import { Review } from 'src/review/entities/review.entity';
-import { Category } from 'src/categories/entities/category.entity';
-import { UserSkill } from 'src/User_Skill/entitiy/user-skill.entity';
-import { Skill } from 'src/skills/entities/skill.entity';
-import { Education } from 'src/education/entities/education.entity';
-import { Experience } from 'src/experience/entities/experience.entity';
-import { Project } from 'src/projects/entities/project.entity';
-import { Certification } from 'src/certifications/entities/certification.entity';
+import { User } from '../users/entities/user.entity';
+import { Review } from '../review/entities/review.entity';
+import { Category } from '../categories/entities/category.entity';
+import { UserSkill } from '../User_Skill/entitiy/user-skill.entity';
+import { Skill } from '../skills/entities/skill.entity';
+import { Education } from '../education/entities/education.entity';
+import { Experience } from '../experience/entities/experience.entity';
+import { Project } from '../projects/entities/project.entity';
+import { Certification } from '../certifications/entities/certification.entity';
 
 /**
  * The DatabaseModule is responsible for configuring and initializing the database.
