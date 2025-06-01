@@ -72,71 +72,76 @@
             responseDiv.textContent = 'Testing...';
             
             try {
-                // Ensure endpoint starts with /
-                if (!endpoint.startsWith('/')) {
-                    endpoint = '/' + endpoint;
-                }
-
+                // Normalize endpoint path
+                if (!endpoint.startsWith('/')) endpoint = '/' + endpoint;
+                
                 const options = {
                     method: method,
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     credentials: 'include'
                 };
                 
                 if (method === 'POST') {
                     options.body = JSON.stringify({
-                        "email": "zaynab-wehbe@hotmail.com",
-                        "password": "12345"
+                        email: "zaynab-wehbe@hotmail.com",
+                        password: "12345"
                     });
                 }
                 
                 const baseUrl = window.location.origin;
-                const fullUrl = `${baseUrl}${endpoint}`;
+                // Try both with and without /api prefix
+                const testUrls = [
+                    `${baseUrl}${endpoint}`,
+                    `${baseUrl}/api${endpoint}`
+                ];
                 
-                // Add debug info
-                responseDiv.textContent += `\n\nTesting URL: ${fullUrl}`;
-                
-                const response = await fetch(fullUrl, options);
-                
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => null);
-                    throw new Error(errorData?.message || 
-                        `HTTP ${response.status} - ${response.statusText}\n` +
-                        `Endpoint: ${fullUrl}\n` +
-                        `Possible fixes:\n` +
-                        `1. Check vercel.json routes\n` +
-                        `2. Verify controller decorators\n` +
-                        `3. Ensure proper CORS configuration`);
+                let lastError = '';
+                for (const url of testUrls) {
+                    try {
+                        responseDiv.textContent = `Testing URL: ${url}`;
+                        const response = await fetch(url, options);
+                        
+                        if (!response.ok) {
+                            const error = await response.json().catch(() => null);
+                            lastError = error?.message || `HTTP ${response.status}`;
+                            continue;
+                        }
+                        
+                        const data = await response.json();
+                        responseDiv.textContent = `Success!\nURL: ${url}\n\n${JSON.stringify(data, null, 2)}`;
+                        return;
+                        
+                    } catch (err) {
+                        lastError = err.message;
+                    }
                 }
-
-                const data = await response.json();
-                responseDiv.textContent = JSON.stringify(data, null, 2);
+                
+                throw new Error(`All endpoints failed. Last error: ${lastError}\n\n` +
+                    `Tried URLs:\n${testUrls.join('\n')}\n\n` +
+                    `Possible solutions:\n` +
+                    `1. Check vercel.json routes configuration\n` +
+                    `2. Verify @Controller() prefix in NestJS\n` +
+                    `3. Ensure proper CORS settings in main.ts`);
                 
             } catch (error) {
                 responseDiv.innerHTML = `
-                    <strong>Error Details:</strong><br>
+                    <strong>Detailed Error:</strong><br>
                     ${error.message}<br><br>
                     
-                    <strong>Testing Tips:</strong>
-                    <ul>
-                        <li>Try both /api/auth/login and /auth/login</li>
-                        <li>Check your vercel.json route configuration</li>
-                        <li>Verify your NestJS controller decorators</li>
-                    </ul>
+                    <strong>Debugging Steps:</strong>
+                    <ol>
+                        <li>Run locally with <code>vercel dev</code> to test</li>
+                        <li>Check Vercel logs with <code>vercel logs</code></li>
+                        <li>Verify all routes in vercel.json</li>
+                    </ol>
                     
-                    <strong>Sample curl commands:</strong><br>
-                    <code>
-                    curl -X POST ${window.location.origin}/api/auth/login \<br>
+                    <strong>Sample Verification Commands:</strong><br>
+                    <code>curl -v -X POST ${window.location.origin}/auth/login \<br>
                     -H "Content-Type: application/json" \<br>
-                    -d '{"email":"test@example.com","password":"12345"}'
-                    </code><br><br>
-                    <code>
-                    curl -X POST ${window.location.origin}/auth/login \<br>
-                    -H "Content-Type: application/json" \<br>
-                    -d '{"email":"test@example.com","password":"12345"}'
-                    </code>
+                    -d '{"email":"test@example.com","password":"12345"}'</code>
                 `;
             }
         }
