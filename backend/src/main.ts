@@ -3,9 +3,9 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import serverless from 'serverless-http';
-import { Handler, Context, Callback } from 'aws-lambda';
+import { VercelRequest, VercelResponse } from '@vercel/node';
 
-let cachedServer: Handler;
+let cachedServer;
 
 async function createApp() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -28,22 +28,18 @@ async function createApp() {
   return app;
 }
 
-// ✅ Export this for Vercel
-export const handler: Handler = async (
-  event: any,
-  context: Context,
-  callback: Callback
-) => {
+// export this to vercel
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!cachedServer) {
     const app = await createApp();
     await app.init();
     const expressApp = app.getHttpAdapter().getInstance();
     cachedServer = serverless(expressApp);
   }
-  return cachedServer(event, context, callback);
-};
+  return cachedServer(req, res);
+}
 
-// ✅ Run this only if local (not on Vercel)
+// Local development
 if (process.env.VERCEL !== '1') {
   createApp().then(app =>
     app.listen(process.env.PORT || 3000).then(() => {
