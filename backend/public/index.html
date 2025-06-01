@@ -23,6 +23,23 @@
             padding: 10px 15px;
             margin: 20px 0;
         }
+        .endpoint-tester {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .endpoint-tester input, .endpoint-tester button {
+            padding: 8px;
+            margin: 5px 0;
+        }
+        .response {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            min-height: 50px;
+        }
     </style>
 </head>
 <body>
@@ -32,5 +49,47 @@
     </div>
     <p>This is the backend server for the SkillUp application.</p>
     <p>For frontend access, please visit: <a href="https://zeinabwehbe.github.io/SeniorFullProject/frontend/homepage">SkillUp Frontend</a></p>
+    
+    <div class="endpoint-tester">
+        <h2>API Endpoint Tester</h2>
+        <div>
+            <select id="method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+            </select>
+            <input type="text" id="endpoint" placeholder="/api/endpoint" style="width: 300px;">
+            <button onclick="testEndpoint()">Test</button>
+        </div>
+        <div class="response" id="apiResponse">Response will appear here</div>
+    </div>
+
+    <script>
+        async function testEndpoint() {
+            const method = document.getElementById('method').value;
+            const endpoint = document.getElementById('endpoint').value;
+            const responseDiv = document.getElementById('apiResponse');
+            
+            responseDiv.textContent = 'Testing...';
+            
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (method === 'POST') {
+                    options.body = JSON.stringify({ /* Add test data if needed */ });
+                }
+                
+                const response = await fetch(endpoint, options);
+                const data = await response.json();
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
 </body>
 </html>
