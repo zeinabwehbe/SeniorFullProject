@@ -2,30 +2,52 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import serverless from 'serverless-http';
+import { Handler, Context, Callback } from 'aws-lambda';
 
-async function bootstrap() {
+let cachedServer: Handler;
+
+async function createApp() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Enable CORS
-  // Configure CORS to allow requests from your GitHub Pages frontend
   app.enableCors({
     origin: ['https://zeinabwehbe.github.io', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
   });
 
-  // Serve static files from the uploads directory
   app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), {
     prefix: '/users/profile-picture/',
   });
-  // Serve static files from the frontend build
-  app.useStaticAssets(
-    join(__dirname, '..', '..', 'frontend', 'dist'),
-    {
-      index: 'homepage.html',
-      prefix: '/'
-    }
-  );
-  await app.listen(process.env.PORT || 3000);
+
+  app.useStaticAssets(join(__dirname, '..', '..', 'frontend', 'dist'), {
+    index: 'homepage.html',
+    prefix: '/',
+  });
+
+  return app;
 }
-bootstrap();
+
+// ✅ Vercel calls this handler
+export const handler: Handler = async (
+  event: any,
+  context: Context,
+  callback: Callback
+) => {
+  if (!cachedServer) {
+    const app = await createApp();
+    await app.init();
+    const expressApp = app.getHttpAdapter().getInstance();
+    cachedServer = serverless(expressApp);
+  }
+  return cachedServer(event, context, callback);
+};
+
+// ✅ Local development entry point
+if (process.env.VERCEL !== '1') {
+  createApp().then(app =>
+    app.listen(process.env.PORT || 3000).then(() => {
+      console.log('🚀 Server running locally...');
+    }),
+  );
+}
