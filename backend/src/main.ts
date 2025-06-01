@@ -21,8 +21,6 @@ async function createApp() {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
     credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
   });
 
   app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), {
@@ -34,7 +32,7 @@ async function createApp() {
     prefix: '/',
   });
 
-  await app.init(); // Important for serverless
+  await app.init(); // Important for serverless deployment
 
   return app;
 }
@@ -48,17 +46,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     return cachedServer(req, res);
   } catch (error) {
-    console.error('Handler error:', error);
+    console.error('Serverless handler error:', error);
     res.status(500).send('Internal Server Error');
   }
 }
 
-
-// For local development:
+// Local dev server
 if (process.env.VERCEL !== '1') {
   createApp().then(app => {
-    app.listen(process.env.PORT || 3000, () => {
-      console.log(`🚀 Server running on port ${process.env.PORT || 3000}`);
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+      console.log(`🚀 Server running on port ${port}`);
     });
   });
 }
