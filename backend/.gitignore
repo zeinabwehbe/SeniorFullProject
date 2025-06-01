@@ -189,3 +189,4 @@ dist
 .db/*
 .db/
 *.sqlite
+.vercel
