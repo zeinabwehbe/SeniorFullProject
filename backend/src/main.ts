@@ -28,7 +28,7 @@ async function createApp() {
   return app;
 }
 
-// ✅ Vercel calls this handler
+// ✅ Export this for Vercel
 export const handler: Handler = async (
   event: any,
   context: Context,
@@ -43,11 +43,11 @@ export const handler: Handler = async (
   return cachedServer(event, context, callback);
 };
 
-// ✅ Local development entry point
+// ✅ Run this only if local (not on Vercel)
 if (process.env.VERCEL !== '1') {
   createApp().then(app =>
     app.listen(process.env.PORT || 3000).then(() => {
-      console.log('🚀 Server running locally...');
+      console.log('🚀 Running locally on port 3000');
     }),
   );
 }
