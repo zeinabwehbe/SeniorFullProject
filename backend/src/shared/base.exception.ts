@@ -1,6 +1,6 @@
 import { HttpException } from '@nestjs/common';
 
-import { StatusEnum } from 'src/shared/response/status.enum';
+import { StatusEnum } from './shared/response/status.enum';
 
 /**
  * Custom exception class that extends HttpException.
