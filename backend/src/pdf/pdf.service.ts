@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as PDFDocument from 'pdfkit';
+import * as PDFKit from 'pdfkit';
+
 
 @Injectable()
 export class PdfService {
@@ -7,7 +8,7 @@ export class PdfService {
 
   async generateCvPdf(cvData: any): Promise<Buffer> {
     return new Promise((resolve) => {
-      const doc = new PDFDocument({ margin: 50 });
+      const doc = new PDFKit.default();
       const chunks: Buffer[] = [];
       
       doc.on('data', (chunk) => chunks.push(chunk));
