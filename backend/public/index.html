@@ -80,7 +80,10 @@
                 };
                 
                 if (method === 'POST') {
-                    options.body = JSON.stringify({ /* Add test data if needed */ });
+                    options.body = JSON.stringify( {
+    "email": "zaynab-wehbe@hotmail.com",
+    "password":"12345"
+ });
                 }
                 
                 const response = await fetch(endpoint, options);
