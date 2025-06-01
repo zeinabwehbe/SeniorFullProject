@@ -47,6 +47,7 @@ export const handler = async (req: VercelRequest, res: VercelResponse) => {
   return cachedServer(req, res);
 };
 
+
 // ✅ Local development support
 if (process.env.VERCEL !== '1') {
   createApp().then(app =>
