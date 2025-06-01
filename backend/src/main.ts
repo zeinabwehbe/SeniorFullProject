@@ -10,7 +10,7 @@ let cachedServer;
 async function createApp() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   
-  // Ensure this matches your Vercel project settings
+  // Add this for Vercel deployment
   app.setGlobalPrefix('api');
   
   app.enableCors({
