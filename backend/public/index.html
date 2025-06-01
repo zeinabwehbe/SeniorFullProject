@@ -66,18 +66,23 @@
     <script>
         async function testEndpoint() {
             const method = document.getElementById('method').value;
-            const endpoint = document.getElementById('endpoint').value;
+            let endpoint = document.getElementById('endpoint').value;
             const responseDiv = document.getElementById('apiResponse');
             
             responseDiv.textContent = 'Testing...';
             
             try {
+                // Ensure endpoint starts with /
+                if (!endpoint.startsWith('/')) {
+                    endpoint = '/' + endpoint;
+                }
+
                 const options = {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    credentials: 'include'  // Important for cookies/auth
+                    credentials: 'include'
                 };
                 
                 if (method === 'POST') {
@@ -87,13 +92,23 @@
                     });
                 }
                 
-                // Use absolute URL for testing
                 const baseUrl = window.location.origin;
-                const response = await fetch(`${baseUrl}${endpoint}`, options);
+                const fullUrl = `${baseUrl}${endpoint}`;
+                
+                // Add debug info
+                responseDiv.textContent += `\n\nTesting URL: ${fullUrl}`;
+                
+                const response = await fetch(fullUrl, options);
                 
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => null);
-                    throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
+                    throw new Error(errorData?.message || 
+                        `HTTP ${response.status} - ${response.statusText}\n` +
+                        `Endpoint: ${fullUrl}\n` +
+                        `Possible fixes:\n` +
+                        `1. Check vercel.json routes\n` +
+                        `2. Verify controller decorators\n` +
+                        `3. Ensure proper CORS configuration`);
                 }
 
                 const data = await response.json();
@@ -101,17 +116,27 @@
                 
             } catch (error) {
                 responseDiv.innerHTML = `
-                    <strong>Error:</strong> ${error.message}<br><br>
+                    <strong>Error Details:</strong><br>
+                    ${error.message}<br><br>
+                    
                     <strong>Testing Tips:</strong>
                     <ul>
-                        <li>Ensure vercel.json routes are configured</li>
-                        <li>Check your controller has @Post('login') decorator</li>
-                        <li>Verify your AuthModule is imported in AppModule</li>
+                        <li>Try both /api/auth/login and /auth/login</li>
+                        <li>Check your vercel.json route configuration</li>
+                        <li>Verify your NestJS controller decorators</li>
                     </ul>
-                    <strong>Sample curl command:</strong><br>
-                    <code>curl -X POST ${window.location.origin}/auth/login \<br>
+                    
+                    <strong>Sample curl commands:</strong><br>
+                    <code>
+                    curl -X POST ${window.location.origin}/api/auth/login \<br>
                     -H "Content-Type: application/json" \<br>
-                    -d '{"email":"test@example.com","password":"12345"}'</code>
+                    -d '{"email":"test@example.com","password":"12345"}'
+                    </code><br><br>
+                    <code>
+                    curl -X POST ${window.location.origin}/auth/login \<br>
+                    -H "Content-Type: application/json" \<br>
+                    -d '{"email":"test@example.com","password":"12345"}'
+                    </code>
                 `;
             }
         }
