@@ -30,6 +30,13 @@ function sendCVToEmail() {
 
 // PDF download function
 async function downloadCV() {
+    const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
+
     try {
         showLoading('Generating PDF...');
         
@@ -120,6 +127,13 @@ async function downloadCV() {
 
 // Remove the duplicate and keep only this version:
 async function generateAndSendCV(email) {
+    const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
+
     try {
         showLoading('Preparing your CV...');
         const customMessage = document.getElementById('customMessage').value;

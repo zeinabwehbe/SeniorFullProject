@@ -313,53 +313,82 @@
 }
 
 .chat-input-container {
-    padding: 26px;
-    border-top: 1px solid var(--gray);
-    background-color: var(--white);
-    position: relative;
-    bottom: 70px;
+  position: fixed;          /* Stick to bottom */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;         /* or your theme color */
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  padding: 8px 12px;
+  box-sizing: border-box;
+  z-index: 1000;
 }
 
-    .chat-input-wrapper {
-      position: relative;
-       margin: 0 auto;
-    }
+.chat-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    .chat-input {
-      width: 100%;
-      padding: 12px 48px 12px 16px;
-      border-radius: 12px;
-      border: 1px solid var(--gray);
-      background-color: var(--white);
-      min-height: 60px;
-      max-height: 200px;
-      resize: none;
-      outline: none;
-      font-size: 0.9rem;
-      padding-bottom: 20px;
-      color: var(--super-dark);
-    }
+.chat-input {
+  flex-grow: 1;            /* Textarea grows to fill space */
+  resize: none;            /* Prevent manual resizing */
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  min-height: 38px;
+  max-height: 100px;       /* Limit max height */
+  overflow-y: auto;
+  box-sizing: border-box;
+}
 
-    .chat-input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(102, 138, 141, 0.2);
-    }
+.send-button {
+  background-color: #007bff;  /* Your button color */
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
 
-    .send-button {
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
+.send-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.send-button svg {
+  stroke: white;
+  width: 20px;
+  height: 20px;
+}
+
+/* Responsive tweaks for smaller screens */
+@media (max-width: 480px) {
+  .chat-input-container {
+    padding: 6px 8px;
+  }
+
+  .chat-input {
+    font-size: 0.9rem;
+    min-height: 32px;
+  }
+
+  .send-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .send-button svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
 
     .send-button:hover {
       background-color: var(--dark);
@@ -575,7 +604,7 @@
                         <div class="md:hidden hidden" id="mobile-menu">
                           <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                               <a href="homepage.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Home</a>
-                              <a href="skill-marketplace.html" class="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:bg-blue-50">Marketplace</a>
+                              <a href="skill-marketplace.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-blue-50">Marketplace</a>
                               <a href="profile-system/cv-profile-system.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">CV Profile</a>
                               <a href="./chat-interface.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Chat</a>
                               <div class="pt-4 border-t border-gray-200">
@@ -608,11 +637,7 @@
       
       <div class="sidebar-footer">
         <button class="settings-button" id="advancedSettingsBtn">
-          <!-- Corrected SVG path for settings icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 .51l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-          </svg>
+
           Advanced Settings
         </button>
       </div>
@@ -963,6 +988,11 @@ if (message.isUser) {
         }
       }
     });
+
+    textarea.addEventListener('input', () => {
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + 'px';
+});
   </script>
 </body>
 </html>

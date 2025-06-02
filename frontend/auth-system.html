@@ -346,40 +346,7 @@
   </style>
   
 </head>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-      const mobileMenu = document.getElementById('mobile-menu');
 
-      // Toggle menu on button click
-      mobileMenuBtn.addEventListener('click', function(e) {
-          e.stopPropagation(); // Prevent event from bubbling up
-          mobileMenu.classList.toggle('hidden');
-          // You can keep or remove the 'active' class toggle depending on your CSS animation setup
-          // mobileMenu.classList.toggle('active');
-      });
-
-      // Close menu when clicking on a link inside the menu
-      const mobileLinks = mobileMenu.querySelectorAll('a, button'); // Include buttons like Sign Up
-      mobileLinks.forEach(link => {
-          link.addEventListener('click', function() {
-              mobileMenu.classList.add('hidden');
-              // mobileMenu.classList.remove('active'); // Remove active class if used
-          });
-      });
-
-      // Close menu when clicking anywhere else on the page
-      document.addEventListener('click', function(e) {
-          // Check if the click is outside the menu AND outside the menu button
-          // And check if the menu is currently NOT hidden
-          if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
-              mobileMenu.classList.add('hidden');
-              // mobileMenu.classList.remove('active'); // Remove active class if used
-          }
-      });
-  });
-
-</script>
 
 <body class="bg-gray-100">
   <!-- Updated Navigation -->
@@ -395,7 +362,7 @@
                   <!-- Navigation Links - Center aligned -->
                   <div class="hidden md:flex items-center space-x-8">
                       <a href="homepage.html" class="text-gray-700 hover:text-blue-600">Home</a>
-                      <a href="skill-marketplace.html" class="text-gray-700 hover:text-blue-600">Marketplace</a>
+                      <a href="./skill-marketplace.html" class="text-gray-700 hover:text-blue-600">Marketplace</a>
                       <a href="profile-system/cv-profile-system.html" class="text-gray-700 hover:text-blue-600">CV Profile</a>
                       <a href="./chat-interface.html" class="text-gray-700 hover:text-blue-600">Chat</a>
                   </div>
@@ -418,7 +385,7 @@
                         <div class="md:hidden hidden" id="mobile-menu">
                           <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                               <a href="homepage.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Home</a>
-                              <a href="skill-marketplace.html" class="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:bg-blue-50">Marketplace</a>
+                              <a href="./skill-marketplace.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-blue-50">Marketplace</a>
                               <a href="profile-system/cv-profile-system.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">CV Profile</a>
                               <a href="./chat-interface.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Chat</a>
                               <div class="pt-4 border-t border-gray-200">
@@ -573,32 +540,23 @@
 <script>
     // Mobile menu functionality
     document.addEventListener('DOMContentLoaded', function() {
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        if (mobileMenuBtn && mobileMenu) {
-            // Toggle menu on button click
-            mobileMenuBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuBtn.addEventListener('click', function() {
                 mobileMenu.classList.toggle('hidden');
+                mobileMenu.classList.toggle('active');
             });
-
-            // Close menu when clicking on a link inside the menu
-            const mobileLinks = mobileMenu.querySelectorAll('a, button');
+            
+            // Close menu when clicking on a link
+            const mobileLinks = mobileMenu.querySelectorAll('a');
             mobileLinks.forEach(link => {
                 link.addEventListener('click', function() {
                     mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('active');
                 });
             });
-
-            // Close menu when clicking anywhere else on the page
-            document.addEventListener('click', function(e) {
-                if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.add('hidden');
-                }
-            });
-        }
-    });
+        })
 
     // DOM Elements
     const authContainer = document.getElementById('authContainer');

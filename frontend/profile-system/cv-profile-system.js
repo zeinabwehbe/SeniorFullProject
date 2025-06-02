@@ -59,13 +59,14 @@ function getUserFromToken(token) {
       });
 // <!-- Section 1 / 6 : PROFILE -->
 async function fetchUserData(userId) {
-    try {
-        const token = getToken(); // your function to get JWT token from localStorage
-        if (!token) {
-            console.error('No auth token found');
-            return null;
-        }
+    const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return null;
+    }
 
+    try {
         const response = await fetch(`${API_URL}/users/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -239,6 +240,12 @@ async function fetchUserData(userId) {
     function saveProfileChanges(event) {
         event.preventDefault();
         
+        const token = getToken();
+        if (!token) {
+            alert('Authentication error: Please log in again');
+            window.location.href = "../auth-system.html";
+            return;
+        }
         
         const formData = {
             name: document.getElementById('editName').value,
@@ -278,13 +285,14 @@ async function fetchUserData(userId) {
 
 // <!-- Section 2 / 6 : EDUCATION -->
 async function fetchEducation(userId) {
-    try {
-        const token = getToken(); // your function to retrieve the token
-        if (!token) {
-            console.error('No auth token found');
-            return [];
-        }
+    const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return [];
+    }
 
+    try {
         const response = await fetch(`${API_URL}/users/${userId}/education`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -350,6 +358,11 @@ function populateEducation() {
 // Add this new function for deleting education records
 function deleteEducation(educationId) {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     if (!confirm('Are you sure you want to delete this education record?')) {
         return;
@@ -386,6 +399,13 @@ function closeCreateEducationModal() {
 
 // Function to save new education entry
 function saveNewEducation() {
+    const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
+
     const formData = {
         degree: document.getElementById('degree').value,
         fieldOfStudy: document.getElementById('fieldOfStudy').value,
@@ -404,20 +424,30 @@ function saveNewEducation() {
         body: JSON.stringify(formData)
     })
     .then(response => {
-        if (!response.ok) throw new Error('Failed to add education');
+        if (response.status === 401) {
+            throw new Error('Session expired. Please log in again.');
+        }
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(`Failed to add education: ${response.status} ${response.statusText} - ${text}`);
+            });
+        }
         return response.json();
     })
     .then(async data => {
-        // Fetch fresh education data instead of manually updating
         educationData = data;
         populateEducation();
         closeCreateEducationModal();
         alert('Education added successfully!');
-        window.location.reload(); // Refresh the page after user clicks OK on alert
+        window.location.reload();
     })
     .catch(error => {
         console.error('Error adding education:', error);
-        alert('Failed to add education. Please try again.');
+        if (error.message.includes('Session expired')) {
+            window.location.href = "../auth-system.html";
+        } else {
+            alert(`Failed to add education: ${error.message}`);
+        }
     });
 }
 
@@ -445,6 +475,12 @@ function closeEditEducationModal() {
 
 // Function to save edited education entry
 function saveEditedEducation() {
+    const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     const educationId = document.getElementById('educationId').value;
 
@@ -487,13 +523,14 @@ function saveEditedEducation() {
 // <!-- Section 3 / 6 : EXPERIENCE -->
 
 async function fetchExperience(userId) {
-    try {
-        const token = getToken();  // Retrieve your JWT token
-        if (!token) {
-            console.error('No auth token found');
-            return [];
-        }
+    const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return [];
+    }
 
+    try {
         const response = await fetch(`${API_URL}/users/${userId}/experience`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -563,6 +600,11 @@ function populateExperience() {
 // Function to delete experience
 function deleteExperience(experienceId) {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     if (!confirm('Are you sure you want to delete this experience record?')) {
         return;
@@ -599,6 +641,11 @@ function closeCreateExperienceModal() {
 // Function to save new experience entry
 function saveNewExperience() {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     const formData = {
         jobTitle: document.getElementById('jobTitle').value,
@@ -656,6 +703,11 @@ function closeEditExperienceModal() {
 // Function to save edited experience entry
 function saveEditedExperience() {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     const experienceId = document.getElementById('experienceId').value;
 
@@ -694,13 +746,14 @@ function saveEditedExperience() {
 
 // <!-- Section 4 / 6 : EXPERIENCE -->
 async function fetchProjects(userId) {
-    try {
-        const token = getToken();
-        if (!token) {
-            console.error('No auth token found');
-            return [];
-        }
+    const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return [];
+    }
 
+    try {
         const response = await fetch(`${API_URL}/users/${userId}/projects`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -763,6 +816,11 @@ function populateProjects() {
 
 function deleteProject(projectId) {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     if (!confirm('Are you sure you want to delete this project?')) {
         return;
@@ -796,6 +854,11 @@ function closeCreateProjectModal() {
 
 function saveNewProject() {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     const formData = {
         title: document.getElementById('title').value,
@@ -850,6 +913,11 @@ function closeEditProjectModal() {
 
 function saveEditedProject() {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     const projectId = document.getElementById('projectId').value;
 
@@ -889,13 +957,14 @@ function saveEditedProject() {
 
 // <!-- Section 5 / 6 : CERTIFICATIONS -->
 async function fetchCertifications(userId) {
-    try {
-        const token = getToken();
-        if (!token) {
-            console.error('No auth token found');
-            return [];
-        }
+    const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return [];
+    }
 
+    try {
         const response = await fetch(`${API_URL}/users/${userId}/certifications`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -959,6 +1028,11 @@ function populateCertifications() {
 
 function deleteCertification(certificationId) {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     if (!confirm('Are you sure you want to delete this certification?')) {
         return;
@@ -992,6 +1066,11 @@ function closeCreateCertificationModal() {
 
 function saveNewCertification() {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     const formData = {
         name: document.getElementById('name').value,
@@ -1048,6 +1127,11 @@ function closeEditCertificationModal() {
 
 function saveEditedCertification() {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     const certificationId = document.getElementById('certificationId').value;
 
@@ -1088,13 +1172,14 @@ function saveEditedCertification() {
 
 // <!-- Section 6 / 6 : SKILLS -->
 async function fetchSkills(userId) {
-    try {
-        const token = getToken();
-        if (!token) {
-            console.error('No auth token found');
-            return [];
-        }
+    const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return [];
+    }
 
+    try {
         const response = await fetch(`${API_URL}/users/${userId}/skills`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -1163,6 +1248,11 @@ function populateSkills() {
 }
 function deleteSkill(skillId) {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     if (!confirm('Are you sure you want to delete this skill?')) {
         return;
@@ -1196,6 +1286,11 @@ function closeCreateSkillModal() {
 
 function saveNewSkill() {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     const formData = {
         user_id: userId,
@@ -1246,6 +1341,11 @@ function closeEditSkillModal() {
 
 function saveEditedSkill() {
     const token = getToken();
+    if (!token) {
+        alert('Authentication error: Please log in again');
+        window.location.href = "../auth-system.html";
+        return;
+    }
 
     const skillId = document.getElementById('skillId').value;
 
