@@ -7,19 +7,19 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const config = {
+ // config.ts
+
+export default () => ({
   application: {
     host: process.env.HOST || '0.0.0.0',
     port: process.env.PORT || 3000,
     name: 'test',
-    'application-root': '/api/v1'
+    'application-root': '/api/v1',
   },
   bcrypt: {
-    saltRounds: 10
+    saltRounds: 10,
   },
   jwt: {
-    secret: process.env.JWT_SECRET
-  }
-};
-
-export default config;
+    secret: process.env.JWT_SECRET,
+  },
+});
