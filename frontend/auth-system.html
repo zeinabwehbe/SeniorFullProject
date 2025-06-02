@@ -724,8 +724,8 @@
                 throw new Error(data.message || 'Signup failed');
             }
 
-            localStorage.setItem('token', JSON.stringify(data.access_token));
-                        window.location.href = "./homepage.html";
+            localStorage.setItem('token', JSON.stringify(data.access_token));           
+            window.location.href = "./homepage.html";
         } catch (error) {
             showAlert(signupAlert, error.message);
         }

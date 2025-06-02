@@ -1,22 +1,23 @@
 
 let userId = null;
 let token = null;
-// Get JWT token from localStorage
+// Get JWT token string from localStorage
 function getToken() {
-    return JSON.parse(localStorage.getItem('token'));
+    const stored = JSON.parse(localStorage.getItem('token'));
+    return stored?.token || null; // get the actual string
 }
 
-// Function to logout user
+// Logout user
 function logout() {
     localStorage.removeItem('token');
     window.location.href = "../auth-system.html";
 }
 
-// Decode JWT to get user information
+// Decode JWT to get user info
 function getUserFromToken(token) {
     if (!token) return null;
     try {
-        const decoded = jwt_decode(token);
+        const decoded = jwt_decode(token); // now this is the actual string
         return decoded;
     } catch (error) {
         console.error('Failed to decode token:', error);
