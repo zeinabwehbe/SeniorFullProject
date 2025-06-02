@@ -724,8 +724,8 @@
                 throw new Error(data.message || 'Signup failed');
             }
 
-            localStorage.setItem('token', data.access_token);
-            window.location.href = "./homepage.html";
+            localStorage.setItem('token', JSON.stringify(data.access_token));
+                        window.location.href = "./homepage.html";
         } catch (error) {
             showAlert(signupAlert, error.message);
         }
@@ -747,7 +747,7 @@
                 throw new Error(data.message || 'Login failed');
             }
 
-            localStorage.setItem('token', data.access_token);
+            localStorage.setItem('token', JSON.stringify(data.access_token));
             window.location.href = "./homepage.html";
         } catch (error) {
             showAlert(loginAlert, error.message);
@@ -773,7 +773,7 @@
             showAlert(forgotSuccess, 'Reset email sent successfully! Please check your email.', 'success');
             
             // Store email for password reset and redirect after 2 seconds
-            localStorage.setItem('resetEmail', email);
+            localStorage.setItem('resetEmail',  JSON.stringify(email));
             setTimeout(() => {
                 switchToForm('reset');
             }, 2000);
@@ -823,7 +823,7 @@
     }
 
     async function fetchUserProfile() {
-        const token = localStorage.getItem('token');
+        const token = JSON.parse(localStorage.getItem('token'));
         if (!token) return;
 
         const decodedToken = jwt_decode(token);
@@ -910,7 +910,7 @@
     }
 
     function isAuthenticated() {
-        return !!localStorage.getItem('token');
+        return !!JSON.parse(localStorage.getItem('token'));
     }
 
     // Initialize page

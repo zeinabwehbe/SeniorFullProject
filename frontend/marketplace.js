@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function getToken() {
         try {
-            return localStorage.getItem('token');
+            return JSON.parse(localStorage.getItem('token'));;
         } catch (error) {
             console.error("Error accessing localStorage:", error);
             return null;
