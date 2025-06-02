@@ -58,20 +58,32 @@ function getUserFromToken(token) {
         }
       });
 // <!-- Section 1 / 6 : PROFILE -->
-    async function fetchUserData(userId) {
-        try {
-             const response = await fetch(`${API_URL}/users/${userId}`);
-            
-            if (!response.ok) {
-                throw new Error('Failed to fetch user data');
-            }
-            
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching user data:', error);
+async function fetchUserData(userId) {
+    try {
+        const token = getToken(); // your function to get JWT token from localStorage
+        if (!token) {
+            console.error('No auth token found');
             return null;
         }
+
+        const response = await fetch(`${API_URL}/users/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch user data: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        return null;
     }
+}
+
     // DOM manipulation functions to populate the UI
     function populateUserInfo() {
         // Set profile picture
@@ -261,15 +273,25 @@ function getUserFromToken(token) {
 // <!-- Section 2 / 6 : EDUCATION -->
 async function fetchEducation(userId) {
     try {
-    
-        const response = await fetch(`${API_URL}/users/${userId}/education`);
-        
+        const token = getToken(); // your function to retrieve the token
+        if (!token) {
+            console.error('No auth token found');
+            return [];
+        }
+
+        const response = await fetch(`${API_URL}/users/${userId}/education`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            }
+        });
+
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             console.error('Server response:', response.status, errorData);
             throw new Error(`Failed to fetch education data: ${response.status} ${response.statusText}`);
         }
-        
+
         const data = await response.json();
         console.log('Education data fetched successfully:', data);
         return data;
@@ -458,7 +480,18 @@ function saveEditedEducation() {
 
 async function fetchExperience(userId) {
     try {
-        const response = await fetch(`${API_URL}/users/${userId}/experience`);
+        const token = getToken();  // Retrieve your JWT token
+        if (!token) {
+            console.error('No auth token found');
+            return [];
+        }
+
+        const response = await fetch(`${API_URL}/users/${userId}/experience`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
         
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
@@ -475,6 +508,7 @@ async function fetchExperience(userId) {
         return [];
     }
 }
+
 
 function populateExperience() {
     const experienceContainer = document.getElementById('experienceContainer');
@@ -647,10 +681,21 @@ function saveEditedExperience() {
 // <!-- Section 4 / 6 : EXPERIENCE -->
 async function fetchProjects(userId) {
     try {
-        const response = await fetch(`${API_URL}/users/${userId}/projects`);
+        const token = getToken();
+        if (!token) {
+            console.error('No auth token found');
+            return [];
+        }
+
+        const response = await fetch(`${API_URL}/users/${userId}/projects`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
         
         if (!response.ok) {
-            throw new Error('Failed to fetch project data');
+            throw new Error(`Failed to fetch project data: ${response.status}`);
         }
         
         return await response.json();
@@ -823,13 +868,23 @@ function saveEditedProject() {
 
 
 // <!-- Section 5 / 6 : CERTIFICATIONS -->
-
 async function fetchCertifications(userId) {
     try {
-        const response = await fetch(`${API_URL}/users/${userId}/certifications`);
+        const token = getToken();
+        if (!token) {
+            console.error('No auth token found');
+            return [];
+        }
+
+        const response = await fetch(`${API_URL}/users/${userId}/certifications`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
         
         if (!response.ok) {
-            throw new Error('Failed to fetch certification data');
+            throw new Error(`Failed to fetch certification data: ${response.status}`);
         }
         
         return await response.json();
@@ -838,6 +893,7 @@ async function fetchCertifications(userId) {
         return [];
     }
 }
+
 function populateCertifications() {
     const certificationsContainer = document.getElementById('certificationsContainer');
     
@@ -1007,12 +1063,23 @@ function saveEditedCertification() {
 // <!-- Section 6 / 6 : SKILLS -->
 async function fetchSkills(userId) {
     try {
-        const response = await fetch(`${API_URL}/users/${userId}/skills`);
-        
-        if (!response.ok) {
-            throw new Error('Failed to fetch skills data');
+        const token = getToken();
+        if (!token) {
+            console.error('No auth token found');
+            return [];
         }
-        
+
+        const response = await fetch(`${API_URL}/users/${userId}/skills`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch skills data: ${response.status}`);
+        }
+
         const data = await response.json();
         console.log('Skills data fetched successfully:', data);
         return data;
@@ -1021,6 +1088,7 @@ async function fetchSkills(userId) {
         return [];
     }
 }
+
 function populateSkills() {
     const skillsContainer = document.getElementById('skillsContainer');
     
