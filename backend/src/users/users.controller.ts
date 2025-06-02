@@ -20,7 +20,7 @@ import { UserResponseDto } from './dto/user.response.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+// import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { Res } from '@nestjs/common';
 import { Response } from 'express';
@@ -123,28 +123,28 @@ export class UsersController {
     return res.sendFile(join(process.cwd(), user.profilePic));
   }
   
-  @Post(':id/profile-picture')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads', // or your preferred directory
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, uniqueSuffix + extname(file.originalname));
-        },
-      }),
-    }),
-  )
-  async uploadProfilePicture(
-    @Param('id', ParseIntPipe) id: number,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<UserResponseDto> {
-    // file.path will now be set
-    const user = await this.usersService.addProfilePicture(id, file);
-    return user.toDto();
-  }
+  // @Post(':id/profile-picture')
+  // @UseGuards(JwtAuthGuard)
+  // @UseInterceptors(
+  //   FileInterceptor('file', {
+  //     storage: diskStorage({
+  //       destination: './uploads', // or your preferred directory
+  //       filename: (req, file, cb) => {
+  //         const uniqueSuffix =
+  //           Date.now() + '-' + Math.round(Math.random() * 1e9);
+  //         cb(null, uniqueSuffix + extname(file.originalname));
+  //       },
+  //     }),
+  //   }),
+  // )
+  // async uploadProfilePicture(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @UploadedFile() file: Express.Multer.File,
+  // ): Promise<UserResponseDto> {
+  //   // file.path will now be set
+  //   const user = await this.usersService.addProfilePicture(id, file);
+  //   return user.toDto();
+  // }
 
   @Get(':userId/education')
   @UseGuards(JwtAuthGuard, RolesGuard)
