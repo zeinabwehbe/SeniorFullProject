@@ -1,9 +1,9 @@
 application:
   name: test
-  host: ${HOST}
-  port: ${PORT}
+  host: localhost
+  port: 3000
   application-root: /api/v1
 bcrypt:
   saltRounds: 10
 jwt:
-  secret: ${JWT_SECRET}
+  secret: test
