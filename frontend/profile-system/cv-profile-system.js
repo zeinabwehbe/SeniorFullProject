@@ -1,4 +1,4 @@
-
+let API_URL = "https://seniorfullproject-production.up.railway.app";
 let userId = null;
 let token = null;
 // Get JWT token string from localStorage
@@ -57,7 +57,7 @@ function getUserFromToken(token) {
 // <!-- Section 1 / 6 : PROFILE -->
     async function fetchUserData(userId) {
         try {
-            const response = await fetch(`http://localhost:3000/users/${userId}`, {
+            const response = await fetch(`${API_URL}/users/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -77,7 +77,7 @@ function getUserFromToken(token) {
     function populateUserInfo() {
         // Set profile picture
         const profilePic = document.getElementById('profilePic');
-        profilePic.src = `http://localhost:3000/users/${userData.id}/profile-picture`;
+        profilePic.src = `${API_URL}/users/${userData.id}/profile-picture`;
         profilePic.onerror = function() {
             this.onerror = null;
             this.src = 'default-profile.png';
@@ -135,7 +135,7 @@ function getUserFromToken(token) {
     function initializeUserData() {
         // Set profile picture
         const profilePic = document.getElementById('profilePic');
-        profilePic.src = `http://localhost:3000/users/${userId}/profile-picture`;
+        profilePic.src = `${API_URL}/users/${userId}/profile-picture`;
         profilePic.onerror = function() {
             this.onerror = null;
             this.src = 'default-profile.png';
@@ -177,7 +177,7 @@ function getUserFromToken(token) {
         formData.append('file', file);
 
         try {
-            const response = await fetch(`http://localhost:3000/users/${userId}/profile-picture`, {
+            const response = await fetch(`${API_URL}/users/${userId}/profile-picture`, {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -189,7 +189,7 @@ function getUserFromToken(token) {
                 return;
             }
             if (!response.ok) throw new Error('Upload failed');
-            document.getElementById('profilePic').src = `http://localhost:3000/users/${userId}/profile-picture`;
+            document.getElementById('profilePic').src = `${API_URL}/users/${userId}/profile-picture`;
             alert('Profile picture updated!');
         } catch (err) {
             console.log(err);
@@ -233,7 +233,7 @@ function getUserFromToken(token) {
             githubUrl: document.getElementById('editGithubUrl').value,
             portfolioUrl: document.getElementById('editPortfolioUrl').value
         };
-        fetch(`http://localhost:3000/users/${userId}`, {
+        fetch(`${API_URL}/users/${userId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -263,7 +263,7 @@ function getUserFromToken(token) {
 async function fetchEducation(userId) {
     try {
     
-        const response = await fetch(`http://localhost:3000/users/${userId}/education`, {
+        const response = await fetch(`${API_URL}/users/${userId}/education`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -330,7 +330,7 @@ function deleteEducation(educationId) {
         return;
     }
 
-    fetch(`http://localhost:3000/users/${userId}/education/${educationId}`, {
+    fetch(`${API_URL}/users/${userId}/education/${educationId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -370,7 +370,7 @@ function saveNewEducation() {
         description: document.getElementById('educationDescription').value
     };
 
-    fetch(`http://localhost:3000/users/${userId}/education`, {
+    fetch(`${API_URL}/users/${userId}/education`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -432,7 +432,7 @@ function saveEditedEducation() {
         description: document.getElementById('editEducationDescription').value
     };
 
-    const data = fetch(`http://localhost:3000/users/${userId}/education/${educationId}`, {
+    const data = fetch(`${API_URL}/users/${userId}/education/${educationId}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -463,7 +463,7 @@ function saveEditedEducation() {
 
 async function fetchExperience(userId) {
     try {
-        const response = await fetch(`http://localhost:3000/users/${userId}/experience`, {
+        const response = await fetch(`${API_URL}/users/${userId}/experience`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -533,7 +533,7 @@ function deleteExperience(experienceId) {
         return;
     }
 
-    fetch(`http://localhost:3000/users/${userId}/experience/${experienceId}`, {
+    fetch(`${API_URL}/users/${userId}/experience/${experienceId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -571,7 +571,7 @@ function saveNewExperience() {
         description: document.getElementById('experienceDescription').value
     };
 
-    fetch(`http://localhost:3000/users/${userId}/experience`, {
+    fetch(`${API_URL}/users/${userId}/experience`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -628,7 +628,7 @@ function saveEditedExperience() {
         description: document.getElementById('editExperienceDescription').value
     };
 
-    const data = fetch(`http://localhost:3000/users/${userId}/experience/${experienceId}`, {
+    const data = fetch(`${API_URL}/users/${userId}/experience/${experienceId}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -656,7 +656,7 @@ function saveEditedExperience() {
 // <!-- Section 4 / 6 : EXPERIENCE -->
 async function fetchProjects(userId) {
     try {
-        const response = await fetch(`http://localhost:3000/users/${userId}/projects`, {
+        const response = await fetch(`${API_URL}/users/${userId}/projects`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -720,7 +720,7 @@ function deleteProject(projectId) {
         return;
     }
 
-    fetch(`http://localhost:3000/users/${userId}/projects/${projectId}`, {
+    fetch(`${API_URL}/users/${userId}/projects/${projectId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -755,7 +755,7 @@ function saveNewProject() {
         endDate: document.getElementById('projectEndDate').value || null
     };
 
-    fetch(`http://localhost:3000/users/${userId}/projects`, {
+    fetch(`${API_URL}/users/${userId}/projects`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -809,7 +809,7 @@ function saveEditedProject() {
         endDate: document.getElementById('editProjectEndDate').value || null
     };
 
-    fetch(`http://localhost:3000/users/${userId}/projects/${projectId}`, {
+    fetch(`${API_URL}/users/${userId}/projects/${projectId}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -839,7 +839,7 @@ function saveEditedProject() {
 
 async function fetchCertifications(userId) {
     try {
-        const response = await fetch(`http://localhost:3000/users/${userId}/certifications`, {
+        const response = await fetch(`${API_URL}/users/${userId}/certifications`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -903,7 +903,7 @@ function deleteCertification(certificationId) {
         return;
     }
 
-    fetch(`http://localhost:3000/users/${userId}/certifications/${certificationId}`, {
+    fetch(`${API_URL}/users/${userId}/certifications/${certificationId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -939,7 +939,7 @@ function saveNewCertification() {
         description: document.getElementById('certificationDescription').value
     };
 
-    fetch(`http://localhost:3000/users/${userId}/certifications`, {
+    fetch(`${API_URL}/users/${userId}/certifications`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -995,7 +995,7 @@ function saveEditedCertification() {
         description: document.getElementById('editCertificationDescription').value
     };
 
-    fetch(`http://localhost:3000/users/${userId}/certifications/${certificationId}`, {
+    fetch(`${API_URL}/users/${userId}/certifications/${certificationId}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -1024,7 +1024,7 @@ function saveEditedCertification() {
 // <!-- Section 6 / 6 : SKILLS -->
 async function fetchSkills(userId) {
     try {
-        const response = await fetch(`http://localhost:3000/users/${userId}/skills`, {
+        const response = await fetch(`${API_URL}/users/${userId}/skills`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -1093,7 +1093,7 @@ function deleteSkill(skillId) {
         return;
     }
 
-    fetch(`http://localhost:3000/users/${userId}/skills/${skillId}`, {
+    fetch(`${API_URL}/users/${userId}/skills/${skillId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -1127,7 +1127,7 @@ function saveNewSkill() {
         skill_level: document.getElementById('skillLevel').value
     };
 
-    fetch(`http://localhost:3000/users/${userId}/skills`, {
+    fetch(`${API_URL}/users/${userId}/skills`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1175,7 +1175,7 @@ function saveEditedSkill() {
         skill_level: document.getElementById('editSkillLevel').value
     };
 
-    fetch(`http://localhost:3000/users/${userId}/skills/${skillId}`, {
+    fetch(`${API_URL}/users/${userId}/skills/${skillId}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
