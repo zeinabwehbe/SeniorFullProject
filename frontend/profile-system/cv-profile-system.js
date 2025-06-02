@@ -4,7 +4,15 @@ let token = null;
 // Get JWT token string from localStorage
 function getToken() {
     const stored = localStorage.getItem('token');
-    return stored?.token || null; // get the actual string
+    if (!stored) return null;
+
+    try {
+        const parsed = JSON.parse(stored); // 👈 Convert the string to an object
+        return parsed.token || null;
+    } catch (e) {
+        console.error('Invalid token format in localStorage', e);
+        return null;
+    }
 }
 
 // Logout user
