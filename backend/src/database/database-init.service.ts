@@ -213,6 +213,8 @@ export class DatabaseInitService implements OnModuleInit {
     const database = this.configService.get<string>('DB_NAME') || 'test';
     
     try {
+      console.log({ host, port, user, database }); 
+
       this.connection = await createConnection({
         host,
         port,
