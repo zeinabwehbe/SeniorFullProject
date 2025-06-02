@@ -1,40 +1,40 @@
 CREATE TABLE Category (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   name TEXT NOT NULL UNIQUE,
   profile_pic TEXT,
   description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Skills (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    categoryId  INTEGER,
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    categoryId  INT,
     skill_name TEXT NOT NULL, 
     description TEXT,
     approval_status TEXT CHECK(approval_status IN ('pending', 'approved', 'rejected')) DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     FOREIGN KEY (categoryId) REFERENCES Category(id) ON DELETE CASCADE
 
 );
 
 CREATE TABLE User_Skills (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    skill_id INTEGER ,
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    skill_id INT ,
     skill_type TEXT NOT NULL CHECK(skill_type IN ('teach', 'learn')),
     skill_level TEXT CHECK(skill_level IN ('Beginner', 'Intermediate', 'Advanced')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
 FOREIGN KEY (skill_id) REFERENCES Skills(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Review (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -42,13 +42,13 @@ CREATE TABLE Review (
 );
 
 CREATE TABLE Users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('user', 'admin')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     status TEXT DEFAULT 'active',
     profile_pic TEXT,  
     phone TEXT,
@@ -60,20 +60,20 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Education (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
     institution TEXT NOT NULL,
     degree TEXT,
     field_of_study TEXT,
-    start_year INTEGER,
-    end_year INTEGER,
+    start_year INT,
+    end_year INT,
     description TEXT,
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Experience (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
     job_title TEXT NOT NULL,
     company TEXT NOT NULL,
     start_date DATE,
@@ -83,8 +83,8 @@ CREATE TABLE Experience (
 );
 
 CREATE TABLE Project (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
     title TEXT NOT NULL,
     description TEXT,
     link TEXT,
@@ -94,8 +94,8 @@ CREATE TABLE Project (
 );
 
 CREATE TABLE Certification (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
     name TEXT NOT NULL,
     authority TEXT,
     license_number TEXT,
