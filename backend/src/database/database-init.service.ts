@@ -192,75 +192,36 @@
 //     this.logger.log('DatabaseInitService initialization complete.');
 //   }
 // }
-
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { createConnection, Connection } from 'mysql2/promise';
 import { ConfigService } from '@nestjs/config';
-import * as mysql from 'mysql2/promise';
-import * as fs from 'fs';
-import * as path from 'path';
 
 @Injectable()
 export class DatabaseInitService implements OnModuleInit {
   private readonly logger = new Logger(DatabaseInitService.name);
+  private connection: Connection;
 
   constructor(private readonly configService: ConfigService) {}
 
-  private readSqlFile(filePath: string): string {
-    this.logger.debug(`Reading SQL file at ${filePath}`);
-    if (!fs.existsSync(filePath)) {
-      this.logger.error(`SQL file not found: ${filePath}`);
-      throw new Error(`SQL file not found: ${filePath}`);
-    }
-    return fs.readFileSync(filePath, 'utf-8');
-  }
-
   async initializeDatabase(): Promise<void> {
-    const host = this.configService.get<string>('MYSQL_HOST');
-    const port = this.configService.get<number>('MYSQL_PORT');
-    const user = this.configService.get<string>('MYSQL_USER');
-    const password = this.configService.get<string>('MYSQL_PASSWORD');
-    const database = this.configService.get<string>('MYSQL_DATABASE');
+    const host = this.configService.get<string>('MYSQL_HOST') || 'localhost';
+    const port = this.configService.get<number>('MYSQL_PORT') || 3306;
+    const user = this.configService.get<string>('MYSQL_USER') || 'root';
+    const password = this.configService.get<string>('MYSQL_PASSWORD') || '';
+    const database = this.configService.get<string>('MYSQL_DB') || 'test';
 
-    // Connect to MySQL server
-    let connection: mysql.Connection | null = null;
     try {
-      connection = await mysql.createConnection({
+      this.connection = await createConnection({
         host,
         port,
         user,
         password,
         database,
-        multipleStatements: true, // Allows executing multiple SQL commands in one query
       });
-
-      this.logger.log('Connected to MySQL database.');
-
-      // Read your SQL schema file
-      const schemaSqlPath = path.resolve(__dirname, './scripts/schema.sql');
-      const schemaSql = this.readSqlFile(schemaSqlPath);
-
-      // Execute schema SQL to create tables, etc.
-      await connection.query(schemaSql);
-      this.logger.log('Database schema initialized successfully.');
-
-      // Optionally run other SQL files: data.sql, dummy.sql, etc.
-      const dataSqlPath = path.resolve(__dirname, './scripts/data.sql');
-      if (fs.existsSync(dataSqlPath)) {
-        const dataSql = this.readSqlFile(dataSqlPath);
-        await connection.query(dataSql);
-        this.logger.log('Initial data inserted successfully.');
-      }
-
-      // Add any additional initialization here
-
-    } catch (err) {
-      this.logger.error(`Error initializing MySQL database: ${err.message}`);
-      process.exit(1);
-    } finally {
-      if (connection) {
-        await connection.end();
-        this.logger.log('MySQL connection closed.');
-      }
+      this.logger.log('Connected to MySQL database successfully.');
+    } catch (error) {
+      this.logger.error('Failed to connect to MySQL database:', error);
+      process.exit(1); // Stop the app if connection fails
     }
   }
 
