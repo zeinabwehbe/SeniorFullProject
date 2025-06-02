@@ -1,10 +1,11 @@
-import { readYamlEnvSync } from 'yaml-env-defaults';
+//import { readYamlEnvSync } from 'yaml-env-defaults';
 
-const YML_CONFIG_FILENAME = 'application.yml';
+//const YML_CONFIG_FILENAME = 'application.yml';
 
 //const config = readYamlEnvSync(YML_CONFIG_FILENAME);
 
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 const config = {
   application: {
@@ -21,11 +22,4 @@ const config = {
   }
 };
 
-module.exports = config;
-
-/**
- * It is responsible for reading the configuration from the application.yml
- */
-export default () => {
-  return config;
-};
+export default config;
