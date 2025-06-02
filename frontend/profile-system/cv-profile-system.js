@@ -144,6 +144,8 @@ async function fetchUserData(userId) {
 
     // Initialize user data
     function initializeUserData() {
+        const token = getToken();
+
         // Set profile picture
         const profilePic = document.getElementById('profilePic');
         profilePic.src = `${API_URL}/users/${userId}/profile-picture`;
@@ -188,6 +190,8 @@ async function fetchUserData(userId) {
         formData.append('file', file);
 
         try {
+            const token = getToken();
+
             const response = await fetch(`${API_URL}/users/${userId}/profile-picture`, {
                 method: 'POST',
                 body: formData,
@@ -210,6 +214,8 @@ async function fetchUserData(userId) {
 
     // Function to open the Edit Profile Modal
     function openEditProfileModal() {
+        const token = getToken();
+
         const modal = document.getElementById('editProfileModal');
         
         // Pre-fill form with current user data
@@ -343,6 +349,8 @@ function populateEducation() {
 
 // Add this new function for deleting education records
 function deleteEducation(educationId) {
+    const token = getToken();
+
     if (!confirm('Are you sure you want to delete this education record?')) {
         return;
     }
@@ -554,6 +562,8 @@ function populateExperience() {
 
 // Function to delete experience
 function deleteExperience(experienceId) {
+    const token = getToken();
+
     if (!confirm('Are you sure you want to delete this experience record?')) {
         return;
     }
@@ -588,6 +598,8 @@ function closeCreateExperienceModal() {
 
 // Function to save new experience entry
 function saveNewExperience() {
+    const token = getToken();
+
     const formData = {
         jobTitle: document.getElementById('jobTitle').value,
         company: document.getElementById('company').value,
@@ -643,6 +655,8 @@ function closeEditExperienceModal() {
 
 // Function to save edited experience entry
 function saveEditedExperience() {
+    const token = getToken();
+
     const experienceId = document.getElementById('experienceId').value;
 
     const formData = {
@@ -748,6 +762,8 @@ function populateProjects() {
 }
 
 function deleteProject(projectId) {
+    const token = getToken();
+
     if (!confirm('Are you sure you want to delete this project?')) {
         return;
     }
@@ -779,6 +795,8 @@ function closeCreateProjectModal() {
 }
 
 function saveNewProject() {
+    const token = getToken();
+
     const formData = {
         title: document.getElementById('title').value,
         description: document.getElementById('description').value,
@@ -831,6 +849,8 @@ function closeEditProjectModal() {
 }
 
 function saveEditedProject() {
+    const token = getToken();
+
     const projectId = document.getElementById('projectId').value;
 
     const formData = {
@@ -938,6 +958,8 @@ function populateCertifications() {
 }
 
 function deleteCertification(certificationId) {
+    const token = getToken();
+
     if (!confirm('Are you sure you want to delete this certification?')) {
         return;
     }
@@ -969,6 +991,8 @@ function closeCreateCertificationModal() {
 }
 
 function saveNewCertification() {
+    const token = getToken();
+
     const formData = {
         name: document.getElementById('name').value,
         authority: document.getElementById('authority').value,
@@ -1023,6 +1047,8 @@ function closeEditCertificationModal() {
 }
 
 function saveEditedCertification() {
+    const token = getToken();
+
     const certificationId = document.getElementById('certificationId').value;
 
     const formData = {
@@ -1136,6 +1162,8 @@ function populateSkills() {
     });
 }
 function deleteSkill(skillId) {
+    const token = getToken();
+
     if (!confirm('Are you sure you want to delete this skill?')) {
         return;
     }
@@ -1167,6 +1195,8 @@ function closeCreateSkillModal() {
 }
 
 function saveNewSkill() {
+    const token = getToken();
+
     const formData = {
         user_id: userId,
         skill_name: document.getElementById('skillId').value,
@@ -1215,6 +1245,8 @@ function closeEditSkillModal() {
 }
 
 function saveEditedSkill() {
+    const token = getToken();
+
     const skillId = document.getElementById('skillId').value;
 
     const formData = {
