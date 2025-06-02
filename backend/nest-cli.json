@@ -8,7 +8,7 @@
       { "include": "./application.yml", "outDir": "./dist/" },
         {
           "include": "database/scripts/**/*",
-          "outDir": "./dist/"
+          "outDir": "./dist"
         }
     ]
   }
