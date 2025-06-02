@@ -3,7 +3,7 @@ let userId = null;
 let token = null;
 // Get JWT token string from localStorage
 function getToken() {
-    const stored = JSON.parse(localStorage.getItem('token'));
+    const stored = localStorage.getItem('token');
     return stored?.token || null; // get the actual string
 }
 
@@ -1257,10 +1257,10 @@ document.getElementById('editSkillForm').addEventListener('input', function() {
 async function initPage() {
     token = getToken();
     console.log('Token:', token);
-    if (!token) {
-         window.location.href = "../auth-system.html";
-        return;
-    }
+    // if (!token) {
+    //      window.location.href = "../auth-system.html";
+    //     return;
+    // }
     
     const user = getUserFromToken(token);
     if (!user) return;
