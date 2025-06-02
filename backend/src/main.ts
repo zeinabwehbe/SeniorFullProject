@@ -23,9 +23,13 @@ async function createApp() {
     credentials: true,
   });
 
-  app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), {
-    prefix: '/users/profile-picture/',
-  });
+
+  // In your NestJS app main.ts or middleware
+app.use('/favicon.ico', (req, res) => res.status(204).send());
+
+  // app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), {
+  //   prefix: '/users/profile-picture/',
+  // });
 
   app.useStaticAssets(join(__dirname, '..', '..', 'frontend', 'dist'), {
     index: 'homepage.html',
