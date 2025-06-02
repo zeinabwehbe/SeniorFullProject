@@ -3,7 +3,7 @@ let userId = null;
 let token = null;
 // Get JWT token from localStorage
 function getToken() {
-    return localStorage.getItem('token');
+    return JSON.parse(localStorage.getItem('token'));
 }
 
 // Function to logout user
