@@ -60,11 +60,7 @@ function getUserFromToken(token) {
 // <!-- Section 1 / 6 : PROFILE -->
     async function fetchUserData(userId) {
         try {
-            const response = await fetch(`${API_URL}/users/${userId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+             const response = await fetch(`${API_URL}/users/${userId}`);
             
             if (!response.ok) {
                 throw new Error('Failed to fetch user data');
@@ -266,11 +262,7 @@ function getUserFromToken(token) {
 async function fetchEducation(userId) {
     try {
     
-        const response = await fetch(`${API_URL}/users/${userId}/education`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const response = await fetch(`${API_URL}/users/${userId}/education`);
         
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
@@ -466,11 +458,7 @@ function saveEditedEducation() {
 
 async function fetchExperience(userId) {
     try {
-        const response = await fetch(`${API_URL}/users/${userId}/experience`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const response = await fetch(`${API_URL}/users/${userId}/experience`);
         
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
@@ -659,11 +647,7 @@ function saveEditedExperience() {
 // <!-- Section 4 / 6 : EXPERIENCE -->
 async function fetchProjects(userId) {
     try {
-        const response = await fetch(`${API_URL}/users/${userId}/projects`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const response = await fetch(`${API_URL}/users/${userId}/projects`);
         
         if (!response.ok) {
             throw new Error('Failed to fetch project data');
@@ -842,11 +826,7 @@ function saveEditedProject() {
 
 async function fetchCertifications(userId) {
     try {
-        const response = await fetch(`${API_URL}/users/${userId}/certifications`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const response = await fetch(`${API_URL}/users/${userId}/certifications`);
         
         if (!response.ok) {
             throw new Error('Failed to fetch certification data');
@@ -1027,11 +1007,7 @@ function saveEditedCertification() {
 // <!-- Section 6 / 6 : SKILLS -->
 async function fetchSkills(userId) {
     try {
-        const response = await fetch(`${API_URL}/users/${userId}/skills`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const response = await fetch(`${API_URL}/users/${userId}/skills`);
         
         if (!response.ok) {
             throw new Error('Failed to fetch skills data');
@@ -1134,7 +1110,7 @@ function saveNewSkill() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(formData)
     })
