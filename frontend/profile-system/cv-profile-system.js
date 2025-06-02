@@ -7,10 +7,10 @@ function getToken() {
     if (!stored) return null;
 
     try {
-        const parsed = JSON.parse(stored); // 👈 Convert the string to an object
-        return parsed.token || null;
+        const parsed = JSON.parse(stored);
+        return parsed.access_token || null; // ✅ correct key!
     } catch (e) {
-        console.error('Invalid token format in localStorage', e);
+        console.error('Invalid token format in localStorage:', e);
         return null;
     }
 }
@@ -24,15 +24,17 @@ function logout() {
 // Decode JWT to get user info
 function getUserFromToken(token) {
     if (!token) return null;
+
     try {
-        const decoded = jwt_decode(token); // now this is the actual string
+        const decoded = jwt_decode(token); // ✅ must be a valid JWT string
         return decoded;
     } catch (error) {
         console.error('Failed to decode token:', error);
-        logout();
+        logout(); // only if you want to force logout on corrupt token
         return null;
     }
 }
+
 
      // ATS Banner Toggle Functionality
      document.addEventListener('DOMContentLoaded', function() {
