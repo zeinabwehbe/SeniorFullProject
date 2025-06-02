@@ -22,12 +22,17 @@ const server = (async () => {
   }
 })();
 
-export default async function handler(req: any, res: any) {
-  try {
-    const h = await server;
-    return h(req, res);
-  } catch (error) {
-    console.error('Handler error:', error);
-    res.status(500).send('Internal Server Error');
-  }
+// export default async function handler(req: any, res: any) {
+//   try {
+//     const h = await server;
+//     return h(req, res);
+//   } catch (error) {
+//     console.error('Handler error:', error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// }
+// api/hello.js
+export default function handler(req, res) {
+  res.status(200).json({ message: 'Hello from Vercel!' });
 }
+

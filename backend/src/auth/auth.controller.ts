@@ -10,22 +10,11 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
-async login() {
-  return { message: 'Login endpoint reached' };
-}
-
-  // @Post('login')
-  //  async login(@Body() loginDto: LoginDto) {
-  //   try {
-  //     const result = await this.authService.login(loginDto.email, loginDto.password);
-  //     return result;
-  //   } catch (error) {
-  //     throw new HttpException(
-  //       error.message || 'Login failed',
-  //       error.status || HttpStatus.UNAUTHORIZED
-  //     );
-  //   }
-  // }
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginDto: LoginDto) {
+    const result = this.authService.login(loginDto.email, loginDto.password);
+    return result;
+  }
   
   @Post('forgot-password')
   async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
