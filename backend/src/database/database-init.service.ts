@@ -192,6 +192,7 @@
 //     this.logger.log('DatabaseInitService initialization complete.');
 //   }
 // }
+
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { createConnection, Connection } from 'mysql2/promise';
 import { ConfigService } from '@nestjs/config';
@@ -203,12 +204,13 @@ export class DatabaseInitService implements OnModuleInit {
 
   constructor(private readonly configService: ConfigService) {}
 
+ 
   async initializeDatabase(): Promise<void> {
-    const host = this.configService.get<string>('MYSQL_HOST') || 'localhost';
-    const port = this.configService.get<number>('MYSQL_PORT') || 3306;
-    const user = this.configService.get<string>('MYSQL_USER') || 'root';
-    const password = this.configService.get<string>('MYSQL_PASSWORD') || '';
-    const database = this.configService.get<string>('MYSQL_DB') || 'test';
+    const host = this.configService.get<string>('switchyard.proxy.rlwy.net') || 'localhost';
+    const port = this.configService.get<number>('51788') || 3306;
+    const user = this.configService.get<string>('root') || 'root';
+    const password = this.configService.get<string>('jEcwaKMQvSqxCkOznvggORBsEvzHjXEv') || '';
+    const database = this.configService.get<string>('railway') || 'test';
 
     try {
       this.connection = await createConnection({
