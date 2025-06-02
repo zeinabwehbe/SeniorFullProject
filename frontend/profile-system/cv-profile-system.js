@@ -7,13 +7,14 @@ function getToken() {
     if (!stored) return null;
 
     try {
-        const parsed = JSON.parse(stored);
-        return parsed.access_token || null; // ✅ correct key!
+        const parsed = JSON.parse(stored); // ✅ parse the JSON
+        return parsed.access_token || null; // ✅ get the token string
     } catch (e) {
         console.error('Invalid token format in localStorage:', e);
         return null;
     }
 }
+
 
 // Logout user
 function logout() {
@@ -1265,8 +1266,16 @@ document.getElementById('editSkillForm').addEventListener('input', function() {
 
 // Initialize the page
 async function initPage() {
-    token = getToken();
-    console.log('Token:', token);
+    const token = getToken();
+    console.log("Token from getToken():", token);
+    
+    try {
+        const decoded = jwt_decode(token);
+        console.log("Decoded token:", decoded);
+    } catch (err) {
+        console.error("JWT decoding failed:", err.message);
+    }
+    
     // if (!token) {
     //      window.location.href = "../auth-system.html";
     //     return;
