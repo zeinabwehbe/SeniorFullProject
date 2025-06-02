@@ -206,12 +206,12 @@ export class DatabaseInitService implements OnModuleInit {
 
  
   async initializeDatabase(): Promise<void> {
-    const host = this.configService.get<string>('switchyard.proxy.rlwy.net') || 'localhost';
-    const port = this.configService.get<number>('51788') || 3306;
-    const user = this.configService.get<string>('root') || 'root';
-    const password = this.configService.get<string>('jEcwaKMQvSqxCkOznvggORBsEvzHjXEv') || '';
-    const database = this.configService.get<string>('railway') || 'test';
-
+    const host = this.configService.get<string>('DB_HOST') || 'localhost';
+    const port = this.configService.get<number>('DB_PORT') || 3306;
+    const user = this.configService.get<string>('DB_USER') || 'root';
+    const password = this.configService.get<string>('DB_PASS') || '';
+    const database = this.configService.get<string>('DB_NAME') || 'test';
+    
     try {
       this.connection = await createConnection({
         host,
