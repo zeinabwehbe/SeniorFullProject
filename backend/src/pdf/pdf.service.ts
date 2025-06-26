@@ -92,7 +92,7 @@ export class PdfService {
       
       // List all skills with name and level, no grouping by type
       const skillList = cvData.skills.map(skill => {
-        const skillName = skill.skillName || skill.name || skill.skill_name || '';
+        const skillName = skill.name || skill.skill_name || '';
         const level = skill.level || '';
         return level ? `${skillName} (${level})` : skillName;
       });
