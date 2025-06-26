@@ -6,7 +6,6 @@ import { OpenAI } from 'openai';
 @Controller('chat')
 export class ChatbotController {
   private openai: OpenAI;
-  //OPENAI_API_KEY = "***REMOVED-OPENAI-KEY***";
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get<string>('OPENAI_API_KEY');
 
