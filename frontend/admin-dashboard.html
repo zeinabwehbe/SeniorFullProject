@@ -851,6 +851,517 @@
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<script>
+  const API_URL = 'http://localhost:3000';
+  //const API_URL ="https://seniorfullproject-production.up.railway.app";
+
+  const USER_URL = `${API_URL}/users/public`;
+  const SKILLS_URL = `${API_URL}/skills`;
+  const USER_SKILLS_URL = `${API_URL}/user-skills`;
+  const CATEGORIES_URL = `${API_URL}/categories`;
+  const REVIEWS_URL = `${API_URL}/reviews`;
+
+  // Test data matching your exact database schema
+  const testUsers = [
+    {
+      id: 1,
+      name: "John Doe",
+      email: "john@example.com",
+      password: "hashed_password",
+      role: "user",
+      status: "active",
+      profile_pic: null,
+      phone: "1234567890",
+      address: "123 Main St",
+      bio: "Web developer",
+      linkedin_url: "https://linkedin.com/johndoe",
+      github_url: "https://github.com/johndoe",
+      portfolio_url: "https://johndoe.dev",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+  ];
+
+  const testCategories = [
+    {
+      id: 1,
+      name: "Programming",
+      description: "Software development skills"
+    }
+  ];
+
+  const testSkills = [
+    {
+      id: 1,
+      categoryId: 1,
+      skill_name: "JavaScript",
+      description: "Programming language for web development",
+      
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+  ];
+
+  const testUserSkills = [
+    {
+      id: 1,
+      user_id: 1,
+      skill_id: 1,
+      
+      skill_level: "Advanced",
+      approval_status: "approved",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+  ];
+
+  const searchInput = document.querySelector('.search-input');
+
+  // Function to format date
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  async function fetchData(url) {
+    try {
+      console.log(`Fetching data from: ${url}`);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(`Data from ${url}:`, data);
+      return data;
+    } catch (error) {
+      console.error(`Error fetching from ${url}:`, error);
+      document.getElementById('error-message').textContent = `Failed to load data from ${url}`;
+      return null;
+    }
+  }
+
+  async function loadDashboardData() {
+    try {
+      // Show loading state
+      document.querySelectorAll('.stat-number').forEach(el => {
+        el.textContent = '...';
+      });
+
+      
+      // Fetch all data in parallel
+      const [users, skills, categories, userSkills, reviews] = await Promise.all([
+        fetchData(USER_URL),
+        fetchData(SKILLS_URL),
+        fetchData(CATEGORIES_URL),
+        fetchData(USER_SKILLS_URL),
+        fetchData(REVIEWS_URL)
+      ]);
+
+      // Update counts
+      document.getElementById('total-users-count').textContent = users?.length || 0;
+      document.getElementById('total-skills-count').textContent = skills?.length || 0;
+      document.getElementById('total-categories-count').textContent = categories?.length || 0;
+      
+      // Update average rating
+      const averageRating = calculateAverage(reviews);
+      document.getElementById('average-rating').textContent = averageRating;
+
+      // Populate recent skills table if we have data
+      if (userSkills && users && skills && categories) {
+        populateRecentSkills(userSkills, users, skills, categories, searchInput ? searchInput.value : '');
+      } else {
+        console.log('Using test data as fallback');
+        populateRecentSkills(testUserSkills, testUsers, testSkills, testCategories, searchInput ? searchInput.value : '');
+      }
+
+      // After fetching data in loadDashboardData
+      window._userSkills = userSkills;
+      window._users = users;
+      window._skills = skills;
+      window._categories = categories;
+
+      // Now call with global variables
+      populateRecentSkills(
+        window._userSkills,
+        window._users,
+        window._skills,
+        window._categories,
+        searchInput ? searchInput.value : ''
+      );
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+      showError(`Error loading data: ${error.message}`);
+      populateRecentSkills(testUserSkills, testUsers, testSkills, testCategories, searchInput ? searchInput.value : '');
+    }
+  }
+
+  function calculateAverage(reviews) {
+    if (!reviews || !reviews.length) return 0;
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return (total / reviews.length).toFixed(1);
+  }
+
+  async function populateRecentSkills(userSkills, users, skills, categories, filterText = '') {
+    const tbody = document.querySelector('.recent-skills-table tbody');
+    tbody.innerHTML = '';
+
+    // Sort function to prioritize pending skills and then by date
+    const sortUserSkills = (a, b) => {
+        const skillA = skills.find(s => s.id === a.skill_id);
+        const skillB = skills.find(s => s.id === b.skill_id);
+        
+        // First, sort by status (pending first)
+        if (skillA?.approval_status === 'pending' && skillB?.approval_status !== 'pending') return -1;
+        if (skillA?.approval_status !== 'pending' && skillB?.approval_status === 'pending') return 1;
+        
+        // Then sort by date (most recent first)
+        return new Date(b.created_at) - new Date(a.created_at);
+    };
+
+    // Sort the user skills
+    const sortedUserSkills = [...userSkills].sort(sortUserSkills);
+
+    const lowerFilter = filterText.trim().toLowerCase();
+
+    const filteredUserSkills = sortedUserSkills.filter(userSkill => {
+        const user = users.find(u => u.id === userSkill.user_id);
+        const skill = skills.find(s => s.id === userSkill.skill_id);
+        const category = skill ? categories.find(c => c.id === skill.categoryId) : null;
+
+        const userName = (user?.name || '').toLowerCase();
+        const skillName = (skill?.skill_name || '').toLowerCase();
+        const categoryName = (category?.name || '').toLowerCase();
+
+        const words = lowerFilter.split(/\s+/).filter(Boolean);
+        return words.every(word =>
+            userName.includes(word) ||
+            skillName.includes(word) ||
+            categoryName.includes(word)
+        );
+    });
+
+    // Render filtered rows
+    filteredUserSkills.forEach(userSkill => {
+      const user = users.find(u => u.id === userSkill.user_id);
+      const skill = skills.find(s => s.id === userSkill.skill_id);
+      const category = skill ? categories.find(c => c.id === skill.categoryId) : null;
+      
+      const row = document.createElement('tr');
+      
+      // Format user info
+      const userAvatar = user && user.id
+        ? `<img src="${API_URL}/users/${user.id}/profile-picture" alt="Profile" class="user-avatar" style="width:35px;height:35px;object-fit:cover;border-radius:50%;" onerror="this.src='assets/images/default-user.jpg';">`
+        : `<div class="user-avatar">${user?.name?.split(' ').map(n => n[0]).join('') || '??'}</div>`;
+      const userName = user?.name || 'Unknown User';
+      const userEmail = user?.email || 'No email';
+
+      // Format skill info
+      const skillName = skill?.skill_name || 'Unnamed Skill';
+      let categoryName = (category && category.name) || skill.category?.name || 'Uncategorized';
+      const skillStatus = userSkill.approval_status || 'pending';
+
+      // Format creation date
+      const formattedCreatedDate = formatDate(userSkill.created_at || new Date());
+
+      // Determine status
+      const statusClass = `status-${skillStatus}`;
+      const statusText = skillStatus.charAt(0).toUpperCase() + skillStatus.slice(1);
+
+      // Format skill status and level
+    const skillLevel = userSkill.skill_level || 'Not specified';
+
+      row.innerHTML = `
+        <td>
+          <div class="user-info">
+            ${userAvatar}
+            <div class="user-details">
+              <div class="user-name">${userName}</div>
+              <div class="user-email">${userEmail}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <strong>${skillName}</strong><br>
+          <small class="text-muted">${categoryName} •  (${skillLevel})</small>
+        </td>
+        <td>${formattedCreatedDate}</td>
+        <td><span class="status ${statusClass}">${statusText}</span></td>
+        <td>
+          <div class="action-buttons">
+            ${skillStatus === 'pending' ? `
+              <button class="btn btn-sm btn-success approve-skill" data-user-skill-id="${userSkill.id}">
+                <i class="fas fa-check"></i> Approve
+              </button>
+              <button class="btn btn-sm btn-danger reject-skill" data-user-skill-id="${userSkill.id}">
+                <i class="fas fa-times"></i> Reject
+              </button>
+            ` : ''}
+            <button class="btn btn-sm btn-secondary view-skill" 
+                    data-user-skill-id="${userSkill.id}" 
+                    data-user-id="${userSkill.user_id}"
+                    data-skill-id="${userSkill.skill_id}">
+              <i class="fas fa-eye"></i> View
+            </button>
+          </div>
+        </td>
+      `;
+      
+      tbody.appendChild(row);
+    });
+
+    // Add event listeners to new buttons
+    document.querySelectorAll('.view-skill').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const userSkillId = e.target.closest('button').dataset.userSkillId;
+        const userId = e.target.closest('button').dataset.userId;
+        const skillId = e.target.closest('button').dataset.skillId;
+        viewSkillDetails(userSkillId, userId, skillId);
+      });
+    });
+
+    document.querySelectorAll('.approve-skill').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const userSkillId = e.target.closest('button').dataset.userSkillId;
+        const confirmed = window.confirm('Are you sure you want to approve this skill?');
+        if (confirmed) {
+          await updateSkillStatus(userSkillId, 'approved');
+        }
+      });
+    });
+
+    document.querySelectorAll('.reject-skill').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const userSkillId = e.target.closest('button').dataset.userSkillId;
+        const confirmed = window.confirm('Are you sure you want to reject this skill?');
+        if (confirmed) {
+          await updateSkillStatus(userSkillId, 'rejected');
+        }
+      });
+    });
+  }
+
+  async function updateSkillStatus(userSkillId, status) {
+    try {
+      console.log('Updating skill status:', { userSkillId, status });
+      console.log('API URL:', `${USER_SKILLS_URL}/${userSkillId}`);
+      
+      const response = await fetch(`${USER_SKILLS_URL}/${userSkillId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+        },
+        body: JSON.stringify({ 
+          approval_status: status
+        })
+      });
+
+      console.log('Response status:', response.status);
+      const responseData = await response.json();
+      console.log('Response data:', responseData);
+
+      if (!response.ok) {
+        throw new Error(`Failed to update skill status: ${responseData.message || 'Unknown error'}`);
+      }
+
+      // Refresh the data and wait for it to complete
+      await loadDashboardData();
+      
+      // Update the status in the table row
+      const statusCell = document.querySelector(`tr[data-user-skill-id="${userSkillId}"] .status`);
+      if (statusCell) {
+        statusCell.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        statusCell.className = `status status-${status.toLowerCase()}`;
+      }
+
+      showToast('Skill status updated successfully!', 'success');
+    } catch (error) {
+      console.error('Error updating skill status:', error);
+      showToast(`Failed to update skill status: ${error.message}`, 'error');
+    }
+  }
+
+  async function viewSkillDetails(userSkillId, userId, skillId) {
+    const modal = document.getElementById('skillDetailsModal');
+    const modalBody = modal.querySelector('.modal-body');
+    if (!userId || !skillId) {
+        modalBody.innerHTML = `<div class="error-message">Missing required information</div>`;
+        modal.classList.add('show');
+        return;
+    }
+    modal.classList.add('show');
+    modalBody.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner"></i> Loading details...</div>`;
+    try {
+        const userUrl = `${API_URL}/users/public/${userId}`;
+        const skillUrl = `${API_URL}/skills/${skillId}`;
+        const userSkillUrl = `${USER_SKILLS_URL}/${userSkillId}`;
+        
+        // Fetch all data in parallel
+        const [userResponse, skillResponse, userSkillResponse, categoryResponse] = await Promise.all([
+            fetch(userUrl),
+            fetch(skillUrl),
+            fetch(userSkillUrl),
+            fetch(`${API_URL}/categories/${skillId}`).catch(() => null)
+        ]);
+
+        if (!userResponse.ok || !skillResponse.ok || !userSkillResponse.ok) {
+            throw new Error('Failed to fetch data');
+        }
+
+        const user = await userResponse.json();
+        const skill = await skillResponse.json();
+        const userSkill = await userSkillResponse.json();
+        const category = categoryResponse ? await categoryResponse.json() : null;
+
+        console.log('User Skill Data:', userSkill);
+
+        let categoryName = (category && category.name) || skill.category?.name || 'Uncategorized';
+        const statusText = userSkill.approval_status.charAt(0).toUpperCase() + userSkill.approval_status.slice(1);
+
+        const userProfileHTML = `
+            <div class="flex justify-center mb-4">
+                <div class="user-avatar-large" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 36px; background: #4361ee; color: #fff;">
+                    ${user && user.id
+                        ? `<img src="${API_URL}/users/${user.id}/profile-picture" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.src='assets/images/default-user.jpg';">`
+                        : `<i class="fas fa-user"></i>`
+                    }
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold mb-2" style="color: #4361ee">${user.name || 'No name'}</h2>
+            <div class="text-left" style="max-width: 400px; margin: 0 auto;">
+                <p class="text-gray-600 mb-1"><strong>Email:</strong> ${user.email || 'No email'}</p>
+                <p class="text-gray-600 mb-1"><strong>Phone:</strong> ${user.phone || 'No phone number'}</p>
+                <p class="text-gray-600 mb-1"><strong>Bio:</strong> ${user.bio || 'No bio'}</p>
+                ${user.linkedin_url ? `<p class="text-gray-600 mb-1"><strong>LinkedIn:</strong> <a href="${user.linkedin_url}" target="_blank" class="text-blue-500 hover:underline">${user.linkedin_url}</a></p>` : ''}
+                ${user.github_url ? `<p class="text-gray-600 mb-1"><strong>GitHub:</strong> <a href="${user.github_url}" target="_blank" class="text-blue-500 hover:underline">${user.github_url}</a></p>` : ''}
+                ${user.portfolio_url ? `<p class="text-gray-600 mb-1"><strong>Portfolio:</strong> <a href="${user.portfolio_url}" target="_blank" class="text-blue-500 hover:underline">${user.portfolio_url}</a></p>` : ''}
+            </div>
+        `;
+        const modalContent = `
+            <div class="text-center">
+                ${userProfileHTML}
+                <hr style="margin: 20px 0;">
+                <div class="text-left" style="max-width: 400px; margin: 0 auto;">
+                    <h3 class="font-semibold text-gray-800 mb-2 text-lg">Skill Details</h3>
+                    <p class="mb-1"><strong>Skill:</strong> ${skill.skill_name || 'Unnamed Skill'}</p>
+                    <p class="mb-1"><strong>Status:</strong> <span class="status status-${userSkill.approval_status.toLowerCase()}">${statusText}</span></p>
+                    <p class="mb-1"><strong>Submitted:</strong> ${formatDate(userSkill.created_at)}</p>
+                    <p class="mb-1"><strong>Description:</strong> ${skill.description || 'No description available'}</p>
+                    <p class="mb-1"><strong>Category:</strong> ${categoryName}</p>
+                    <p class="mb-1"><strong>Level:</strong> ${userSkill.skill_level || 'Not specified'}</p>
+                </div>
+            </div>
+        `;
+        modalBody.innerHTML = modalContent;
+
+        // Add close button event listener after setting modal content
+        const closeBtns = modal.querySelectorAll('.modal-close, .modal-close-btn');
+        closeBtns.forEach(btn => btn.addEventListener('click', () => modal.classList.remove('show')));
+    } catch (error) {
+        modalBody.innerHTML = `<div class="error-message">Error loading details: ${error.message}</div>`;
+    }
+}
+  function showError(message) {
+    const errorDiv = document.getElementById('error-message') || document.createElement('div');
+    errorDiv.id = 'error-message';
+    errorDiv.style.color = 'red';
+    errorDiv.style.padding = '10px';
+    errorDiv.style.margin = '10px 0';
+    errorDiv.textContent = message;
+    document.querySelector('.main-content').prepend(errorDiv);
+  }
+
+  function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }, 100);
+  }
+
+  // Add this at the top of your script
+  function handleLogout() {
+    console.log('Logout function called');
+    localStorage.removeItem('token');
+    window.location.href = 'homepage.html';
+  }
+
+  // Initialize dashboard when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    loadDashboardData();
+
+    // Add refresh button event listener with the new ID
+    const refreshBtn = document.getElementById('refreshSkillsBtn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+
+            console.log('Refresh button clicked');
+            loadDashboardData();
+            showToast('Skills refreshed successfully!', 'success');
+        });
+    }
+
+    // Add logout functionality
+    const logoutBtn = document.getElementById('logout');
+    if (logoutBtn) {
+      console.log('Logout button found');
+      logoutBtn.addEventListener('click', () => {
+        console.log('Logout clicked');
+        localStorage.removeItem('token');
+        window.location.href = 'homepage.html';
+      });
+    } else {
+      console.log('Logout button not found');
+    }
+
+    // Add modal close functionality
+    document.querySelectorAll('.modal-close, .modal-close-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            document.getElementById('skillDetailsModal').classList.remove('show');
+        });
+    });
+
+    // Add search input event listener
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        console.log('Search event:', window._userSkills, window._users, window._skills, window._categories);
+        if (
+          window._userSkills &&
+          window._users &&
+          window._skills &&
+          window._categories
+        ) {
+          populateRecentSkills(
+            window._userSkills,
+            window._users,
+            window._skills,
+            window._categories,
+            searchInput.value
+          );
+        }
+      });
+    }
+  });
+</script>
 <body>
   <div class="dashboard-container">
     <!-- Sidebar -->
@@ -1019,499 +1530,7 @@
   </div>
 </div>
 </body>
-<script>
-  //const API_URL = 'http://localhost:3000';
-  const API_URL ="https://seniorfullproject-production.up.railway.app";
 
-  const USER_URL = `${API_URL}/users/public`;
-  const SKILLS_URL = `${API_URL}/skills`;
-  const USER_SKILLS_URL = `${API_URL}/user-skills`;
-  const CATEGORIES_URL = `${API_URL}/categories`;
-  const REVIEWS_URL = `${API_URL}/reviews`;
-
-  // Test data matching your exact database schema
-  const testUsers = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      password: "hashed_password",
-      role: "user",
-      status: "active",
-      profile_pic: null,
-      phone: "1234567890",
-      address: "123 Main St",
-      bio: "Web developer",
-      linkedin_url: "https://linkedin.com/johndoe",
-      github_url: "https://github.com/johndoe",
-      portfolio_url: "https://johndoe.dev",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  ];
-
-  const testCategories = [
-    {
-      id: 1,
-      name: "Programming",
-      description: "Software development skills"
-    }
-  ];
-
-  const testSkills = [
-    {
-      id: 1,
-      categoryId: 1,
-      skill_name: "JavaScript",
-      description: "Programming language for web development",
-      approval_status: "approved",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  ];
-
-  const testUserSkills = [
-    {
-      id: 1,
-      user_id: 1,
-      skill_id: 1,
-      skill_type: "teach",
-      skill_level: "Advanced",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  ];
-
-  const searchInput = document.querySelector('.search-input');
-
-  // Function to format date
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  }
-
-  async function fetchData(url) {
-    try {
-      console.log(`Fetching data from: ${url}`);
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(`Data from ${url}:`, data);
-      return data;
-    } catch (error) {
-      console.error(`Error fetching from ${url}:`, error);
-      document.getElementById('error-message').textContent = `Failed to load data from ${url}`;
-      return null;
-    }
-  }
-
-  async function loadDashboardData() {
-    try {
-      // Show loading state
-      document.querySelectorAll('.stat-number').forEach(el => {
-        el.textContent = '...';
-      });
-
-      
-      // Fetch all data in parallel
-      const [users, skills, categories, userSkills, reviews] = await Promise.all([
-        fetchData(USER_URL),
-        fetchData(SKILLS_URL),
-        fetchData(CATEGORIES_URL),
-        fetchData(USER_SKILLS_URL),
-        fetchData(REVIEWS_URL)
-      ]);
-
-      // Update counts
-      document.getElementById('total-users-count').textContent = users?.length || 0;
-      document.getElementById('total-skills-count').textContent = skills?.length || 0;
-      document.getElementById('total-categories-count').textContent = categories?.length || 0;
-      
-      // Update average rating
-      const averageRating = calculateAverage(reviews);
-      document.getElementById('average-rating').textContent = averageRating;
-
-      // Populate recent skills table if we have data
-      if (userSkills && users && skills && categories) {
-        populateRecentSkills(userSkills, users, skills, categories, searchInput ? searchInput.value : '');
-      } else {
-        console.log('Using test data as fallback');
-        populateRecentSkills(testUserSkills, testUsers, testSkills, testCategories, searchInput ? searchInput.value : '');
-      }
-
-      // After fetching data in loadDashboardData
-      window._userSkills = userSkills;
-      window._users = users;
-      window._skills = skills;
-      window._categories = categories;
-
-      // Now call with global variables
-      populateRecentSkills(
-        window._userSkills,
-        window._users,
-        window._skills,
-        window._categories,
-        searchInput ? searchInput.value : ''
-      );
-    } catch (error) {
-      console.error('Failed to load dashboard data:', error);
-      showError(`Error loading data: ${error.message}`);
-      populateRecentSkills(testUserSkills, testUsers, testSkills, testCategories, searchInput ? searchInput.value : '');
-    }
-  }
-
-  function calculateAverage(reviews) {
-    if (!reviews || !reviews.length) return 0;
-    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-    return (total / reviews.length).toFixed(1);
-  }
-
-  async function populateRecentSkills(userSkills, users, skills, categories, filterText = '') {
-    const tbody = document.querySelector('.recent-skills-table tbody');
-    tbody.innerHTML = '';
-
-    // Sort function to prioritize pending skills and then by date
-    const sortUserSkills = (a, b) => {
-        const skillA = skills.find(s => s.id === a.skill_id);
-        const skillB = skills.find(s => s.id === b.skill_id);
-        
-        // First, sort by status (pending first)
-        if (skillA?.approval_status === 'pending' && skillB?.approval_status !== 'pending') return -1;
-        if (skillA?.approval_status !== 'pending' && skillB?.approval_status === 'pending') return 1;
-        
-        // Then sort by date (most recent first)
-        return new Date(b.created_at) - new Date(a.created_at);
-    };
-
-    // Sort the user skills
-    const sortedUserSkills = [...userSkills].sort(sortUserSkills);
-
-    const lowerFilter = filterText.trim().toLowerCase();
-
-    const filteredUserSkills = sortedUserSkills.filter(userSkill => {
-        const user = users.find(u => u.id === userSkill.user_id);
-        const skill = skills.find(s => s.id === userSkill.skill_id);
-        const category = skill ? categories.find(c => c.id === skill.categoryId) : null;
-
-        const userName = (user?.name || '').toLowerCase();
-        const skillName = (skill?.skill_name || '').toLowerCase();
-        const categoryName = (category?.name || '').toLowerCase();
-
-        const words = lowerFilter.split(/\s+/).filter(Boolean);
-        return words.every(word =>
-            userName.includes(word) ||
-            skillName.includes(word) ||
-            categoryName.includes(word)
-        );
-    });
-
-    // Render filtered rows
-    filteredUserSkills.forEach(userSkill => {
-      const user = users.find(u => u.id === userSkill.user_id);
-      const skill = skills.find(s => s.id === userSkill.skill_id);
-      const category = skill ? categories.find(c => c.id === skill.categoryId) : null;
-      
-      const row = document.createElement('tr');
-      
-      // Format user info
-      const userAvatar = user && user.id
-        ? `<img src="${API_URL}/users/${user.id}/profile-picture" alt="Profile" class="user-avatar" style="width:35px;height:35px;object-fit:cover;border-radius:50%;" onerror="this.src='assets/images/default-user.jpg';">`
-        : `<div class="user-avatar">${user?.name?.split(' ').map(n => n[0]).join('') || '??'}</div>`;
-      const userName = user?.name || 'Unknown User';
-      const userEmail = user?.email || 'No email';
-
-      // Format skill info
-      const skillName = skill?.skill_name || 'Unnamed Skill';
-      let categoryName = (category && category.name) || skill.category?.name || 'Uncategorized';
-      const skillStatus = skill?.approval_status || 'pending';
-
-      // Format creation date
-      const formattedCreatedDate = formatDate(userSkill.created_at || new Date());
-
-      // Determine status
-      const statusClass = `status-${skillStatus}`;
-      const statusText = skillStatus.charAt(0).toUpperCase() + skillStatus.slice(1);
-
-      // Format skill type and level
-      const skillType = userSkill.skill_type === 'teach' ? 'Teaching' : 'Learning';
-      const skillLevel = userSkill.skill_level || 'Not specified';
-
-      row.innerHTML = `
-        <td>
-          <div class="user-info">
-            ${userAvatar}
-            <div class="user-details">
-              <div class="user-name">${userName}</div>
-              <div class="user-email">${userEmail}</div>
-            </div>
-          </div>
-        </td>
-        <td>
-          <strong>${skillName}</strong><br>
-          <small class="text-muted">${categoryName} • ${skillType} (${skillLevel})</small>
-        </td>
-        <td>${formattedCreatedDate}</td>
-        <td><span class="status ${statusClass}">${statusText}</span></td>
-        <td>
-          <div class="action-buttons">
-            ${skillStatus === 'pending' ? `
-              <button class="btn btn-sm btn-success approve-skill" data-skill-id="${skill?.id}">
-                <i class="fas fa-check"></i> Approve
-              </button>
-              <button class="btn btn-sm btn-danger reject-skill" data-skill-id="${skill?.id}">
-                <i class="fas fa-times"></i> Reject
-              </button>
-            ` : ''}
-            <button class="btn btn-sm btn-secondary view-skill" 
-                    data-user-skill-id="${userSkill.id}" 
-                    data-user-id="${userSkill.user_id}"
-                    data-skill-id="${userSkill.skill_id}">
-              <i class="fas fa-eye"></i> View
-            </button>
-          </div>
-        </td>
-      `;
-      
-      tbody.appendChild(row);
-    });
-
-    // Add event listeners to new buttons
-    document.querySelectorAll('.view-skill').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const userSkillId = e.target.closest('button').dataset.userSkillId;
-        const userId = e.target.closest('button').dataset.userId;
-        const skillId = e.target.closest('button').dataset.skillId;
-        viewSkillDetails(userSkillId, userId, skillId);
-      });
-    });
-
-    document.querySelectorAll('.approve-skill').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const skillId = e.target.closest('button').dataset.skillId;
-        const confirmed = window.confirm('Are you sure you want to approve this skill?');
-        if (confirmed) {
-          await updateSkillStatus(skillId, 'approved');
-        }
-      });
-    });
-
-    document.querySelectorAll('.reject-skill').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const skillId = e.target.closest('button').dataset.skillId;
-        const confirmed = window.confirm('Are you sure you want to reject this skill?');
-        if (confirmed) {
-          await updateSkillStatus(skillId, 'rejected');
-        }
-      });
-    });
-  }
-
-  async function updateSkillStatus(skillId, status) {
-    try {
-      const response = await fetch(`${SKILLS_URL}/${skillId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('token'))
-        },
-        body: JSON.stringify({ 
-          approval_status: status,
-          updated_at: new Date().toISOString() 
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update skill status');
-      }
-
-      // Refresh the data
-      loadDashboardData();
-      showToast('Skill status updated successfully!', 'success');
-    } catch (error) {
-      console.error('Error updating skill status:', error);
-      showToast('Failed to update skill status', 'error');
-    }
-  }
-  async function viewSkillDetails(userSkillId, userId, skillId) {
-    const modal = document.getElementById('skillDetailsModal');
-    const modalBody = modal.querySelector('.modal-body');
-    if (!userId || !skillId) {
-        modalBody.innerHTML = `<div class="error-message">Missing required information</div>`;
-        modal.classList.add('show');
-        return;
-    }
-    modal.classList.add('show');
-    modalBody.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner"></i> Loading details...</div>`;
-    try {
-        const userUrl = `${API_URL}/users/public/${userId}`;
-        const skillUrl = `${API_URL}/skills/${skillId}`;
-        const userSkillUrl = `${API_URL}/user-skills/${userSkillId}`;
-        const skillResponse = await fetch(skillUrl);
-        if (!skillResponse.ok) throw new Error('Failed to fetch skill');
-        const skill = await skillResponse.json();
-        const [userResponse, userSkillResponse, categoryResponse] = await Promise.all([
-            fetch(userUrl),
-            fetch(userSkillUrl),
-            fetch(`${API_URL}/categories/${skill.categoryId}`).catch(() => null)
-        ]);
-        if (!userResponse.ok || !userSkillResponse.ok) throw new Error('Failed to fetch user data');
-        const user = await userResponse.json();
-        const userSkill = await userSkillResponse.json();
-        const category = categoryResponse ? await categoryResponse.json() : null;
-
-        console.log('Skill:', skill);
-        console.log('Category:', category);
-        console.log('User:', user);
-
-        let categoryName = (category && category.name) || skill.category?.name || 'Uncategorized';
-
-        const userProfileHTML = `
-            <div class="flex justify-center mb-4">
-                <div class="user-avatar-large" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 36px; background: #4361ee; color: #fff;">
-                    ${user && user.id
-                        ? `<img src="${API_URL}/users/${user.id}/profile-picture" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.src='assets/images/default-user.jpg';">`
-                        : `<i class="fas fa-user"></i>`
-                    }
-                </div>
-            </div>
-            <h2 class="text-2xl font-bold mb-2" style="color: #4361ee">${user.name || 'No name'}</h2>
-            <div class="text-left" style="max-width: 400px; margin: 0 auto;">
-                <p class="text-gray-600 mb-1"><strong>Email:</strong> ${user.email || 'No email'}</p>
-                <p class="text-gray-600 mb-1"><strong>Phone:</strong> ${user.phone || 'No phone number'}</p>
-                <p class="text-gray-600 mb-1"><strong>Bio:</strong> ${user.bio || 'No bio'}</p>
-                ${user.linkedin_url ? `<p class="text-gray-600 mb-1"><strong>LinkedIn:</strong> <a href="${user.linkedin_url}" target="_blank" class="text-blue-500 hover:underline">${user.linkedin_url}</a></p>` : ''}
-                ${user.github_url ? `<p class="text-gray-600 mb-1"><strong>GitHub:</strong> <a href="${user.github_url}" target="_blank" class="text-blue-500 hover:underline">${user.github_url}</a></p>` : ''}
-                ${user.portfolio_url ? `<p class="text-gray-600 mb-1"><strong>Portfolio:</strong> <a href="${user.portfolio_url}" target="_blank" class="text-blue-500 hover:underline">${user.portfolio_url}</a></p>` : ''}
-            </div>
-        `;
-        const modalContent = `
-            <div class="text-center">
-                ${userProfileHTML}
-                <hr style="margin: 20px 0;">
-                <div class="text-left" style="max-width: 400px; margin: 0 auto;">
-                    <h3 class="font-semibold text-gray-800 mb-2 text-lg">Skill Details</h3>
-                    <p class="mb-1"><strong>Skill:</strong> ${skill.skill_name || 'Unnamed Skill'}</p>
-                    <p class="mb-1"><strong>Status:</strong> ${skill.approval_status || 'Pending'}</p>
-                    <p class="mb-1"><strong>Submitted:</strong> ${formatDate(userSkill.created_at)}</p>
-                    <p class="mb-1"><strong>Description:</strong> ${skill.description || 'No description available'}</p>
-                    <p class="mb-1"><strong>Category:</strong> ${categoryName}</p>
-                    <p class="mb-1"><strong>Type:</strong> ${userSkill.skill_type === 'teach' ? 'Teaching' : 'Learning'}</p>
-                    <p class="mb-1"><strong>Level:</strong> ${userSkill.skill_level || 'Not specified'}</p>
-                </div>
-            </div>
-        `;
-        modalBody.innerHTML = modalContent;
-
-        // Add close button event listener after setting modal content
-        const closeBtns = modal.querySelectorAll('.modal-close, .modal-close-btn');
-        closeBtns.forEach(btn => btn.addEventListener('click', () => modal.classList.remove('show')));
-    } catch (error) {
-        modalBody.innerHTML = `<div class="error-message">Error loading details: ${error.message}</div>`;
-    }
-}
-  function showError(message) {
-    const errorDiv = document.getElementById('error-message') || document.createElement('div');
-    errorDiv.id = 'error-message';
-    errorDiv.style.color = 'red';
-    errorDiv.style.padding = '10px';
-    errorDiv.style.margin = '10px 0';
-    errorDiv.textContent = message;
-    document.querySelector('.main-content').prepend(errorDiv);
-  }
-
-  function showToast(message, type = 'info') {
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
-    }, 100);
-  }
-
-  // Add this at the top of your script
-  function handleLogout() {
-    console.log('Logout function called');
-    localStorage.removeItem('token');
-    window.location.href = 'homepage.html';
-  }
-
-  // Initialize dashboard when DOM is loaded
-  document.addEventListener('DOMContentLoaded', () => {
-    loadDashboardData();
-
-    // Add refresh button event listener with the new ID
-    const refreshBtn = document.getElementById('refreshSkillsBtn');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', () => {
-
-            console.log('Refresh button clicked');
-            loadDashboardData();
-            showToast('Skills refreshed successfully!', 'success');
-        });
-    }
-
-    // Add logout functionality
-    const logoutBtn = document.getElementById('logout');
-    if (logoutBtn) {
-      console.log('Logout button found');
-      logoutBtn.addEventListener('click', () => {
-        console.log('Logout clicked');
-        localStorage.removeItem('token');
-        window.location.href = 'homepage.html';
-      });
-    } else {
-      console.log('Logout button not found');
-    }
-
-    // Add modal close functionality
-    document.querySelectorAll('.modal-close, .modal-close-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            document.getElementById('skillDetailsModal').classList.remove('show');
-        });
-    });
-
-    // Add search input event listener
-    if (searchInput) {
-      searchInput.addEventListener('input', function() {
-        console.log('Search event:', window._userSkills, window._users, window._skills, window._categories);
-        if (
-          window._userSkills &&
-          window._users &&
-          window._skills &&
-          window._categories
-        ) {
-          populateRecentSkills(
-            window._userSkills,
-            window._users,
-            window._skills,
-            window._categories,
-            searchInput.value
-          );
-        }
-      });
-    }
-  });
-</script>
 </html>
           
          

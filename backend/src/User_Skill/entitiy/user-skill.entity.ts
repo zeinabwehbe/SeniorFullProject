@@ -1,7 +1,9 @@
+
+
 import { Column, DataType, Model, Table, ForeignKey, BelongsTo, CreatedAt, UpdatedAt } from 'sequelize-typescript';
 import { User } from '../../users/entities/user.entity';
 import { Skill } from '../../skills/entities/skill.entity';
-import { SkillType, SkillLevel } from '../dto/create-user-skill.dto';
+import {  SkillLevel, ApprovalStatus } from '../dto/create-user-skill.dto';
 
 @Table({
   tableName: 'User_Skills',
@@ -35,18 +37,19 @@ export class UserSkill extends Model<UserSkill> {
   skill_id: number;
 
   @Column({
-    type: DataType.ENUM(...Object.values(SkillType)),
-    allowNull: false,
-    field: 'skill_type',
-  })
-  skill_type: SkillType;
-
-  @Column({
     type: DataType.ENUM(...Object.values(SkillLevel)),
     allowNull: false,
     field: 'skill_level',
   })
   skill_level: SkillLevel;
+
+  @Column({
+    type: DataType.ENUM(...Object.values(ApprovalStatus)),
+    allowNull: false,
+    defaultValue: ApprovalStatus.PENDING,
+    field: 'approval_status',
+  })
+  approval_status: ApprovalStatus;
 
   @BelongsTo(() => User)
   user: User;
@@ -66,3 +69,6 @@ export class UserSkill extends Model<UserSkill> {
   })
   updated_at: string;
 } 
+
+
+

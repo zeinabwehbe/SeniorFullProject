@@ -1,3 +1,4 @@
+
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Skill } from './entities/skill.entity';
 import { CreateSkillDto } from './dto/create-skill.dto';
@@ -54,10 +55,7 @@ export class SkillsService {
     return skills.map(skill => this.mapToResponseDto(skill));
   }
   
-  async findByApprovalStatus(status: string): Promise<SkillResponseDto[]> {
-    const skills = await this.skillsRepository.findByApprovalStatus(status);
-    return skills.map(skill => this.mapToResponseDto(skill));
-  }
+
   
   /**
    * Map a Skill entity to a SkillResponseDto
@@ -70,10 +68,11 @@ export class SkillsService {
       skill_name: skill.skill_name,
       category_id: skill.category_id,
       description: skill.description,
-      approval_status: skill.approval_status,
+      
       category: skill.category,
       createdAt: skill.createdAt,
       updatedAt: skill.updatedAt
     };
   }
 } 
+
