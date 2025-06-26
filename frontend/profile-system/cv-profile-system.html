@@ -133,10 +133,9 @@
             </ul>
           </div>
           <div class="ats-section">
-            <h3>SkillSwap Benefits</h3>
+            <h3>SkillUp Benefits</h3>
             <p>Our platform helps you upgrade your skills, build an ATS-optimized CV, and generate professional designs that stand out to both automated systems and hiring managers.</p>
-            <a href="./profile-system/cv-profile-system.html" class="ats-cta-button">Get Started Now</a>
-          </div>
+           </div>
         </div>
       </div>
     </div>
@@ -145,11 +144,10 @@
 
         <!-- Section 1 / 6 : PROFILE -->
         <div class="profile-header">
-            <div class="profile-image">
+            <!-- <div class="profile-image">
                 <img id="profilePic" alt="Profile Picture" onerror="this.onerror=null;this.src='default-profile.png';" title="Profile Picture">
                 <input type="file" id="profilePicInput" accept="image/*" style="margin-top:10px;" title="Upload your profile picture">
-                <button class="btn btn-info" id="uploadPicBtn" style="margin-top:5px;" title="Upload Picture">Upload Picture</button>
-            </div>
+                <button class="btn btn-info" id="uploadPicBtn" style="margin-top:5px;" title="Upload Picture">Upload Picture</button> -->
             <div class="profile-info">
                 <h2 id="userName">Loading...</h2>
                 <p id="userEmail"><i class="fas fa-envelope"></i> Loading...</p>
@@ -464,52 +462,50 @@
         </div>
             
  
-        <!-- Section 6 / 6 : SKILLS -->
+        <!-- Section 6 / 6 : CV SKILLS -->
         <div class="section" id="skillsSection">
             <div class="section-title" style="display: flex; align-items: center;">
                 <i class="fas fa-tools"></i>
-                <h3 style="margin-right: auto;">Skills</h3>
-                <button class="btn btn-success" onclick="openCreateSkillModal()">
-                    <i class="fas fa-plus"></i> Add Skill
+                <h3 style="margin-right: auto;">CV Skills</h3>
+                <button class="btn btn-success" onclick="openCreateCvSkillModal()">
+                    <i class="fas fa-plus"></i> Add CV Skill
                 </button>
             </div>
             <div id="skillsContainer">
                 <div class="empty-state">
                     <i class="fas fa-tools"></i>
-                    <p>No skills added yet</p>
+                    <p>No CV skills added yet</p>
                 </div>
             </div>
         </div>
 
-        <!-- Create Skill Modal -->
-        <div id="createSkillModal" class="modal">
+        <!-- Create CV Skill Modal -->
+        <div id="createCvSkillModal" class="modal">
             <div class="modal-content">
-                <span class="close" onclick="closeCreateSkillModal()">&times;</span>
-                <h2>Add Skill</h2>
-                <form id="createSkillForm">
-                    <label for="skillName">Skill Name:</label>
-                    <input type="text" id="skillName" required><br><br>
-                    <label for="skillLevel">Skill Level:</label>
-                    <input type="text" id="skillLevel" required><br><br>
-                    <button type="button" class="btn btn-primary" onclick="saveNewSkill()" id="saveNewSkillBtn" disabled>Save</button>
+                <span class="close" onclick="closeCreateCvSkillModal()">&times;</span>
+                <h2>Add CV Skill</h2>
+                <form id="createCvSkillForm">
+                    <label for="cvSkillName">Skill Name:</label>
+                    <input type="text" id="cvSkillName" required><br><br>
+                    <label for="cvSkillLevel">Skill Level:</label>
+                    <input type="text" id="cvSkillLevel" required><br><br>
+                    <button type="button" class="btn btn-primary" onclick="saveNewCvSkill()" id="saveNewCvSkillBtn" >Save</button>
                 </form>
             </div>
         </div>
         
-        <!-- Edit Skill Modal -->
-        <div id="editSkillModal" class="modal">
+        <!-- Edit CV Skill Modal -->
+        <div id="editCvSkillModal" class="modal">
             <div class="modal-content">
-                <span class="close" onclick="closeEditSkillModal()">&times;</span>
-                <h2>Edit Skill</h2>
-                <form id="editSkillForm">
-                    <input type="hidden" id="skillId">
-                    <label for="editSkillName">Skill Name:</label>
-                    <input type="text" id="editSkillName" required><br><br>
-                    <label for="editSkillType">Skill Type:</label>
-                    <input type="text" id="editSkillType" required><br><br>
-                    <label for="editSkillLevel">Skill Level:</label>
-                    <input type="text" id="editSkillLevel" required><br><br>
-                    <button type="button" class="btn btn-primary" onclick="saveEditedSkill()" id="saveEditedSkillBtn" disabled>Save Changes</button>
+                <span class="close" onclick="closeEditCvSkillModal()">&times;</span>
+                <h2>Edit CV Skill</h2>
+                <form id="editCvSkillForm">
+                    <input type="hidden" id="editCvSkillId">
+                    <label for="editCvSkillName">Skill Name:</label>
+                    <input type="text" id="editCvSkillName" required><br><br>
+                    <label for="editCvSkillLevel">Skill Level:</label>
+                    <input type="text" id="editCvSkillLevel" required><br><br>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedCvSkill()" id="saveEditedCvSkillBtn" >Save Changes</button>
                 </form>
             </div>
         </div>

@@ -715,8 +715,8 @@
 </head>
 <script>
     // API URLs
-    const API_URL = 'http://localhost:3000'; // Replace with your actual API URL
-   // const API_URL ="https://seniorfullproject-production.up.railway.app";
+    //const API_URL = 'http://localhost:3000';
+   const API_URL ="https://seniorfullproject-production.up.railway.app";
 
     const REVIEW_URL = `${API_URL}/reviews`;
     const SKILLS_URL = `${API_URL}/skills`;
@@ -959,8 +959,25 @@
         // Create dynamic background elements
         function createBackgroundElements() {
             const heroBg = document.getElementById('heroBg');
-            const skillIcons = ['🎨', '💻', '🎸', '📸', '🏋️', '✍️', '🎭', '🏆'];
-            
+            const skillIcons = [
+                    '💻', // Programming / Tech
+                    '🎸', // Music
+                    '✍️', // Writing
+                    '🏆', // Achievements
+                    '🗣️', // Public Speaking
+                    '📚', // Studying / Education
+                    '🧠', // Critical Thinking / Problem Solving
+                    '🛠️', // DIY / Crafting / Engineering
+                    '🧑‍🏫', // Teaching
+                    '🌐', // Languages / Global Skills
+                    '🎮', // Gaming / Game Development
+                    '📊', // Data / Analytics
+                    '📱', // Mobile Development / App Design
+                    '🎬', // Video Editing / Filmmaking
+                    '🧘', // Mindfulness / Wellness
+                    '🧵'  // Sewing / Fashion Design
+                    ];
+                                
             // Create floating shapes
             for (let i = 0; i < 10; i++) {
                 const shape = document.createElement('div');
@@ -1126,8 +1143,10 @@
             <p class="hero-tagline">Connect with a community of passionate learners, exchange skills, and transform your life through collaborative learning experiences</p>
             
             <div class="hero-buttons">
-                <button class="btn btn-primary">Discover Skills</button>
-                <button class="btn btn-secondary">Join Community</button>
+                <button class="btn btn-primary" onclick="window.location.href='profile-system/cv-profile-system.html'">CV Profile</button>
+                <button class="btn btn-primary" onclick="window.location.href='skill-marketplace.html'">Market Place</button>
+
+                       
             </div>
         </div>
         
