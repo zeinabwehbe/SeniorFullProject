@@ -43,7 +43,7 @@ export class PdfService {
       
       cvData.experience.forEach((job) => {
         doc.fontSize(12).font('Helvetica-Bold').text(job.title || job.job_title || '');
-        doc.fontSize(11).font('Helvetica-Oblique').text(`${job.company} | ${this.formatDate(job.startDate || job.start_date)} - ${this.formatDate(job.endDate || job.end_date) || 'Present'}`);
+        doc.fontSize(11).font('Helvetica-Oblique').text(`${job.company} | ${job.startDate || job.start_date || ''} - ${job.endDate || job.end_date || 'Present'}`);
         doc.fontSize(11).font('Helvetica').text(job.description || '');
         doc.moveDown(1);
       });
@@ -78,8 +78,9 @@ export class PdfService {
       this.addSection(doc, 'Certifications');
       
       cvData.certifications.forEach((cert) => {
-        doc.fontSize(12).font('Helvetica-Bold').text(cert.name || cert.certification_name || '');
-        doc.fontSize(11).font('Helvetica-Oblique').text(`${cert.issuer || cert.issuing_organization || cert.name ||''} | ${this.formatDate(cert.date || cert.issue_date)}`);
+        const certName = cert.name || cert.certification_name || '';
+        const certDate = this.formatDate(cert.date || cert.issue_date);
+        doc.fontSize(12).font('Helvetica-Bold').text(`${certName} | ${certDate}`);
         doc.moveDown(0.5);
       });
       doc.moveDown(0.5);
