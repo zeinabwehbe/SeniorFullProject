@@ -18,7 +18,7 @@ export class ReviewRepository {
       include: [
         {
           model: User,
-          attributes: ['id', 'name', 'bio', 'profilePic'],
+          attributes: ['id', 'name', 'bio'],
         },
       ],
     });

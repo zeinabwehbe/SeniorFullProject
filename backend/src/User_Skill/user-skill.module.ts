@@ -1,3 +1,4 @@
+
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UserSkillController } from './user-skill.controller';
@@ -16,3 +17,6 @@ import { Skill } from '../skills/entities/skill.entity';
   exports: [UserSkillService],
 })
 export class UserSkillModule {} 
+
+
+
