@@ -89,22 +89,14 @@ export class PdfService {
     if (cvData.skills && cvData.skills.length > 0) {
       this.addSection(doc, 'Skills');
       
-      // Group skills by type if available
-      const skillsByType = {};
-      
-      cvData.skills.forEach(skill => {
-        const type = skill.type || skill.skill_type || 'General';
-        if (!skillsByType[type]) {
-          skillsByType[type] = [];
-        }
-        skillsByType[type].push(skill.name || skill.skill_name || '');
+      // List all skills with name and level, no grouping by type
+      const skillList = cvData.skills.map(skill => {
+        const skillName = skill.skillName || skill.name || skill.skill_name || '';
+        const level = skill.level || '';
+        return level ? `${skillName} (${level})` : skillName;
       });
-      
-      Object.keys(skillsByType).forEach(type => {
-        doc.fontSize(12).font('Helvetica-Bold').text(type);
-        doc.fontSize(11).font('Helvetica').text(skillsByType[type].join(', '));
-        doc.moveDown(0.5);
-      });
+      doc.fontSize(11).font('Helvetica').text(skillList.join(', '));
+      doc.moveDown(0.5);
     }
     
     // Add page numbers
