@@ -1623,11 +1623,32 @@ const API_URL = 'http://localhost:3000';
         // Modal Functions
         function getToken() {
             const raw = localStorage.getItem('token');
-            if (!raw) return null;
+    if (!raw) return null;
+    try {
+        const parsed = JSON.parse(raw);
+        return typeof parsed === 'object' && parsed.access_token
+            ? parsed.access_token
+            : parsed; // fallback in case of plain string
+    } catch {
+        return raw; // in case it's just a plain string
+    }
+}
+//getUserIdFromToken(getToken());
+
+        function getUserIdFromToken(token) {
             try {
-                return JSON.parse(raw);
-            } catch {
-                return raw;
+                if (!token) return null;
+                // If you have jwt_decode loaded (recommended)
+                if (typeof jwt_decode === 'function') {
+                    const payload = jwt_decode(token);
+                    return payload.sub || payload.userId || payload.id;
+                }
+                // Fallback: manual decode
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.sub || payload.userId || payload.id;
+            } catch (error) {
+                console.error("Error decoding token:", error);
+                return null;
             }
         }
 
@@ -1671,6 +1692,11 @@ const API_URL = 'http://localhost:3000';
                 const token = getToken();
                 if (!token) {
                     alert('Please log in to submit a review');
+                    return;
+                }
+                const userId = getUserIdFromToken(token);
+                if (!userId) {
+                    alert('Could not determine user ID');
                     return;
                 }
 
