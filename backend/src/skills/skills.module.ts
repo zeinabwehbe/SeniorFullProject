@@ -1,3 +1,4 @@
+
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { SkillsService } from './skills.service';
@@ -12,3 +13,6 @@ import { SkillsRepository } from './skills.repository';
   exports: [SkillsService]
 })
 export class SkillsModule {} 
+
+
+

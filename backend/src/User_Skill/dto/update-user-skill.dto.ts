@@ -1,5 +1,5 @@
 import { IsEnum, IsInt, IsOptional } from 'class-validator';
-import { SkillLevel, SkillType } from './create-user-skill.dto';
+import { ApprovalStatus, SkillLevel } from './create-user-skill.dto';
 
 export class UpdateUserSkillDto {
   @IsOptional()
@@ -10,11 +10,12 @@ export class UpdateUserSkillDto {
   @IsInt()
   skill_id?: number;
 
-  @IsOptional()
-  @IsEnum(SkillType)
-  skill_type?: SkillType;
 
   @IsOptional()
   @IsEnum(SkillLevel)
   skill_level?: SkillLevel;
+
+  @IsEnum(ApprovalStatus)
+  @IsOptional()
+  approval_status?: ApprovalStatus;
 }
