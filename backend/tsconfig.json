@@ -8,7 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "target": "ES2021",
     "sourceMap": true,
-    "rootDir": "src", //deployment
+    //"rootDir": "src", //deployment
      "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
@@ -19,5 +19,5 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
   }
-  ,"include": ["src/**/*"] //deployment
+  //,"include": ["src/**/*"] //deployment
 }

@@ -194,6 +194,32 @@ nav {
         // Redirect to login page (or homepage)
         window.location.href = './auth-system.html';
     }
+
+    function getToken() {
+        const raw = localStorage.getItem('token');
+        if (!raw) return null;
+        try {
+            return JSON.parse(raw);
+        } catch {
+            return raw;
+        }
+    }
+
+    function getUserIdFromToken(token) {
+        try {
+            if (!token) return null;
+            // If token is an object with an access_token property
+            if (typeof token === 'object' && token.access_token) {
+                token = token.access_token;
+            }
+            // If token is a string
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.sub || payload.userId || payload.id;
+        } catch (error) {
+            console.error("Error decoding token:", error);
+            return null;
+        }
+    }
 </script>
 
 <body class="bg-gray-100">
@@ -322,7 +348,7 @@ nav {
     <div id="add-skill-section" class="hidden mb-6">
     <button 
         id="add-skill-btn"
-        class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+        class="text-white px-4 py-2 rounded-md hover:opacity-90" style="background-color: #668a8d;"
     >
         + Add Your Skill
     </button>

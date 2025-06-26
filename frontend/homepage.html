@@ -133,10 +133,9 @@
         }
         
         .btn-secondary {
-            background-color: white;
-            color: #4a6c6f;
-            border: 1px solid #4a6c6f
-;
+            background-color: #9FBABC;
+            color: #2a255e;
+            border: 1px solid #4a6c6f;
         }
         
         .btn-secondary:hover {
@@ -711,6 +710,301 @@
             color: #666;
             font-size: 14px;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #f8f8f8, #ffffff);
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.6s ease-out forwards;
+            overflow: hidden;
+            border: none;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(222, 173, 156, 0.2);
+            border-radius: 50%;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        .modal-content::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(159, 186, 188, 0.2);
+            border-radius: 50%;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        .modal-header {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #DEAD9C;
+        }
+
+        .modal-title {
+            color: #2a255e;
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 36px;
+            cursor: pointer;
+            color: #2a255e !important;
+            transition: color 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-close:hover {
+            color: #DEAD9C;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 30px;
+            line-height: 1.7;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        .modal-footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+
+        .modal-footer .btn {
+            padding: 14px 30px;
+            font-size: 16px;
+        }
+
+        /* Review Form Styles */
+        .review-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* About Us Modal Styles */
+        .about-content {
+            color: #333;
+            font-size: 17px;
+        }
+
+        .about-content h3 {
+            color: #9FBABC;
+            margin: 30px 0 12px 0;
+            font-size: 22px;
+            font-weight: 700;
+            border-bottom: 2px dashed #DEAD9C;
+            padding-bottom: 8px;
+            position: relative;
+        }
+
+        .about-content h3::before {
+            content: '✨';
+            position: absolute;
+            left: -30px;
+            font-size: 18px;
+            color: #DEAD9C;
+        }
+
+        .about-content p {
+            margin-bottom: 25px;
+        }
+
+        /* Star Rating Styles */
+        .star-rating {
+            display: flex;
+            gap: 5px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .star {
+            color: #ddd;
+            transition: color 0.2s;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+        }
+
+        .star-rating:hover .star {
+            color: #ddd;
+        }
+
+        .star-rating:hover .star:hover,
+        .star-rating:hover .star:hover ~ .star {
+            color: #ffd700;
+        }
+
+        /* Add this to your existing CSS */
+        .btn:disabled {
+            background-color: #cccccc !important;
+            color: #666666 !important;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Modal Fade-in Animation */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Add these animations to your <style> block */
+        @keyframes floatShape {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(20px, 30px) scale(1.05);
+            }
+        }
+
+        @keyframes floatIcon {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(10px, -10px) rotate(5deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.5;
+            }
+        }
+
+        /* Style for floating icons within the modal */
+        .modal-icon {
+            position: absolute;
+            font-size: 40px; /* Size of icons */
+            opacity: 0.6; /* Partially transparent */
+            z-index: 0; /* Behind content */
+            pointer-events: none; /* Ensure icons don't interfere with clicks */
+            animation: floatIcon 10s ease-in-out infinite; /* Apply float icon animation */
+        }
+
+        /* Specific positioning and delay for each icon */
+        .modal-icon.icon-skill {
+            top: 10%;
+            right: 5%;
+            color: #DEAD9C; /* Primary theme color */
+            animation-delay: 1s;
+            font-size: 50px;
+        }
+
+        .modal-icon.icon-community {
+            bottom: 15%;
+            left: 8%;
+            color: #9FBABC; /* Secondary theme color */
+            animation-delay: 3s;
+            font-size: 45px;
+        }
+
+        .modal-icon.icon-learn {
+            top: 5%;
+            left: 15%;
+            color: #2a75bb; /* Another theme color */
+            animation-delay: 2s;
+            font-size: 40px;
+        }
+
+        .modal-icon.icon-share {
+            bottom: 5%;
+            right: 15%;
+            color: #e0ae26; /* Another theme color */
+            animation-delay: 4s;
+            font-size: 50px;
+        }
+
+        /* New rule for the Lightbulb icon */
+        .modal-icon.icon-idea {
+            top: 20%;
+            left: 5%;
+            color: #DEAD9C; /* Using primary theme color */
+            animation-delay: 0.5s; /* Shorter delay */
+            font-size: 45px;
+        }
     </style>
 </head>
 <script>
@@ -767,15 +1061,20 @@
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    // If the route is protected, include the token
-                    'Authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))}`,
                 },
             });
         
-            const reviews = await response.json();
-        
-            if (!response.ok) {
-                throw new Error(reviews.message || 'Failed to fetch reviews');
+            let reviews;
+            if (response.ok) {
+                reviews = await response.json();
+            } else {
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    errorData = { message: await response.text() };
+                }
+                throw new Error(errorData.message || 'Failed to fetch reviews');
             }
             
             console.log('Review data:', reviews);
@@ -819,7 +1118,7 @@
                         <div class="rating">
                             <div class="stars">
                                 ${Array(5).fill('').map((_, index) => `
-                                    <span class="star">${index < (review.rating || 0) ? '★' : '☆'}</span>
+                                    <span class="star" style="${index < (review.rating || 0) ? 'color: #ffd700;' : ''}">${index < (review.rating || 0) ? '★' : '☆'}</span>
                                 `).join('')}
                             </div>
                             <span class="rating-text">${review.rating || 0} out of 5</span>
@@ -1187,7 +1486,10 @@
     <!-- Testimonials -->
     <section class="testimonials">
         <div class="container">
-            <h2 class="section-title">What Our Users Say</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 class="section-title">What Our Users Say</h2>
+                <button id="addReviewBtn" class="btn btn-primary" onclick="openReviewModal()" style="background-color: #DEAD9C; color: #2a255e;">Add Your Review</button>
+            </div>
             <div class="testimonial-grid" id="testimonialGrid">
                 <!-- Reviews will be loaded here dynamically -->
             </div>
@@ -1212,7 +1514,7 @@
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
                         <li><a href="#">Home</a></li>
-                        <li><a href="#">About Us</a></li>
+                        <li><a href="#" onclick="openAboutModal(); return false;">About Us</a></li>
                         <li><a href="#">Skill Marketplace</a></li>
                         <li><a href="#">Community</a></li>
                         <li><a href="#">FAQ</a></li>
@@ -1233,5 +1535,241 @@
             </div>
         </div>
     </footer>
+
+    <!-- Add Review Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Your Review</h3>
+                <button class="modal-close" onclick="closeReviewModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm" class="review-form">
+                    <div class="form-group">
+                        <label>Rating</label>
+                        <div class="star-rating">
+                            <span class="star" data-rating="1">☆</span>
+                            <span class="star" data-rating="2">☆</span>
+                            <span class="star" data-rating="3">☆</span>
+                            <span class="star" data-rating="4">☆</span>
+                            <span class="star" data-rating="5">☆</span>
+                        </div>
+                        <input type="hidden" id="rating" name="rating" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment">Your Review</label>
+                        <textarea id="comment" name="comment" required placeholder="Share your experience with SkillSwap..."></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" style="background-color: #DEAD9C; color: #2a255e;">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Us Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <!-- Floating Icons -->
+            <span class="modal-icon icon-skill">🤝</span> <!-- Handshake icon -->
+            <span class="modal-icon icon-community">💬</span> <!-- Speech Bubble (Communication, Chat) icon -->
+            <span class="modal-icon icon-learn">📚</span> <!-- Books/Learning icon -->
+            <span class="modal-icon icon-share">🌐</span> <!-- Globe/Sharing icon -->
+            <span class="modal-icon icon-idea">💡</span> <!-- Lightbulb (Idea, Learning) icon -->
+
+            <div class="modal-header">
+                <h3 class="modal-title">About SkillSwap</h3>
+                <button class="modal-close" onclick="closeAboutModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="about-content">
+                    <h3>Our Mission</h3>
+                    <p>SkillSwap is dedicated to creating a vibrant community where people can exchange skills, learn from each other, and grow together. We believe in the power of collaborative learning and the value of sharing knowledge.</p>
+
+                    <h3>What We Offer</h3>
+                    <p>Our platform connects people who want to teach and learn various skills. Whether you're an expert in a particular field or eager to learn something new, SkillSwap provides the perfect environment for skill exchange.</p>
+
+                    <h3>Our Values</h3>
+                    <p>We value community, mutual respect, and continuous learning. Our platform is built on the principles of trust, collaboration, and the belief that everyone has something valuable to teach and learn.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeAboutModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal Functions
+        function getToken() {
+            const raw = localStorage.getItem('token');
+            if (!raw) return null;
+            try {
+                return JSON.parse(raw);
+            } catch {
+                return raw;
+            }
+        }
+
+        function openReviewModal() {
+            const token = getToken();
+            if (!token) {
+                alert('Please login to add a review');
+                return;
+            }
+            const modal = document.getElementById('reviewModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeReviewModal() {
+            const modal = document.getElementById('reviewModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = ''; // Restore background scrolling
+        }
+
+        function openAboutModal() {
+            const modal = document.getElementById('aboutModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeAboutModal() {
+            const modal = document.getElementById('aboutModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = ''; // Restore background scrolling
+        }
+
+        // Add Review Form Submission
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const rating = document.getElementById('rating').value;
+            const comment = document.getElementById('comment').value;
+
+            try {
+                const token = getToken();
+                if (!token) {
+                    alert('Please log in to submit a review');
+                    return;
+                }
+
+                const response = await fetch(`${API_URL}/reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        rating: parseInt(rating),
+                        comment: comment
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Failed to submit review response:', errorData);
+                    throw new Error(errorData.message || 'Failed to submit review');
+                }
+
+                alert('Thank you for your review!');
+                closeReviewModal();
+                location.reload(); // Refresh to show the new review
+            } catch (error) {
+                console.error('Error submitting review:', error);
+                alert(`Failed to submit review: ${error.message || 'Unknown error'}. Please try again.`);
+            }
+        });
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const reviewModal = document.getElementById('reviewModal');
+            const aboutModal = document.getElementById('aboutModal');
+            
+            if (event.target === reviewModal) {
+                closeReviewModal();
+            }
+            if (event.target === aboutModal) {
+                closeAboutModal();
+            }
+        }
+
+        // Star Rating Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.star');
+            const ratingInput = document.getElementById('rating');
+            
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = this.getAttribute('data-rating');
+                    ratingInput.value = rating;
+                    
+                    // Update star display
+                    stars.forEach(s => {
+                        if (s.getAttribute('data-rating') <= rating) {
+                            s.classList.add('active');
+                            s.textContent = '★';
+                        } else {
+                            s.classList.remove('active');
+                            s.textContent = '☆';
+                        }
+                    });
+                });
+                
+                star.addEventListener('mouseover', function() {
+                    const rating = this.getAttribute('data-rating');
+                    stars.forEach(s => {
+                        if (s.getAttribute('data-rating') <= rating) {
+                            s.textContent = '★';
+                        } else {
+                            s.textContent = '☆';
+                        }
+                    });
+                });
+                
+                star.addEventListener('mouseout', function() {
+                    const rating = ratingInput.value;
+                    stars.forEach(s => {
+                        if (s.getAttribute('data-rating') <= rating) {
+                            s.textContent = '★';
+                        } else {
+                            s.textContent = '☆';
+                        }
+                    });
+                });
+            });
+        });
+
+        // Add this to your existing DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            const addReviewBtn = document.getElementById('addReviewBtn');
+            const token = getToken();
+            
+            // Set initial button state
+            if (!token) {
+                addReviewBtn.disabled = true;
+                addReviewBtn.title = "Please login to add a review";
+            }
+            
+            // Update button state when auth state changes
+            window.updateReviewButtonState = function() {
+                const token = getToken();
+                if (token) {
+                    addReviewBtn.disabled = false;
+                    addReviewBtn.title = "Add Your Review";
+                } else {
+                    addReviewBtn.disabled = true;
+                    addReviewBtn.title = "Please login to add a review";
+                }
+            };
+        });
+
+        // Add this where you handle successful login
+        function handleLoginSuccess() {
+            // ... your existing login success code ...
+            updateReviewButtonState();
+        }
+    </script>
 </body>
 </html>
