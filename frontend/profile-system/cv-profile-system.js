@@ -1,5 +1,5 @@
-//let API_URL = "https://seniorfullproject-production.up.railway.app";
-let API_URL = 'http://localhost:3000';
+let API_URL = "https://seniorfullproject-production.up.railway.app";
+//let API_URL = 'http://localhost:3000';
 let userId = null;
 let token = null;
 // Get JWT token string from localStorage
