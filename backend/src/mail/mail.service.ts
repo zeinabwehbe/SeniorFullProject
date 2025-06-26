@@ -5,6 +5,7 @@ import * as nodemailer from 'nodemailer';
 @Injectable()
 export class MailService {
   private transporter: nodemailer.Transporter;
+  private readonly API_URL = 'http://localhost:3000'; // ✅ This is valid
 
   constructor(private configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
@@ -24,7 +25,7 @@ export class MailService {
   }
 
   async sendPasswordResetEmail(email: string, token: string): Promise<void> {
-    const resetUrl = `http://localhost:3000/reset-password?token=${token}`;    
+    const resetUrl = `${this.API_URL}/reset-password?token=${token}`;
     const mailOptions = {
       from: this.configService.get('EMAIL_FROM'),
       to: email,
@@ -50,8 +51,7 @@ export class MailService {
 }
 
 async sendTemporaryPasswordEmail(email: string, temporaryPassword: string): Promise<void> {
-    const loginUrl = 'http://localhost:3000/auth-system.html';
-    
+  const loginUrl = `${this.API_URL}/auth-system.html`;    
     const mailOptions = {
         from: this.configService.get('EMAIL_FROM'),
         to: email,

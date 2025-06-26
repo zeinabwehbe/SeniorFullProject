@@ -12,6 +12,7 @@ import { ExperienceModule } from '../experience/experience.module';
 import { ProjectModule } from '../projects/project.module';
 import { CertificationModule } from '../certifications/certification.module';
 import { UserSkillModule } from '../User_Skill/user-skill.module';
+import { CvSkillModule } from 'src/CvSkill/cvSkill.module';
 
 /**
  * The UserModule is a module that handles all operations related to the user entity.
@@ -26,7 +27,8 @@ import { UserSkillModule } from '../User_Skill/user-skill.module';
     ExperienceModule,
     ProjectModule,
     CertificationModule,
-    UserSkillModule
+    UserSkillModule,
+    CvSkillModule
   ],
   controllers: [UsersController],
   providers: [UsersRepository, UsersService],
