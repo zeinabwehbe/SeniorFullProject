@@ -1,3 +1,5 @@
+
+
 import {
   Column,
   DataType,
@@ -8,11 +10,7 @@ import {
 } from 'sequelize-typescript';
 import { Category } from '../../categories/entities/category.entity';
 
-export enum ApprovalStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED'
-}
+
 
 @Table({ 
   tableName: 'Skills',
@@ -53,13 +51,7 @@ export class Skill extends Model<Skill> {
   })
   description: string;
 
-  @Column({
-    type: DataType.ENUM(...Object.values(ApprovalStatus)),
-    allowNull: false,
-    defaultValue: ApprovalStatus.PENDING
-  })
-  approval_status: ApprovalStatus;
-
+ 
   @CreatedAt
   @Column({
     field: 'created_at',
@@ -72,3 +64,7 @@ export class Skill extends Model<Skill> {
   })
   updatedAt: string;
 }
+
+
+
+

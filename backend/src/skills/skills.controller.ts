@@ -1,3 +1,5 @@
+
+
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException, Query,UseGuards} from '@nestjs/common';
 import { SkillsService } from './skills.service';
 import { CreateSkillDto } from './dto/create-skill.dto';
@@ -100,15 +102,6 @@ export class SkillsController {
     }
   }
 
-  @Get('status/:status')
-  async findByApprovalStatus(@Param('status') status: string): Promise<SkillResponseDto[]> {
-    try {
-      return await this.skillsService.findByApprovalStatus(status);
-    } catch (error) {
-      throw new HttpException(
-        error.message || 'Failed to fetch skills by status',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
+
 } 
+

@@ -194,6 +194,32 @@ nav {
         // Redirect to login page (or homepage)
         window.location.href = './auth-system.html';
     }
+
+    function getToken() {
+        const raw = localStorage.getItem('token');
+        if (!raw) return null;
+        try {
+            return JSON.parse(raw);
+        } catch {
+            return raw;
+        }
+    }
+
+    function getUserIdFromToken(token) {
+        try {
+            if (!token) return null;
+            // If token is an object with an access_token property
+            if (typeof token === 'object' && token.access_token) {
+                token = token.access_token;
+            }
+            // If token is a string
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.sub || payload.userId || payload.id;
+        } catch (error) {
+            console.error("Error decoding token:", error);
+            return null;
+        }
+    }
 </script>
 
 <body class="bg-gray-100">
@@ -322,7 +348,7 @@ nav {
     <div id="add-skill-section" class="hidden mb-6">
     <button 
         id="add-skill-btn"
-        class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+        class="text-white px-4 py-2 rounded-md hover:opacity-90" style="background-color: #668a8d;"
     >
         + Add Your Skill
     </button>
@@ -389,10 +415,7 @@ nav {
                     <h3 class="font-medium text-sm text-gray-500">Can Teach:</h3>
                     <p class="skill-teach font-semibold custom-name-color"></p>
                 </div>
-                <div class="mb-4">
-                    <h3 class="font-medium text-sm text-gray-500">Wants to Learn:</h3>
-                    <p class="skill-learn "></p>
-                </div>
+                
                 <div class="flex flex-wrap gap-2 mt-4">
                     <span class="skill-category px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800"></span>
                     <span class="skill-proficiency px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"></span>

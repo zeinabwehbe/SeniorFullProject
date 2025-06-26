@@ -1,3 +1,5 @@
+
+
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { UserSkill } from './entitiy/user-skill.entity';
@@ -106,8 +108,22 @@ export class UserSkillRepository {
   }
 
   async updateUserSkill(userSkill: UserSkill, updateDto: UpdateUserSkillDto): Promise<UserSkill> {
-    await userSkill.update(updateDto);
-    return this.findById(userSkill.id);
+    try {
+      // Update only the provided fields
+      const updateData = {};
+      if (updateDto.approval_status) {
+        updateData['approval_status'] = updateDto.approval_status;
+      }
+      if (updateDto.skill_level) {
+        updateData['skill_level'] = updateDto.skill_level;
+      }
+      
+      await userSkill.update(updateData);
+      return this.findById(userSkill.id);
+    } catch (error) {
+      console.error('Error updating user skill:', error);
+      throw error;
+    }
   }
 
   async delete(id: number): Promise<boolean> {
@@ -115,4 +131,12 @@ export class UserSkillRepository {
       where: { id },
     })) > 0;
   }
+
+  async findByApprovalStatus(status: string): Promise<UserSkill[]> {
+    return this.userSkillModel.findAll({
+      where: { approval_status: status },
+      include: ['category'],
+    });
+  }
 } 
+

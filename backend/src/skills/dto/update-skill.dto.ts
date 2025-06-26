@@ -1,6 +1,7 @@
+
+
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ApprovalStatus } from '../entities/skill.entity';
 
 export class UpdateSkillDto {
   @IsString()
@@ -16,7 +17,7 @@ export class UpdateSkillDto {
   @IsOptional()
   description?: string;
 
-  @IsEnum(ApprovalStatus)
-  @IsOptional()
-  approval_status?: ApprovalStatus;
+ 
 }
+
+
