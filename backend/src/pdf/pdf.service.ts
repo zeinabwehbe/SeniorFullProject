@@ -43,7 +43,7 @@ export class PdfService {
       
       cvData.experience.forEach((job) => {
         doc.fontSize(12).font('Helvetica-Bold').text(job.title || job.job_title || '');
-        doc.fontSize(11).font('Helvetica-Oblique').text(`${job.company} | ${job.startDate || job.start_date || ''} - ${job.endDate || job.end_date || 'Present'}`);
+        doc.fontSize(11).font('Helvetica-Oblique').text(`${job.company} | ${this.formatDate(job.startDate || job.start_date)} - ${this.formatDate(job.endDate || job.end_date) || 'Present'}`);
         doc.fontSize(11).font('Helvetica').text(job.description || '');
         doc.moveDown(1);
       });
@@ -55,7 +55,7 @@ export class PdfService {
       
       cvData.education.forEach((edu) => {
         doc.fontSize(12).font('Helvetica-Bold').text(edu.degree || '');
-        doc.fontSize(11).font('Helvetica-Oblique').text(`${edu.institution} | ${edu.startDate || edu.start_date || ''} - ${edu.endDate || edu.end_date || 'Present'}`);
+        doc.fontSize(11).font('Helvetica-Oblique').text(`${edu.institution} | ${this.formatDate(edu.startDate || edu.start_date)} - ${this.formatDate(edu.endDate || edu.end_date) || 'Present'}`);
         if (edu.description) doc.fontSize(11).font('Helvetica').text(edu.description);
         doc.moveDown(1);
       });
@@ -79,7 +79,7 @@ export class PdfService {
       
       cvData.certifications.forEach((cert) => {
         doc.fontSize(12).font('Helvetica-Bold').text(cert.name || cert.certification_name || '');
-        doc.fontSize(11).font('Helvetica-Oblique').text(`${cert.issuer || cert.issuing_organization || ''} | ${cert.date || cert.issue_date || ''}`);
+        doc.fontSize(11).font('Helvetica-Oblique').text(`${cert.issuer || cert.issuing_organization || cert.name ||''} | ${this.formatDate(cert.date || cert.issue_date)}`);
         doc.moveDown(0.5);
       });
       doc.moveDown(0.5);
@@ -170,5 +170,12 @@ export class PdfService {
     
     // Reset text color
     doc.fillColor('#333333');
+  }
+  
+  private formatDate(date: string | Date | undefined): string {
+    if (!date) return '';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString().split('T')[0]; // YYYY-MM-DD
   }
 }
