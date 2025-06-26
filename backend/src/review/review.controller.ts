@@ -20,6 +20,8 @@ import { Roles } from '../roles/roles.decorator';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { ReviewResponseDto } from './dto/review.response.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { CurrentUser } from '../shared/current-user.decorator';
+import { JwtUser } from '../shared/entity/jwt-user';
 
 @Controller('reviews')
 export class ReviewController {
@@ -30,16 +32,19 @@ export class ReviewController {
   // 🔹 Create a new review
   @Post()
   @UseGuards(JwtAuthGuard) // Optional: Require authentication
-  async create(@Body() dto: CreateReviewDto): Promise<ReviewResponseDto> {
-    const review = await this.reviewService.createReview(dto);
+  async create(
+    @CurrentUser() user: JwtUser,
+    @Body() dto: CreateReviewDto
+  ): Promise<ReviewResponseDto> {
+    // Overwrite userId with the authenticated user's id
+    const review = await this.reviewService.createReview({ ...dto, userId: user.id });
     return review;
   }
 
   // 🔹 Get all reviews (for guest)
   @Get()
   async findAll(): Promise<ReviewResponseDto[]> {
-    const reviews = await this.reviewService.findAll();
-    return reviews;
+    return this.reviewService.findAll();
   }
 
   // 🔹 Get a single review by ID (admin only)

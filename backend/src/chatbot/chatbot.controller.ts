@@ -6,10 +6,16 @@ import { OpenAI } from 'openai';
 @Controller('chat')
 export class ChatbotController {
   private openai: OpenAI;
-
   constructor(private configService: ConfigService) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    // It's still good to have a check, though ideally ConfigModule prevents this
+    if (!apiKey) {
+         console.error('OPENAI_API_KEY is not set in environment variables.');
+         throw new Error('Chatbot initialization failed: OPENAI_API_KEY is missing.');
+    }
+
     this.openai = new OpenAI({
-      apiKey: this.configService.get<string>('OPENAI_API_KEY'),
+      apiKey: apiKey, // Use the API key retrieved from ConfigService
     });
   }
 
