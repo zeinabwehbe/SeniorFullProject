@@ -12,6 +12,7 @@ import { Education } from '../education/entities/education.entity';
 import { Experience } from '../experience/entities/experience.entity';
 import { Project } from '../projects/entities/project.entity';
 import { Certification } from '../certifications/entities/certification.entity';
+import { CvSkill } from 'src/CvSkill/entities/cv-skill.entity';
 
 /**
  * The DatabaseModule is responsible for configuring and initializing the database.
@@ -32,7 +33,7 @@ import { Certification } from '../certifications/entities/certification.entity';
         password: configService.get<string>('DB_PASS'),
         database: configService.get<string>('DB_NAME'),
         models: [
-          User, Review, Category, Skill, UserSkill, Education, Experience, Project, Certification,
+          User, Review, Category, Skill, UserSkill, Education, Experience, Project, Certification, CvSkill
         ],
         autoLoadModels: true,
         synchronize: true, // Set to false in production!

@@ -45,6 +45,10 @@ import { UserSkillService } from '../User_Skill/user-skill.service';
 import { UserSkillResponseDto } from '../User_Skill/dto/user-skill.response';
 import { CreateUserSkillDto } from '../User_Skill/dto/create-user-skill.dto';
 import { UpdateUserSkillDto } from '../User_Skill/dto/update-user-skill.dto';
+import { CvSkillService } from '../CvSkill/cvSkill.service';
+import { CvSkillResponseDto } from '../CvSkill/dto/cvSkill.response.dto';
+import { CreateCvSkillDto } from '../CvSkill/dto/create-cvSkill.dto';
+import { UpdateCvSkillDto } from '../CvSkill/dto/update-cvSkill.dto';
 
 @Controller('users')
 export class UsersController {
@@ -57,7 +61,7 @@ export class UsersController {
     private experienceService: ExperienceService,
     private projectService: ProjectService,
     private certificationService: CertificationService,
-    private userSkillService: UserSkillService,
+    private cvSkillService: CvSkillService,
   ) {}
 
   @Post('/register')
@@ -302,41 +306,40 @@ export class UsersController {
     await this.certificationService.deleteCertification(userId, certificationId);
   }
   
-  @Get(':userId/skills')
+  @Get(':userId/cv-skills')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async getUserSkills(
+  async getUserCvSkills(
     @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<UserSkillResponseDto[]> {
-    const skillRecords = await this.userSkillService.findByUserId(userId);
-    return skillRecords;
+  ): Promise<CvSkillResponseDto[]> {
+    return this.cvSkillService.findAllCvSkillsByUserId(userId);
   }
 
-  @Post(':userId/skills')
+  @Post(':userId/cv-skills')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async addSkill(
+  async addCvSkill(
     @Param('userId', ParseIntPipe) userId: number,
-    @Body() createSkillDto: CreateUserSkillDto,
-  ): Promise<UserSkillResponseDto> {
-    createSkillDto.user_id = userId;
-    const skill = await this.userSkillService.create(createSkillDto);
-    return skill;
+    @Body() createCvSkillDto: CreateCvSkillDto,
+  ): Promise<CvSkillResponseDto> {
+    createCvSkillDto.userId = userId;
+    return this.cvSkillService.create(createCvSkillDto);
   }
 
-  @Patch(':userId/skills/:skillId')
+  @Patch(':userId/cv-skills/:cvSkillId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async updateSkill(
-    @Param('skillId', ParseIntPipe) skillId: number,
-    @Body() updateSkillDto: UpdateUserSkillDto,
-  ): Promise<UserSkillResponseDto> {
-    const updatedSkill = await this.userSkillService.update(skillId, updateSkillDto);
-    return updatedSkill;
+  async updateCvSkill(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('cvSkillId', ParseIntPipe) cvSkillId: number,
+    @Body() updateCvSkillDto: UpdateCvSkillDto,
+  ): Promise<CvSkillResponseDto> {
+    return this.cvSkillService.updateCvSkill(userId, cvSkillId, updateCvSkillDto);
   }
 
-  @Delete(':userId/skills/:skillId')
+  @Delete(':userId/cv-skills/:cvSkillId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async deleteSkill(
-    @Param('skillId', ParseIntPipe) skillId: number,
+  async deleteCvSkill(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('cvSkillId', ParseIntPipe) cvSkillId: number,
   ): Promise<void> {
-    await this.userSkillService.remove(skillId);
+    await this.cvSkillService.deleteCvSkill(userId, cvSkillId);
   }
 }
