@@ -1,4 +1,6 @@
+//const API_URL = 'http://localhost:3000';
 let API_URL = "https://seniorfullproject-production.up.railway.app";
+
 let userId = null;
 let token = null;
 // Get JWT token string from localStorage
@@ -88,12 +90,12 @@ async function fetchUserData(userId) {
     // DOM manipulation functions to populate the UI
     function populateUserInfo() {
         // Set profile picture
-        const profilePic = document.getElementById('profilePic');
-        profilePic.src = `${API_URL}/users/${userData.id}/profile-picture`;
-        profilePic.onerror = function() {
-            this.onerror = null;
-            this.src = 'default-profile.png';
-        };
+        // const profilePic = document.getElementById('profilePic');
+        // profilePic.src = `${API_URL}/users/${userData.id}/profile-picture`;
+        // profilePic.onerror = function() {
+        //     this.onerror = null;
+        //     this.src = 'default-profile.png';
+        // };
 
         document.getElementById('userName').textContent = userData.name || 'Name Not Available';
         document.getElementById('userEmail').innerHTML = userData.email ? 
@@ -148,12 +150,12 @@ async function fetchUserData(userId) {
         const token = getToken();
 
         // Set profile picture
-        const profilePic = document.getElementById('profilePic');
-        profilePic.src = `${API_URL}/users/${userId}/profile-picture`;
-        profilePic.onerror = function() {
-            this.onerror = null;
-            this.src = 'default-profile.png';
-        };
+        // const profilePic = document.getElementById('profilePic');
+        // profilePic.src = `${API_URL}/users/${userId}/profile-picture`;
+        // profilePic.onerror = function() {
+        //     this.onerror = null;
+        //     this.src = 'default-profile.png';
+        // };
         
         // Set user info
         document.getElementById('userName').textContent = user.name || "No Name";
@@ -180,38 +182,38 @@ async function fetchUserData(userId) {
         return user;
     }
 
-    document.getElementById('uploadPicBtn').addEventListener('click', async function() {
-        const input = document.getElementById('profilePicInput');
-        if (!input.files.length) {
-            alert('Please select an image to upload.');
-            return;
-        }
-        const file = input.files[0];
-        const formData = new FormData();
-        formData.append('file', file);
+    // document.getElementById('uploadPicBtn').addEventListener('click', async function() {
+    //     const input = document.getElementById('profilePicInput');
+    //     if (!input.files.length) {
+    //         alert('Please select an image to upload.');
+    //         return;
+    //     }
+    //     const file = input.files[0];
+    //     const formData = new FormData();
+    //     formData.append('file', file);
 
-        try {
-            const token = getToken();
+    //     try {
+    //         const token = getToken();
 
-            const response = await fetch(`${API_URL}/users/${userId}/profile-picture`, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            if (response.status === 401) {
-                alert('Unauthorized. Please log in again.');
-                return;
-            }
-            if (!response.ok) throw new Error('Upload failed');
-            document.getElementById('profilePic').src = `${API_URL}/users/${userId}/profile-picture`;
-            alert('Profile picture updated!');
-        } catch (err) {
-            console.log(err);
-            alert('Failed to upload image.');
-        }
-    });
+    //         const response = await fetch(`${API_URL}/users/${userId}/profile-picture`, {
+    //             method: 'POST',
+    //             body: formData,
+    //             headers: {
+    //                 'Authorization': `Bearer ${token}`
+    //             }
+    //         });
+    //         if (response.status === 401) {
+    //             alert('Unauthorized. Please log in again.');
+    //             return;
+    //         }
+    //         if (!response.ok) throw new Error('Upload failed');
+    //         document.getElementById('profilePic').src = `${API_URL}/users/${userId}/profile-picture`;
+    //         alert('Profile picture updated!');
+    //     } catch (err) {
+    //         console.log(err);
+    //         alert('Failed to upload image.');
+    //     }
+    // });
 
     // Function to open the Edit Profile Modal
     function openEditProfileModal() {
@@ -1170,8 +1172,8 @@ function saveEditedCertification() {
 }
 
 
-// <!-- Section 6 / 6 : SKILLS -->
-async function fetchSkills(userId) {
+// <!-- Section 6 / 6 : CV SKILLS -->
+async function fetchCvSkills(userId) {
     const token = getToken();
     if (!token) {
         alert('Authentication error: Please log in again');
@@ -1180,7 +1182,7 @@ async function fetchSkills(userId) {
     }
 
     try {
-        const response = await fetch(`${API_URL}/users/${userId}/skills`, {
+        const response = await fetch(`${API_URL}/users/${userId}/cv-skills`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -1188,41 +1190,37 @@ async function fetchSkills(userId) {
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to fetch skills data: ${response.status}`);
+            throw new Error(`Failed to fetch CV skills data: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Skills data fetched successfully:', data);
+        console.log('CV Skills data fetched successfully:', data);
         return data;
     } catch (error) {
-        console.error('Error in fetchSkills:', error.message);
+        console.error('Error in fetchCvSkills:', error.message);
         return [];
     }
 }
 
-function populateSkills() {
+function populateCvSkills() {
     const skillsContainer = document.getElementById('skillsContainer');
     
     if (!skillsData || skillsData.length === 0) {
         skillsContainer.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-tools"></i>
-                <p>No skills added yet</p>
+                <p>No CV skills added yet</p>
             </div>
         `;
         return;
     }
 
-    skillsContainer.innerHTML = ''; // Clear existing content
+    skillsContainer.innerHTML = '';
 
     skillsData.forEach(skill => {
-         const skillName = skill.skill.skill_name || '';
-        const skillLevel = skill.skill_level || '';
-        skills: skillsData.map(skill => ({
-            name: skill.skill.skill_name,
-            level: skill.skill_level
-        }))
-          const skillCard = document.createElement('div');
+        const skillName = skill.skillName || '';
+        const skillLevel = skill.level || '';
+        const skillCard = document.createElement('div');
         skillCard.className = 'card';
         skillCard.innerHTML = `
             <div style="position: relative; display: flex; align-items: center;">
@@ -1234,10 +1232,10 @@ function populateSkills() {
                      </div>
                  </div>
                 <div class="card-actions" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
-                    <button class="btn btn-warning" onclick="openEditSkillModal(${skill.id})">
+                    <button class="btn btn-warning" onclick="openEditCvSkillModal(${skill.id})">
                         <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button class="btn btn-danger" onclick="deleteSkill(${skill.id})">
+                    <button class="btn btn-danger" onclick="deleteCvSkill(${skill.id})">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
@@ -1246,7 +1244,8 @@ function populateSkills() {
         skillsContainer.appendChild(skillCard);
     });
 }
-function deleteSkill(skillId) {
+
+function deleteCvSkill(cvSkillId) {
     const token = getToken();
     if (!token) {
         alert('Authentication error: Please log in again');
@@ -1254,37 +1253,37 @@ function deleteSkill(skillId) {
         return;
     }
 
-    if (!confirm('Are you sure you want to delete this skill?')) {
+    if (!confirm('Are you sure you want to delete this CV skill?')) {
         return;
     }
 
-    fetch(`${API_URL}/users/${userId}/skills/${skillId}`, {
+    fetch(`${API_URL}/users/${userId}/cv-skills/${cvSkillId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
         }
     })
     .then(response => {
-        if (!response.ok) throw new Error('Failed to delete skill');
-        skillsData = skillsData.filter(skill => skill.id !== skillId);
-        populateSkills();
-        alert('Skill deleted successfully!');
+        if (!response.ok) throw new Error('Failed to delete CV skill');
+        skillsData = skillsData.filter(skill => skill.id !== cvSkillId);
+        populateCvSkills();
+        alert('CV Skill deleted successfully!');
     })
     .catch(error => {
-        console.error('Error deleting skill:', error);
-        alert('Failed to delete skill. Please try again.');
+        console.error('Error deleting CV skill:', error);
+        alert('Failed to delete CV skill. Please try again.');
     });
 }
 
-function openCreateSkillModal() {
-    document.getElementById('createSkillModal').style.display = 'block';
+function openCreateCvSkillModal() {
+    document.getElementById('createCvSkillModal').style.display = 'block';
 }
 
-function closeCreateSkillModal() {
-    document.getElementById('createSkillModal').style.display = 'none';
+function closeCreateCvSkillModal() {
+    document.getElementById('createCvSkillModal').style.display = 'none';
 }
 
-function saveNewSkill() {
+function saveNewCvSkill() {
     const token = getToken();
     if (!token) {
         alert('Authentication error: Please log in again');
@@ -1293,13 +1292,13 @@ function saveNewSkill() {
     }
 
     const formData = {
-        user_id: userId,
-        skill_name: document.getElementById('skillId').value,
-        skill_type: document.getElementById('skillType').value,
-        skill_level: document.getElementById('skillLevel').value
+        userId: userId,
+        skillName: document.getElementById('cvSkillName').value,
+        level: document.getElementById('cvSkillLevel').value,
+        skillId: 0 // You can set this if you have a skillId, otherwise leave as 0 or remove
     };
 
-    fetch(`${API_URL}/users/${userId}/skills`, {
+    fetch(`${API_URL}/users/${userId}/cv-skills`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1308,38 +1307,40 @@ function saveNewSkill() {
         body: JSON.stringify(formData)
     })
     .then(response => {
-        if (!response.ok) throw new Error('Failed to add skill');
+        if (!response.ok) throw new Error('Failed to add CV skill');
         return response.json();
     })
     .then(data => {
-        skillsData = data;
-        populateSkills();
-        closeCreateSkillModal();
-        alert('Skill added successfully!');
-        window.location.reload();
+        // Optionally, fetch the updated list
+        fetchCvSkills(userId).then(skills => {
+            skillsData = skills;
+            populateCvSkills();
+        });
+        closeCreateCvSkillModal();
+        alert('CV Skill added successfully!');
     })
     .catch(error => {
-        console.error('Error adding skill:', error);
-        alert('Failed to add skill. Please try again.');
+        console.error('Error adding CV skill:', error);
+        alert('Failed to add CV skill. Please try again.');
     });
 }
 
-function openEditSkillModal(skillId) {
-    const skill = skillsData.find(skill => skill.id === skillId);
+function openEditCvSkillModal(cvSkillId) {
+    const skill = skillsData.find(skill => skill.id === cvSkillId);
     if (!skill) return;
 
-    document.getElementById('skillId').value = skill.skill_id;
-    document.getElementById('editSkillType').value = skill.skill_type;
-    document.getElementById('editSkillLevel').value = skill.skill_level;
+    document.getElementById('editCvSkillName').value = skill.skillName;
+    document.getElementById('editCvSkillLevel').value = skill.level;
+    document.getElementById('editCvSkillId').value = skill.id;
 
-    document.getElementById('editSkillModal').style.display = 'block';
+    document.getElementById('editCvSkillModal').style.display = 'block';
 }
 
-function closeEditSkillModal() {
-    document.getElementById('editSkillModal').style.display = 'none';
+function closeEditCvSkillModal() {
+    document.getElementById('editCvSkillModal').style.display = 'none';
 }
 
-function saveEditedSkill() {
+function saveEditedCvSkill() {
     const token = getToken();
     if (!token) {
         alert('Authentication error: Please log in again');
@@ -1347,14 +1348,14 @@ function saveEditedSkill() {
         return;
     }
 
-    const skillId = document.getElementById('skillId').value;
+    const cvSkillId = document.getElementById('editCvSkillId').value;
 
     const formData = {
-        skill_type: document.getElementById('editSkillType').value,
-        skill_level: document.getElementById('editSkillLevel').value
+        skillName: document.getElementById('editCvSkillName').value,
+        level: document.getElementById('editCvSkillLevel').value
     };
 
-    fetch(`${API_URL}/users/${userId}/skills/${skillId}`, {
+    fetch(`${API_URL}/users/${userId}/cv-skills/${cvSkillId}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -1363,19 +1364,21 @@ function saveEditedSkill() {
         body: JSON.stringify(formData)
     })
     .then(response => {
-        if (!response.ok) throw new Error('Failed to update skill');
+        if (!response.ok) throw new Error('Failed to update CV skill');
         return response.json();
     })
     .then(data => {
-        skillsData = data;
-        populateSkills();
-        closeEditSkillModal();
-        alert('Skill updated successfully!');
-        window.location.reload();
+        // Optionally, fetch the updated list
+        fetchCvSkills(userId).then(skills => {
+            skillsData = skills;
+            populateCvSkills();
+        });
+        closeEditCvSkillModal();
+        alert('CV Skill updated successfully!');
     })
     .catch(error => {
-        console.error('Error updating skill:', error);
-        alert('Failed to update skill. Please try again.');
+        console.error('Error updating CV skill:', error);
+        alert('Failed to update CV skill. Please try again.');
     });
 }
 
@@ -1428,17 +1431,8 @@ document.getElementById('editCertificationForm').addEventListener('input', funct
     const saveButton = document.getElementById('saveEditedCertificationBtn');
     saveButton.disabled = !form.checkValidity();
 });
-document.getElementById('createSkillForm').addEventListener('input', function() {
-    const form = this;
-    const saveButton = document.getElementById('saveNewSkillBtn');
-    saveButton.disabled =!form.checkValidity();
-});
 
-document.getElementById('editSkillForm').addEventListener('input', function() {
-    const form = this;
-    const saveButton = document.getElementById('saveEditedSkillBtn');
-    saveButton.disabled =!form.checkValidity();
-});
+
 
 // Initialize the page
 async function initPage() {
@@ -1452,10 +1446,10 @@ async function initPage() {
         console.error("JWT decoding failed:", err.message);
     }
     
-    // if (!token) {
-    //      window.location.href = "../auth-system.html";
-    //     return;
-    // }
+    if (!token) {
+         window.location.href = "../auth-system.html";
+        return;
+    }
     
     const user = getUserFromToken(token);
     if (!user) return;
@@ -1469,7 +1463,7 @@ async function initPage() {
         experienceData = await fetchExperience(userId) || [];
         projectData = await fetchProjects(userId) || [];
         certificationData = await fetchCertifications(userId) || [];
-        skillsData = await fetchSkills(userId) || [];
+        skillsData = await fetchCvSkills(userId) || [];
         // Call this function when the page loads or when the modal is opened
         // Populate the UI with fetched data
         populateUserInfo();
@@ -1477,7 +1471,7 @@ async function initPage() {
         populateExperience();
         populateProjects();
         populateCertifications();
-        populateSkills();
+        populateCvSkills();
     } catch (error) {
         console.error('Error initializing page:', error);
         alert('Failed to load data. Please try again.');

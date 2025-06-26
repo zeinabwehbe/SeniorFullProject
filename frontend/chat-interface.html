@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -523,6 +522,27 @@
         padding-left: 60px;
       }
     }
+
+    .suggestion-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .suggestion-btn {
+      background: #e0e7ef;
+      color: #2a255e;
+      border: none;
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: left;
+    }
+    .suggestion-btn:hover {
+      background: #b4c5d6;
+    }
   </style>
 </head>
 <script>
@@ -629,9 +649,9 @@
       </div>
       
       <div class="sidebar-content">
-        <h3 class="sidebar-persona">Select One !</h3>
-        <div class="persona-list" id="personaList">
-          <!-- Personas will be added by JavaScript -->
+        <h3 class="sidebar-persona">Suggested Questions</h3>
+        <div id="suggestionList" class="suggestion-list">
+          <!-- Suggestions will be added by JavaScript -->
         </div>
       </div>
       
@@ -690,6 +710,9 @@
   </div>
 
   <script>
+    //const API_URL = 'http://localhost:3000';
+    const API_URL ="https://seniorfullproject-production.up.railway.app";
+
     // Redirect to login if not authenticated
     if (!JSON.parse(localStorage.getItem('token'))) {
       window.location.href = 'auth-system.html'; // or your login page path
@@ -735,8 +758,17 @@
         },
       ];
 
+      const suggestedQuestions = [
+        "How can I enhance my CV to stand out?",
+        "What makes a CV ATS-friendly?",
+        "Can you review my CV for grammar and formatting issues?",
+        "Which certifications would strengthen my profile?",
+        "Are certificates from Google or Coursera considered valuable?"
+      ];
+
       // Initialize
-      initSidebar();
+      // initSidebar();
+      initSidebarSuggestions();
       renderMessages();
       setupEventListeners();
       checkScreenSize();
@@ -763,6 +795,23 @@
           personaList.appendChild(card);
           
           card.addEventListener('click', () => selectPersona(persona.id));
+        });
+      }
+
+      // Initialize sidebar suggestions
+      function initSidebarSuggestions() {
+        const suggestionList = document.getElementById('suggestionList');
+        suggestionList.innerHTML = '';
+        suggestedQuestions.forEach(question => {
+          const btn = document.createElement('button');
+          btn.className = 'suggestion-btn';
+          btn.textContent = question;
+          btn.onclick = function() {
+            chatInput.value = question;
+            chatInput.focus();
+            sendButton.disabled = !chatInput.value.trim();
+          };
+          suggestionList.appendChild(btn);
         });
       }
 
@@ -951,7 +1000,7 @@ if (message.isUser) {
       // Generate response based on persona
       async function generateResponse(userText) {
         try {
-          const res = await fetch("http://localhost:3000/chat", {
+          const res = await fetch(`${API_URL}/chat`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: userText }),
@@ -989,10 +1038,10 @@ if (message.isUser) {
       }
     });
 
-    textarea.addEventListener('input', () => {
-  textarea.style.height = 'auto';
-  textarea.style.height = textarea.scrollHeight + 'px';
-});
+//     textarea.addEventListener('input', () => {
+//   textarea.style.height = 'auto';
+//   textarea.style.height = textarea.scrollHeight + 'px';
+// });
   </script>
 </body>
 </html>

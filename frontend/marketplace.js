@@ -1,4 +1,6 @@
-const API_URL = 'http://localhost:3000';
+//const API_URL = 'http://localhost:3000';
+const API_URL ="https://seniorfullproject-production.up.railway.app";
+
 const USER_SKILLS_URL = `${API_URL}/user-skills`;
 const CATEGORIES_URL = `${API_URL}/categories`;
 

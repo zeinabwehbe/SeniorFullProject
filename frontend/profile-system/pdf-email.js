@@ -80,14 +80,14 @@ async function downloadCV() {
             })),
             
             // Skills section
- skills: skillsData.map(skill => ({
-    name: skill.skill.skill_name,
-     level: skill.skill_level
-}))
+                skills: skillsData.map(skill => ({
+                name: skill.skillName,
+                level: skill.level
+            }))
          };
         
         // Send request to backend to generate PDF
-        const response = await fetch('http://localhost:3000/cv/generate-pdf', {
+        const response = await fetch(`${API_URL}/cv/generate-pdf`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -177,11 +177,11 @@ async function generateAndSendCV(email) {
             
             // Skills section
             skills: skillsData.map(skill => ({
-            name: skill.skill.skill_name,
-            level: skill.skill_level
+            name: skill.skill.skillName,
+            level: skill.level
         }))
          };
-        const response = await fetch('http://localhost:3000/cv/send-email', {
+         const response = await fetch(`${API_URL}/cv/send-email`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
