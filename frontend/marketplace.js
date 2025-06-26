@@ -26,11 +26,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const response = await fetch(USER_SKILLS_URL);
         if (!response.ok) throw new Error('Failed to fetch user skills');
+
+        
         const userSkills = await response.json();
-
-        // Initialize with all skills
         filterSkills(userSkills);
+        console.log("Fetched skills:", userSkills); // 👈 ADD THI
+        console.log(userSkills[0]);
 
+
+
+        
         searchInput.addEventListener('input', () => filterSkills(userSkills));
         categoryFilter.addEventListener('change', () => filterSkills(userSkills));
         proficiencyFilter.addEventListener('change', () => filterSkills(userSkills));
@@ -112,17 +117,24 @@ document.addEventListener("DOMContentLoaded", async () => {
             const user = await userResponse.json();
             const userSkills = await skillsResponse.json();
     
-           
+            console.log("User skills received in modal:", userSkills);
+
             // Create HTML for skills lists with descriptions
-            const teachingSkillsHTML = userSkills.map(skill => 
-                `<div class="mb-3 p-3 bg-gray-50 rounded-lg">
-                    <h4 class="font-semibold text-gray-800">${skill.skill?.skill_name || 'Unnamed Skill'}</h4>
-                    <p class="text-sm text-gray-600">${skill.skill_level ? `Proficiency: ${skill.skill_level}` : ''}</p>
-                    ${skill.skill?.description ? `<p class="mt-1 text-gray-700">${skill.skill.description}</p>` : ''}
+            const teachingSkillsHTML = userSkills.map(skill => {
+               return `<div class="mb-3 p-3 bg-gray-50 rounded-lg">
+                    <p><strong>Name:</strong> ${skill.skill?.skill_name}</p>
+            <p><strong>Level:</strong> ${skill.skill_level}</p>
+             ${skill.skill?.description ? `<p class="mt-1 text-gray-700">${skill.skill.description}</p>` : ''}
                     ${skill.skill?.category?.name ? `<p class="text-xs text-gray-500 mt-1">Category: ${skill.skill.category.name}</p>` : ''}
                 </div>`
-            ).join('');
-    
+         } ).join('');
+
+            console.log("Each skill in userSkills:", userSkills);
+            userSkills.forEach(skill => {
+                console.log("Skill object:", skill);
+                console.log("Skill name:", skill.skill?.skill_name);
+            });
+            
     
             // Create optional fields HTML
             const optionalFieldsHTML = `
@@ -133,24 +145,26 @@ document.addEventListener("DOMContentLoaded", async () => {
             `;
     
             // Populate modal content
-            content.innerHTML = `
-                <div class="text-center">
-                    <div class="flex justify-center mb-4">
-                        <img src="${user.profilePic ? `${API_URL}/users/${userId}/profile-picture` : 'assets/images/default-user.jpg'}" 
-                             alt="Profile" 
-                             class="w-24 h-24 rounded-full object-cover"
-                             onerror="this.src='assets/images/default-user.jpg'">
-                    </div>
-                    <h2 class="text-2xl font-bold mb-4" style="color: #DEAD9C">${user.name || 'No name'}</h2>
-                    <div class="text-left">
-                        <p class="text-gray-600 mb-2"><strong>Bio:</strong> ${user.bio || 'No bio'}</p>
-                        <p class="text-gray-600 mb-2"><strong>Email:</strong> ${user.email || 'No email'}</p>
-                        ${optionalFieldsHTML}
-                       
-                        
-                    </div>
-                </div>
-            `;
+           content.innerHTML = `
+    <div class="text-center">
+        <div class="flex justify-center mb-4">
+            <img src="${user.profilePic ? `${API_URL}/users/${userId}/profile-picture` : 'assets/images/default-user.jpg'}" 
+                 alt="Profile" 
+                 class="w-24 h-24 rounded-full object-cover"
+                 onerror="this.src='assets/images/default-user.jpg'">
+        </div>
+        <h2 class="text-2xl font-bold mb-4" style="color: #DEAD9C">${user.name || 'No name'}</h2>
+        <div class="text-left">
+            <p class="text-gray-600 mb-2"><strong>Bio:</strong> ${user.bio || 'No bio'}</p>
+            <p class="text-gray-600 mb-2"><strong>Email:</strong> ${user.email || 'No email'}</p>
+            ${optionalFieldsHTML}
+        </div>
+        <div class="mt-6 text-left">
+            <h3 class="text-lg font-semibold mb-2" style="color: #DEAD9C">Skills Offered:</h3>
+            ${teachingSkillsHTML || '<p class="text-sm text-gray-500">No skills listed.</p>'}
+        </div>
+    </div>
+`;
         } catch (error) {
             console.error("Error loading user data:", error);
             content.innerHTML = `
@@ -167,12 +181,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function displayUserSkills(userSkills) {
         skillListings.innerHTML = '';
+        console.log('Displaying skills:', userSkills);
         if (userSkills.length === 0) {
             document.getElementById('no-results').classList.remove('hidden');
             return;
         }
+    console.log('Displaying skills:', userSkills);
         document.getElementById('no-results').classList.add('hidden');
-
+    
         userSkills.forEach(skill => {
             const card = skillCardTemplate.content.cloneNode(true);
             card.querySelector('.user-name').textContent = skill.user?.name || 'Anonymous User';
@@ -215,7 +231,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const category = categoryFilter.value;
         const proficiency = proficiencyFilter.value;
     
-        const filteredSkills = userSkills
+        // First: Filter only approved skills
+        const approvedSkills = userSkills.filter(skill => skill.approval_status === 'approved');
+
+        const filteredSkills = approvedSkills
            
             .filter(skill => {
                 const matchesSearch = skill.skill?.skill_name?.toLowerCase().includes(searchTerm) || 
@@ -232,19 +251,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function getToken() {
+        const raw = localStorage.getItem('token');
+        if (!raw) return null;
         try {
-            return JSON.parse(localStorage.getItem('token'));;
-        } catch (error) {
-            console.error("Error accessing localStorage:", error);
-            return null;
+          const parsed = JSON.parse(raw);
+          // If parsed is an object and has access_token property, return that
+          if (parsed && typeof parsed === 'object' && parsed.access_token) {
+            return parsed.access_token;
+          }
+          // Otherwise assume parsed is the token string
+          if (typeof parsed === 'string') {
+            return parsed;
+          }
+          return null;
+        } catch {
+          // raw was not JSON, assume it's the token string directly
+          return raw;
         }
-    }
-
+      }
     function getUserIdFromToken(token) {
         try {
             if (!token) return null;
+            if (typeof token === 'object' && token.access_token) {
+                token = token.access_token;
+            }
+            if (typeof jwt_decode === 'function') {
+                const payload = jwt_decode(token);
+                return payload.sub || payload.userId || payload.id;
+            }
             const payload = JSON.parse(atob(token.split('.')[1]));
-            return payload.sub || payload.userId;
+            return payload.sub || payload.userId || payload.id;
         } catch (error) {
             console.error("Error decoding token:", error);
             return null;
@@ -394,15 +430,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                     <!-- Fixed Submit Button at Bottom -->
                     <div class="p-4 border-t" style="border-color: #e9ecef; background-color: #f8f9fa;">
-                        <button type="submit" 
-                                form="add-skill-form"
-                                class="w-full text-white p-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl" 
-                                style="background: linear-gradient(to right, #668a8d, #4a6c6f);">
-                            <span class="submit-text text-lg font-medium">Add Skill</span>
-                            <svg class="w-5 h-5 loading-icon hidden animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                            </svg>
-                        </button>
+                        <button type="submit"  form="add-skill-form"
+        class="submit-btn w-full text-white p-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl" 
+        style="background: linear-gradient(to right, #668a8d, #4a6c6f);">
+    <span class="submit-text text-lg font-medium">Add Skill</span>
+    <svg class="w-5 h-5 loading-icon hidden animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+    </svg>
+</button>
                     </div>
                 </div>
             `;
@@ -444,9 +479,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (!userId) throw new Error('Could not determine user ID');
             
                     // Show loading state
-                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const submitBtn = modal.querySelector('button[type="submit"][form="add-skill-form"]');
+if (!submitBtn) {
+    throw new Error('Submit button not found');
+}
+
+                    const submitText = submitBtn.querySelector('.submit-text');
+        const loadingIcon = submitBtn.querySelector('.loading-icon');
+
                     submitBtn.disabled = true;
-                    submitBtn.innerHTML = 'Adding...';
+                    if (submitText) submitText.textContent = 'Adding...';
+        if (loadingIcon) loadingIcon.classList.remove('hidden');
                   
                     // Step 1: First create the skill in Skills table
                     const skillResponse = await fetch(`${API_URL}/skills`, {
@@ -499,7 +542,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
                     });
                     const userSkills = await skillsResponse.json();
-                     displayUserSkills(userSkills);
+                    // displayUserSkills(userSkills);
                     
                     // Close modal and show success
                     modal.classList.add("hidden");
