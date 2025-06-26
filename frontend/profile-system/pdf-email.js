@@ -177,7 +177,7 @@ async function generateAndSendCV(email) {
             
             // Skills section
             skills: skillsData.map(skill => ({
-            name: skill.skill.skillName,
+            name: skill.skillName,
             level: skill.level
         }))
          };
