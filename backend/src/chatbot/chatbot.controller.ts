@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import { OpenAI } from 'openai';
 
-@Controller('chat')
+/**@Controller('chat')
 export class ChatbotController {
   private openai: OpenAI;
   constructor(private configService: ConfigService) {
@@ -32,5 +32,5 @@ export class ChatbotController {
       console.error("OpenAI API error:", error.message);
       res.status(500).json({ error: "Failed to get response from GPT." });
     }
-  }
-}
+  }**/
+//}
