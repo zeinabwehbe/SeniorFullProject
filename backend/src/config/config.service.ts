@@ -6,7 +6,11 @@ export class ConfigService {
   constructor(private configService: NestConfigService) {}
 
   get jwtSecret(): string {
-    return this.configService.get<string>('JWT_SECRET') || 'your-secret-key';
+    const secret = this.configService.get<string>('JWT_SECRET');
+    if (!secret) {
+      throw new Error('JWT_SECRET is not set. Copy .env.example to .env and set it.');
+    }
+    return secret;
   }
 
   get jwtExpiresIn(): string {

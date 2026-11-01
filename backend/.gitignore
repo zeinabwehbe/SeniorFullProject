@@ -190,3 +190,10 @@ dist
 .db/
 *.sqlite
 .vercel
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem

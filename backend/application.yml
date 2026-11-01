@@ -5,5 +5,3 @@ application:
   application-root: /api/v1
 bcrypt:
   saltRounds: 10
-jwt:
-  secret: ***REMOVED***
